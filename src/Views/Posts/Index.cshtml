@@ -1,0 +1,14 @@
+﻿@using AnEoT.Vintage.ViewModels.Posts
+@model IndexViewModel
+@{
+    ViewData["Title"] = "期刊列表";
+}
+
+<ul>
+    @foreach (var item in Model.Directories)
+    {
+        <li>
+            <a class="nav-link text-dark" asp-controller="Posts" asp-action="View" asp-route-post="@item.Name">@item.Name</a>
+        </li>
+    }
+</ul>

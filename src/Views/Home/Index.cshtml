@@ -1,8 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using AnEoT.Vintage.ViewModels.Home
+@model IndexViewModel
+
+@{
+    ViewData["Title"] = "主页";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+TO BE CONSTRUCTED
+@*<ul>
+    @foreach (var item in Model.Directories)
+    {
+        <li>
+            <a href="~/aneot/posts/@item.Name" class="nav-link text-dark" asp-controller="Posts" asp-action="Index">@item.Name</a>
+        </li>
+    }
+</ul>*@

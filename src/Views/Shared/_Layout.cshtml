@@ -1,49 +1,42 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AnEoT.Vintage</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AnEoT.Vintage.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] | 回归线简易版</title>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AnEoT.Vintage</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <div>
+                    <img src="~/images/aneot.png" alt="《回归线》" width="15%" />简易版
+                </div>
+                
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">主页</a>
+                    @*<a class="nav-link text-dark" asp-controller="Home" asp-action="Index">关于</a>*@
+                    <a class="nav-link text-dark" href="https://aneot.terrach.net">查看《回归线》原网站</a>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
+            <h1>@ViewData["Title"]</h1>
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
+        <hr />
         <div class="container">
-            &copy; 2023 - AnEoT.Vintage - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            本网站意在为旧式设备提供《回归线》的便捷阅读方式。
+            <br/>
+            文章的版权归其作者所有，本网站仅以“合理使用”为目的引用，不对引用的《回归线》网站内容进行任何修改。
+            <br/>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
