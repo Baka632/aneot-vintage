@@ -14,7 +14,7 @@
         <br />
         @if (DateOnly.TryParse(postInfo.Date,out DateOnly result))
         {
-            <span>日期： result</span>
+            <span>日期： @result</span>
             <br />
         }
         @if (postInfo.Category is not null)
