@@ -1,4 +1,6 @@
-﻿namespace AnEoT.Vintage.ViewModels.Posts
+﻿using AnEoT.Vintage.Models;
+
+namespace AnEoT.Vintage.ViewModels.Posts
 {
     /// <summary>
     /// 为Posts/Index页面提供信息的模型
@@ -6,16 +8,18 @@
     public class IndexViewModel
     {
         /// <summary>
-        /// aneot/posts内文件夹的信息
+        /// 本页面的标题
         /// </summary>
-        public IEnumerable<DirectoryInfo> Directories { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
-        /// 构造<see cref="IndexViewModel"/>的新实例
+        /// 本页面的Markdown内容
         /// </summary>
-        public IndexViewModel(IEnumerable<DirectoryInfo> directories)
-        {
-            Directories = directories;
-        }
+        public string? Markdown { get; set; }
+
+        /// <summary>
+        /// 本页面的Markdown内容信息
+        /// </summary>
+        public PostInfo PostInfo { get; set; }
     }
 }

@@ -17,6 +17,10 @@
         /// </summary>
         public string Title { get; set; } = string.Empty;
         /// <summary>
+        /// 文档短标题
+        /// </summary>
+        public string ShortTitle { get; set; } = string.Empty;
+        /// <summary>
         /// 文档类型图标
         /// </summary>
         public string Icon { get; set; } = string.Empty;

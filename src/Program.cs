@@ -1,4 +1,7 @@
 using Markdig;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.WebEncoders;
 using Microsoft.OpenApi.Models;
@@ -28,6 +31,9 @@ namespace AnEoT.Vintage
                 config.ConfigureMarkdigPipeline = builder =>
                 {
                     builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
+                        .UseAdvancedExtensions()
+                        .UseGridTables()
+                        .UsePipeTables()
                         .UseEmojiAndSmiley(true)
                         .UseYamlFrontMatter()
                         .EnableTrackTrivia();
@@ -52,6 +58,12 @@ namespace AnEoT.Vintage
             {
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
+            builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
+                .AddScoped(x =>
+                {
+                    return x.GetRequiredService<IUrlHelperFactory>()
+                    .GetUrlHelper(x.GetRequiredService<IActionContextAccessor>().ActionContext!);
+                });
             WebApplication app = builder.Build();
 
             //≈‰÷√HTTP«Î«Ûπ‹µ¿

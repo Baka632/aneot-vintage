@@ -4,32 +4,33 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | 回归线简易版</title>
+    <link href="@Url.Content("~/css/site.css")" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <div>
-                    <img src="~/images/aneot.png" alt="《回归线》" width="15%" />简易版
+                    <img src="~/images/logo.png" alt="TCA" width="15%" style="margin-right:5px"/>回归线简易版
                 </div>
                 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">主页</a>
-                    @*<a class="nav-link text-dark" asp-controller="Home" asp-action="Index">关于</a>*@
-                    <a class="nav-link text-dark" href="https://aneot.terrach.net">查看《回归线》原网站</a>
+                <div>
+                    <a asp-controller="Home" asp-action="Index" style="margin-right:5px">主页</a>
+                    @*<a asp-controller="Home" asp-action="Index">关于</a>*@
+                    <a href="https://aneot.terrach.net">查看《回归线》原网站</a>
                 </div>
             </div>
         </nav>
     </header>
 
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main">
             <h1>@ViewData["Title"]</h1>
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer>
         <hr />
         <div class="container">
             本网站意在为旧式设备提供《回归线》的便捷阅读方式。

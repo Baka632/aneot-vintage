@@ -1,5 +1,8 @@
 ﻿using AnEoT.Vintage.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc;
+using SystemIOFile = System.IO.File;
+using AnEoT.Vintage.Models.HomePage;
+using AnEoT.Vintage.Helper;
 
 namespace AnEoT.Vintage.Controllers
 {
@@ -16,6 +19,7 @@ namespace AnEoT.Vintage.Controllers
         /// 程序执行环境的信息提供者
         /// </summary>
         private readonly IWebHostEnvironment environment;
+        private readonly MarkdownHelper _markdownHelper;
 
         /// <summary>
         /// 构造<see cref="HomeController"/>控制器的新实例，通常此构造器仅由依赖注入容器调用
@@ -24,27 +28,21 @@ namespace AnEoT.Vintage.Controllers
         {
             _logger = logger;
             environment = env;
+            _markdownHelper = new();
         }
 
         /// <summary>
-        /// 显示最新文章
+        /// 显示主页面
         /// </summary>
         public IActionResult Index()
         {
-            //TODO: 迁移到显示最新文章
+            IndexViewModel model = new();
 
-            string path = Path.Combine(environment.WebRootPath, "aneot", "posts");
+            string path = Path.Combine(environment.WebRootPath, "aneot", "README.md");
+            string markdown = SystemIOFile.ReadAllText(path);
 
-            if (!Directory.Exists(path))
-            {
-                _logger.LogCritical("未能找到含有《回归线》内容的文件夹！使用的路径：{path}", path);
-                return NotFound();
-            }
-
-            DirectoryInfo directoryInfo = new(path);
-            IEnumerable<DirectoryInfo> directories = directoryInfo.EnumerateDirectories();
-
-            return View(new IndexViewModel(directories));
+            model.HomePageInfo = _markdownHelper.GetFrontMatter<HomePageInfo>(markdown);
+            return View(model);
         }
     }
 }

@@ -23,5 +23,10 @@ namespace AnEoT.Vintage.ViewModels.Posts
         /// 本页面的Markdown内容信息
         /// </summary>
         public PostInfo PostInfo { get; set; }
+
+        /// <summary>
+        /// 当前期刊
+        /// </summary>
+        public string? CurrentPost { get; set; }
     }
 }

@@ -5,40 +5,39 @@
 
 @{
     ViewData["Title"] = Model.Title;
+    PostInfo postInfo = Model.PostInfo;
 }
 
-<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    @if (Model.PostInfo.Article)
-    {
-        PostInfo postInfo = Model.PostInfo;
-        <div>
-            <span>作者： @postInfo.Author</span>
+<div>
+    <div>
+        <span>作者： @(string.IsNullOrWhiteSpace(postInfo.Author) ? "Another End of Terra" : postInfo.Author)</span>
+        <br />
+        @if (DateOnly.TryParse(postInfo.Date,out DateOnly result))
+        {
+            <span>日期： result</span>
             <br />
-            <span>日期： @(DateOnly.Parse(postInfo.Date!))</span>
-            <br />
+        }
+        @if (postInfo.Category is not null)
+        {
             <span>
-                分类：@foreach (string item in postInfo.Category!)
+                分类：@foreach (string item in postInfo.Category)
                 {
                     <span style="margin: 0 auto 0 0;">@item</span>
                 }
             </span>
             <br />
-            <span>
-                标签：@foreach (string item in postInfo.Tag!)
-                {
-                    <span style="margin: 0 auto 0 0;">@item</span>
-                }
-            </span>
-        </div>
-        <hr />
-    }
-    else
-    {
-        <div>
-            作者： Another End of Terra
-        </div>
-        <hr/>
-    }
-</div>
+        }
 
-@Markdown.ParseHtmlString(Model.Markdown)
+        @if (postInfo.Tag is not null)
+        {
+            <span>
+                标签：@foreach (string item in postInfo.Tag)
+                {
+                    <span style="margin: 0 auto 0 0;">@item</span>
+                }
+            </span>
+        }
+    </div>
+    <hr />
+</div>
+<markdown markdown="Markdown"/>

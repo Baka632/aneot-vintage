@@ -5,12 +5,15 @@
     ViewData["Title"] = "主页";
 }
 
-TO BE CONSTRUCTED
-@*<ul>
-    @foreach (var item in Model.Directories)
-    {
-        <li>
-            <a href="~/aneot/posts/@item.Name" class="nav-link text-dark" asp-controller="Posts" asp-action="Index">@item.Name</a>
-        </li>
-    }
-</ul>*@
+<div>
+    <ul>
+        @foreach (var item in Model.HomePageInfo.Projects)
+        {
+            <li style="margin:0 0 10px 0">
+                @item.Name
+                <br/>
+                <a href="~/@item.Link">@item.Desc</a>
+            </li>
+        }
+    </ul>
+</div>

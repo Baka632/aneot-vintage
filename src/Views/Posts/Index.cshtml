@@ -1,14 +1,16 @@
-﻿@using AnEoT.Vintage.ViewModels.Posts
+﻿@using AnEoT.Vintage.Models;
+@using AnEoT.Vintage.ViewModels.Posts
+@using Westwind.AspNetCore.Markdown;
 @model IndexViewModel
+
 @{
-    ViewData["Title"] = "期刊列表";
+    ViewData["Title"] = Model.Title;
 }
 
-<ul>
-    @foreach (var item in Model.Directories)
-    {
-        <li>
-            <a class="nav-link text-dark" asp-controller="Posts" asp-action="View" asp-route-post="@item.Name">@item.Name</a>
-        </li>
-    }
-</ul>
+<div>
+    作者： Another End of Terra
+</div>
+<hr />
+<div style="max-width:60%">
+    <markdown markdown="Markdown"/>
+</div>

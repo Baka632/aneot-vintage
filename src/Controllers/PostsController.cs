@@ -1,19 +1,8 @@
 ﻿using AnEoT.Vintage.ViewModels.Posts;
-using Markdig;
-using Markdig.Extensions.Yaml;
-using Markdig.Parsers;
-using Markdig.Renderers.Normalize;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Text.RegularExpressions;
-using YamlDotNet.Core;
-using YamlDotNet.Serialization.NamingConventions;
-using YamlDotNet.Serialization;
 using SystemIOFile = System.IO.File;
-using YamlDotNet.Core.Events;
 using AnEoT.Vintage.Models;
+using AnEoT.Vintage.Helper;
 
 namespace AnEoT.Vintage.Controllers
 {
@@ -27,17 +16,24 @@ namespace AnEoT.Vintage.Controllers
         /// </summary>
         private readonly ILogger<HomeController> _logger;
         /// <summary>
+        /// 提供与Uri相关的帮助方法
+        /// </summary>
+        private readonly IUrlHelper _urlHelper;
+        /// <summary>
         /// 程序执行环境的信息提供者
         /// </summary>
-        private readonly IWebHostEnvironment environment;
+        private readonly IWebHostEnvironment _environment;
+        private readonly MarkdownHelper _markdownHelper;
 
         /// <summary>
         /// 构造<see cref="PostsController"/>控制器的新实例，通常此构造器仅由依赖注入容器调用
         /// </summary>
-        public PostsController(IWebHostEnvironment env, ILogger<HomeController> logger)
+        public PostsController(IWebHostEnvironment env, ILogger<HomeController> logger, IUrlHelper urlHelper)
         {
-            environment = env;
+            _environment = env;
             _logger = logger;
+            _urlHelper = urlHelper;
+            _markdownHelper = new();
         }
 
         /// <summary>
@@ -45,19 +41,14 @@ namespace AnEoT.Vintage.Controllers
         /// </summary>
         public IActionResult Index()
         {
-            //TODO: 改成依赖注入？
-            string path = Path.Combine(environment.WebRootPath, "aneot", "posts");
-
-            if (!Directory.Exists(path))
-            {
-                _logger.LogCritical("未能找到含有《回归线》内容的文件夹！使用的路径：{path}", path);
-                return NotFound();
-            }
-
-            DirectoryInfo directoryInfo = new(path);
-            IEnumerable<DirectoryInfo> directories = directoryInfo.EnumerateDirectories();
-
-            return base.View(new IndexViewModel(directories));
+            IndexViewModel model = new();
+            string path = Path.Combine(_environment.WebRootPath, "aneot", "posts", "README.md");
+            string markdown = SystemIOFile.ReadAllText(path);
+            PostInfo postInfo = _markdownHelper.GetFrontMatter<PostInfo>(markdown);
+            model.Title = postInfo.Title;
+            model.PostInfo = postInfo;
+            model.Markdown = _markdownHelper.ReplaceUriAsAbsolute(markdown, string.Empty, _urlHelper);
+            return base.View(model);
         }
 
         /// <summary>
@@ -73,52 +64,53 @@ namespace AnEoT.Vintage.Controllers
                 return BadRequest();
             }
 
+            if (article is not null)
+            {
+                if (article.Contains(".html"))
+                {
+                    //后缀为.html，这是原网站的写法，要重定向
+                    return LocalRedirectPermanent($"~/posts/{post}/{article.Replace(".html", ".md")}");
+                }
+                else if (!article.Contains(".md"))
+                {
+                    //Uri后缀不带.md，这是找不到文章的，也要重定向
+                    return LocalRedirectPermanent($"~/posts/{post}/{article}.md");
+                }
+            }
+
             string path;
+            string markdown;
             ViewViewModel model = new();
 
             if (string.IsNullOrWhiteSpace(article))
             {
                 //操作：查看指定的期刊
-                path = Path.Combine(environment.WebRootPath, "aneot", "posts", post, "README.md");
+                path = Path.Combine(_environment.WebRootPath, "aneot", "posts", post, "README.md");
 
                 if (!SystemIOFile.Exists(path))
                 {
                     return NotFound();
                 }
 
-                string markdown = SystemIOFile.ReadAllText(path);
-                #region Front Matter解析
-                MarkdownPipeline pipeline = new MarkdownPipelineBuilder()
-                    .UseYamlFrontMatter().Build();
-                MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
-                YamlFrontMatterBlock? yamlBlock = doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
-
-                if (yamlBlock is not null)
-                {
-                    string yaml = markdown.Substring(yamlBlock.Span.Start, yamlBlock.Span.Length);
-                    using StringReader input = new(yaml);
-
-                    Parser yamlParser = new(input);
-                    yamlParser.Consume<StreamStart>();
-                    yamlParser.Consume<DocumentStart>();
-
-                    IDeserializer yamlDes = new DeserializerBuilder()
-                        .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                        .Build();
-
-                    PostInfo postInfo = yamlDes.Deserialize<PostInfo>(yamlParser);
-                    yamlParser.Consume<DocumentEnd>();
-                    model.Title = postInfo.Title;
-                    model.PostInfo = postInfo;
-                }
-                #endregion
-
-                model.Markdown = markdown;
+                markdown = SystemIOFile.ReadAllText(path);
             }
             else
             {
                 //操作：查看指定的文章
+                path = Path.Combine(_environment.WebRootPath, "aneot", "posts", post, article);
+
+                if (!SystemIOFile.Exists(path))
+                {
+                    return NotFound();
+                }
+
+                markdown = SystemIOFile.ReadAllText(path);
             }
+            PostInfo postInfo = _markdownHelper.GetFrontMatter<PostInfo>(markdown);
+            model.Title = postInfo.Title;
+            model.PostInfo = postInfo;
+            model.Markdown = _markdownHelper.ReplaceUriAsAbsolute(markdown, post, _urlHelper);
+            model.CurrentPost = post;
 
             return base.View(model);
         }
