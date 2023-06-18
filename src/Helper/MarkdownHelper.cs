@@ -5,20 +5,13 @@ using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Core.Events;
 using Markdig.Syntax;
-using Microsoft.Extensions.Hosting;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc;
-using Markdig.Syntax.Inlines;
-using Microsoft.AspNetCore.Html;
-using Markdig.Renderers.Normalize;
 
 namespace AnEoT.Vintage.Helper
 {
     /// <summary>
     /// 为Markdown处理提供通用操作
     /// </summary>
-    internal partial class MarkdownHelper
+    internal static class MarkdownHelper
     {
         private static readonly MarkdownPipeline pipeline = new MarkdownPipelineBuilder()
                 .UseYamlFrontMatter()
@@ -30,7 +23,7 @@ namespace AnEoT.Vintage.Helper
         /// <param name="markdown">Markdown文件内容</param>
         /// <typeparam name="T">模型类型</typeparam>
         /// <returns>转换得到的模型</returns>
-        public T GetFrontMatter<T>(string markdown)
+        public static T GetFrontMatter<T>(string markdown)
         {
             MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
             YamlFrontMatterBlock? yamlBlock = doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
@@ -38,20 +31,9 @@ namespace AnEoT.Vintage.Helper
             if (yamlBlock is not null)
             {
                 string yaml = markdown.Substring(yamlBlock.Span.Start, yamlBlock.Span.Length);
-                using StringReader input = new(yaml);
+                T model = ReadYaml<T>(yaml);
 
-                Parser yamlParser = new(input);
-                yamlParser.Consume<StreamStart>();
-                yamlParser.Consume<DocumentStart>();
-
-                IDeserializer yamlDes = new DeserializerBuilder()
-                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                    .Build();
-
-                T postInfo = yamlDes.Deserialize<T>(yamlParser);
-                yamlParser.Consume<DocumentEnd>();
-
-                return postInfo;
+                return model;
             }
             else
             {
@@ -60,73 +42,25 @@ namespace AnEoT.Vintage.Helper
         }
 
         /// <summary>
-        /// 将Markdown中的Uri更改为绝对Uri
+        /// 从Yaml字符串中反序列化出指定的对象
         /// </summary>
-        /// <param name="markdown">Markdown文件内容</param>
-        /// <param name="post">期刊名称</param>
-        /// <param name="urlHelper">Uri帮助器</param>
-        /// <param name="baseUriOverride">基Uri覆写</param>
-        /// <returns>包含绝对Uri的Markdown</returns>
-        public string ReplaceUriAsAbsolute(string markdown, string? post, IUrlHelper urlHelper, string? baseUriOverride = null)
+        /// <typeparam name="T">反序列化出的对象</typeparam>
+        /// <param name="yaml">Yaml字符串</param>
+        /// <returns>指定的对象实例</returns>
+        public static T ReadYaml<T>(string yaml)
         {
-            markdown = GetMarkdownImageLinkRegex().Replace(markdown, (match) =>
-            {
-                string matchedUri = match.Groups["Uri"].Value;
-                string matchedImageDesc = match.Groups["ImageDesc"].Value;
-                
-                string urlPart;
-                if (new Uri(matchedUri, UriKind.RelativeOrAbsolute).IsAbsoluteUri)
-                {
-                    urlPart = matchedUri;
-                }
-                else
-                {
-                    urlPart = urlHelper.Content(string.IsNullOrWhiteSpace(post)
-                        ? $"~/aneot/posts/{matchedUri}"
-                        : $"~/aneot/posts/{post}/{matchedUri}");
-                }
-                return $"![{matchedImageDesc}]({urlPart})";
-            });
+            StringReader input = new(yaml);
+            Parser yamlParser = new(input);
+            yamlParser.Consume<StreamStart>();
+            yamlParser.Consume<DocumentStart>();
 
-            markdown = GetMarkdownOtherLinkRegex().Replace(markdown, (match) =>
-            {
-                string matchedUri = match.Groups["Uri"].Value;
-                string matchedTitle = match.Groups["Title"].Value;
-                string baseUri;
+            IDeserializer yamlDes = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
 
-                if (new Uri(matchedUri, UriKind.RelativeOrAbsolute).IsAbsoluteUri)
-                {
-                    return $"[{matchedTitle}]({matchedUri})";
-                }
-
-                if (baseUriOverride is not null)
-                {
-                    baseUri = baseUriOverride;
-                }
-                else if (matchedUri.StartsWith("/"))
-                {
-                    baseUri = "~";
-                }
-                else
-                {
-                    baseUri = "~/posts";
-                }
-
-                matchedUri = matchedUri.TrimStart('.', '/').Replace(".html", ".md");
-
-                string urlPart = urlHelper.Content(string.IsNullOrWhiteSpace(post)
-                    ? $"{baseUri}/{matchedUri}"
-                    : $"{baseUri}/{post}/{matchedUri}");
-                return $" [{matchedTitle}]({urlPart})";
-            });
-
-            return markdown;
+            T obj = yamlDes.Deserialize<T>(yamlParser);
+            yamlParser.Consume<DocumentEnd>();
+            return obj;
         }
-
-        [GeneratedRegex(@"(?<!\!)\[(?<Title>.*?)\]\((?<Uri>.*?)\)")]
-        private static partial Regex GetMarkdownOtherLinkRegex();
-
-        [GeneratedRegex(@"!\[(?<ImageDesc>.*?)\]\((?<Uri>.*?)\)")]
-        private static partial Regex GetMarkdownImageLinkRegex();
     }
 }

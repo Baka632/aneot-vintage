@@ -1,8 +1,7 @@
 using Markdig;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.WebEncoders;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -25,9 +24,10 @@ namespace AnEoT.Vintage
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            //向容器添加服务
+            //向依赖注入容器添加服务
             builder.Services.AddMarkdown(config =>
             {
+                config.AddMarkdownProcessingFolder("/");
                 config.ConfigureMarkdigPipeline = builder =>
                 {
                     builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
@@ -57,14 +57,25 @@ namespace AnEoT.Vintage
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
-                .AddScoped(x =>
+                .AddScoped(provider =>
                 {
-                    return x.GetRequiredService<IUrlHelperFactory>()
-                    .GetUrlHelper(x.GetRequiredService<IActionContextAccessor>().ActionContext!);
+                    return provider.GetRequiredService<IUrlHelperFactory>()
+                    .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
                 });
             WebApplication app = builder.Build();
 
-            //配置HTTP请求管道
+            //配置 HTTP 请求管道
+
+            RewriteOptions options = new RewriteOptions()
+                .Add((context) =>
+                {
+                    HttpRequest request = context.HttpContext.Request;
+
+                    context.Result = RuleResult.SkipRemainingRules;
+                    request.Path = request.Path.Value?.Replace(".html", ".md");
+                });
+
+            app.UseRewriter(options);
 
             if (app.Environment.IsDevelopment())
             {
@@ -79,17 +90,19 @@ namespace AnEoT.Vintage
 
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-            app.UseStaticFiles();
+            app.UseDefaultFiles(new DefaultFilesOptions()
+            {
+                DefaultFileNames = new string[] { "README.md" }
+            });
 
             app.UseMarkdown();
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}");
-
+            app.MapDefaultControllerRoute();
             app.Run();
         }
     }

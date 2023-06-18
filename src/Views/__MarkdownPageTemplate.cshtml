@@ -1,11 +1,10 @@
-﻿@using AnEoT.Vintage.Models;
-@using AnEoT.Vintage.ViewModels.Posts
-@using Westwind.AspNetCore.Markdown;
-@model ViewViewModel
-
+﻿@using AnEoT.Vintage.Helper;
+@using AnEoT.Vintage.Models;
+@model Westwind.AspNetCore.Markdown.MarkdownModel
 @{
-    ViewData["Title"] = Model.Title;
-    PostInfo postInfo = Model.PostInfo;
+    ViewBag.Title = Model.Title;
+    Layout = "_Layout";
+    PostInfo postInfo = MarkdownHelper.ReadYaml<PostInfo>(Model.YamlHeader);
 }
 
 <div>
@@ -41,4 +40,6 @@
     <hr />
 </div>
 
-<markdown markdown="Markdown"/>
+<div>
+    @Model.RenderedMarkdown
+</div>
