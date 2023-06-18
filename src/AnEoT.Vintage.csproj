@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="C:\Users\Baka632\.nuget\packages\aspnetcore.sasscompiler\1.63.3\build\..\runtimes\win-x64\src\dart.exe" />
-    <None Remove="C:\Users\Baka632\.nuget\packages\aspnetcore.sasscompiler\1.63.3\build\..\runtimes\win-x64\src\sass.snapshot" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AspNetCore.SassCompiler" Version="1.63.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />

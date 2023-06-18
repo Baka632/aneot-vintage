@@ -2,7 +2,6 @@
 using AnEoT.Vintage.Models;
 using AnEoT.Vintage.ViewModels.Posts;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using SystemIOFile = System.IO.File;
 
 namespace AnEoT.Vintage.Controllers
@@ -117,7 +116,7 @@ namespace AnEoT.Vintage.Controllers
         public IActionResult StatementPage()
         {
             string path = Path.Combine(_environment.WebRootPath, "aneot", "statement.md");
-            ViewViewModel model = GetViewViewModel(path);
+            ViewViewModel model = GetViewViewModel(path, "~");
             return View("Views/Posts/View.cshtml", model);
         }
 
