@@ -53,5 +53,15 @@
         /// </summary>
         //我也不知道这有什么用
         public IDictionary<string, int>? Dir { get; set; }
+
+        /// <summary>
+        /// <!--???-->
+        /// </summary>
+        public bool Star { get; set; }
+
+        /// <summary>
+        /// <!--???-->
+        /// </summary>
+        public bool Index { get; set; }
     }
 }

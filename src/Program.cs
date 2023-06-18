@@ -32,11 +32,9 @@ namespace AnEoT.Vintage
                 {
                     builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
                         .UseAdvancedExtensions()
-                        .UseGridTables()
-                        .UsePipeTables()
+                        .UseListExtras()
                         .UseEmojiAndSmiley(true)
-                        .UseYamlFrontMatter()
-                        .EnableTrackTrivia();
+                        .UseYamlFrontMatter();
                 };
             });
             builder.Services.AddControllersWithViews()
@@ -70,29 +68,18 @@ namespace AnEoT.Vintage
 
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
             else
             {
-                //TODO: 添加全局异常处理
-                //app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error/HandleError");
             }
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                OnPrepareResponse = context =>
-                {
-                    //防止静态文件显示乱码
-                    IHeaderDictionary headers = context.Context.Response.Headers;
-                    StringValues contentType = headers["Content-Type"];
-                    if (!contentType.Any(str => str != null && str.Contains("charset=utf-8")))
-                    {
-                        contentType += "; charset=utf-8";
-                        headers["Content-Type"] = contentType;
-                    }
-                }
-            });
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
+            app.UseStaticFiles();
 
             app.UseMarkdown();
             app.UseRouting();

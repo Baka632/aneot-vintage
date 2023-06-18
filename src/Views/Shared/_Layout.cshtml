@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | 回归线简易版</title>
-    <link href="@Url.Content("~/css/site.css")" rel="stylesheet" type="text/css" />
+    <link href="~/css/site.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/index.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/palette.css" rel="stylesheet" type="text/css" />
+    <link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <header>
@@ -16,7 +19,8 @@
                 
                 <div>
                     <a asp-controller="Home" asp-action="Index" style="margin-right:5px">主页</a>
-                    @*<a asp-controller="Home" asp-action="Index">关于</a>*@
+                    <a asp-controller="Posts" asp-action="Index" style="margin-right:5px">期刊列表</a>
+                    <a href="~/intro" style="margin-right:5px">关于</a>
                     <a href="https://aneot.terrach.net">查看《回归线》原网站</a>
                 </div>
             </div>
@@ -31,13 +35,21 @@
     </div>
 
     <footer>
-        <hr />
-        <div class="container">
-            本网站意在为旧式设备提供《回归线》的便捷阅读方式。
+        <hr style="border:inset!important" />
+        <div>
+            本站内容是游戏爱好者根据《明日方舟》二次创作而成，与鹰角网络官方无关。
             <br/>
-            文章的版权归其作者所有，本网站仅以“合理使用”为目的引用，不对引用的《回归线》网站内容进行任何修改。
+            本站使用的游戏图片、文本原文及相关设定/世界观版权属于上海鹰角网络科技有限公司。
+            <br/>
+            除非另有声明，作品其他内容不得以任何形式转载、摘编。
+            <br/>
+            本刊所有内容不得用于人工智能生成模型训练，包括但不限于个人、科研、教学和商业化应用。
+            <br/>
+            完整协议请查看 <a href="~/statement"> 《回归线网站用户协议》</a>，使用本站即视为同意本协议。
             <br/>
         </div>
+        <br/>
+        <div>泰拉创作者联合会保留所有权利 | Copyright © 2022-2023 TCA. All rights reserved.</div>
     </footer>
 </body>
 </html>

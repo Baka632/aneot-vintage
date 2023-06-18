@@ -65,18 +65,26 @@ namespace AnEoT.Vintage.Helper
         /// <param name="markdown">Markdown文件内容</param>
         /// <param name="post">期刊名称</param>
         /// <param name="urlHelper">Uri帮助器</param>
+        /// <param name="baseUriOverride">基Uri覆写</param>
         /// <returns>包含绝对Uri的Markdown</returns>
-        public string ReplaceUriAsAbsolute(string markdown, string? post, IUrlHelper urlHelper)
+        public string ReplaceUriAsAbsolute(string markdown, string? post, IUrlHelper urlHelper, string? baseUriOverride = null)
         {
-            markdown = GetMarkdownHtmlLinkRegex()
-                .Replace(markdown, "${Extension}.md)");
-
             markdown = GetMarkdownImageLinkRegex().Replace(markdown, (match) =>
             {
                 string matchedUri = match.Groups["Uri"].Value;
                 string matchedImageDesc = match.Groups["ImageDesc"].Value;
-
-                string urlPart = urlHelper.Content($"~/aneot/posts/{post}/{matchedUri}");
+                
+                string urlPart;
+                if (new Uri(matchedUri, UriKind.RelativeOrAbsolute).IsAbsoluteUri)
+                {
+                    urlPart = matchedUri;
+                }
+                else
+                {
+                    urlPart = urlHelper.Content(string.IsNullOrWhiteSpace(post)
+                        ? $"~/aneot/posts/{matchedUri}"
+                        : $"~/aneot/posts/{post}/{matchedUri}");
+                }
                 return $"![{matchedImageDesc}]({urlPart})";
             });
 
@@ -84,23 +92,41 @@ namespace AnEoT.Vintage.Helper
             {
                 string matchedUri = match.Groups["Uri"].Value;
                 string matchedTitle = match.Groups["Title"].Value;
+                string baseUri;
+
+                if (new Uri(matchedUri, UriKind.RelativeOrAbsolute).IsAbsoluteUri)
+                {
+                    return $"[{matchedTitle}]({matchedUri})";
+                }
+
+                if (baseUriOverride is not null)
+                {
+                    baseUri = baseUriOverride;
+                }
+                else if (matchedUri.StartsWith("/"))
+                {
+                    baseUri = "~";
+                }
+                else
+                {
+                    baseUri = "~/posts";
+                }
+
+                matchedUri = matchedUri.TrimStart('.', '/').Replace(".html", ".md");
 
                 string urlPart = urlHelper.Content(string.IsNullOrWhiteSpace(post)
-                    ? $"~/posts/{matchedUri}"
-                    : $"~/posts/{post}/{matchedUri}");
+                    ? $"{baseUri}/{matchedUri}"
+                    : $"{baseUri}/{post}/{matchedUri}");
                 return $" [{matchedTitle}]({urlPart})";
             });
 
             return markdown;
         }
 
-        [GeneratedRegex(@"(?<Extension>\[.*\]\(.*)\.html\)")]
-        private static partial Regex GetMarkdownHtmlLinkRegex();
-
-        [GeneratedRegex(@"[^!]\[(?<Title>.*)\]\((?<Uri>.*)\)")]
+        [GeneratedRegex(@"(?<!\!)\[(?<Title>.*?)\]\((?<Uri>.*?)\)")]
         private static partial Regex GetMarkdownOtherLinkRegex();
 
-        [GeneratedRegex(@"!\[(?<ImageDesc>.*)\]\((?<Uri>.*)\)")]
+        [GeneratedRegex(@"!\[(?<ImageDesc>.*?)\]\((?<Uri>.*?)\)")]
         private static partial Regex GetMarkdownImageLinkRegex();
     }
 }

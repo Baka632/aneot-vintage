@@ -12,7 +12,7 @@
     <div>
         <span>作者： @(string.IsNullOrWhiteSpace(postInfo.Author) ? "Another End of Terra" : postInfo.Author)</span>
         <br />
-        @if (DateOnly.TryParse(postInfo.Date,out DateOnly result))
+        @if (DateOnly.TryParse(postInfo.Date, out DateOnly result))
         {
             <span>日期： @result</span>
             <br />
@@ -33,11 +33,12 @@
             <span>
                 标签：@foreach (string item in postInfo.Tag)
                 {
-                    <span style="margin: 0 auto 0 0;">@item</span>
+                    <span style="margin: 0 auto 0 0; text-decoration: underline;">@item</span>
                 }
             </span>
         }
     </div>
     <hr />
 </div>
+
 <markdown markdown="Markdown"/>

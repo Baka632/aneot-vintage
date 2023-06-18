@@ -1,5 +1,4 @@
 {
-  "urls": "http://192.168.0.100:5048;https://192.168.0.100:7012",
   "profiles": {
     "AnEoT.Vintage": {
       "commandName": "Project",
@@ -8,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://192.168.0.100:5048;https://192.168.0.100:7012"
+      "applicationUrl": "http://localhost:5048;https://localhost:7012"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -18,6 +17,7 @@
       }
     }
   },
+  "urls": "http://localhost:5048;https://localhost:7012",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
