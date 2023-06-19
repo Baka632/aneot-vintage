@@ -12,23 +12,16 @@ namespace AnEoT.Vintage.Controllers
     public class HomeController : Controller
     {
         /// <summary>
-        /// 日志记录器
-        /// </summary>
-        private readonly ILogger<HomeController> _logger;
-        /// <summary>
         /// 程序执行环境的信息提供者
         /// </summary>
         private readonly IWebHostEnvironment environment;
-        private readonly MarkdownHelper _markdownHelper;
 
         /// <summary>
         /// 构造<see cref="HomeController"/>控制器的新实例，通常此构造器仅由依赖注入容器调用
         /// </summary>
-        public HomeController(ILogger<HomeController> logger, IWebHostEnvironment env)
+        public HomeController(IWebHostEnvironment env)
         {
-            _logger = logger;
             environment = env;
-            _markdownHelper = new();
         }
 
         /// <summary>
@@ -38,10 +31,10 @@ namespace AnEoT.Vintage.Controllers
         {
             IndexViewModel model = new();
 
-            string path = Path.Combine(environment.WebRootPath, "aneot", "README.md");
+            string path = Path.Combine(environment.WebRootPath, "Homepage.md");
             string markdown = SystemIOFile.ReadAllText(path);
 
-            model.HomePageInfo = _markdownHelper.GetFrontMatter<HomePageInfo>(markdown);
+            model.HomePageInfo = MarkdownHelper.GetFrontMatter<HomePageInfo>(markdown);
             return View(model);
         }
     }

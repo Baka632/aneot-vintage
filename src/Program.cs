@@ -1,8 +1,7 @@
 using Markdig;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.WebEncoders;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -25,9 +24,13 @@ namespace AnEoT.Vintage
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            //向容器添加服务
+            //第一步：向依赖注入容器添加服务
+
+            //添加Markdown解析服务
             builder.Services.AddMarkdown(config =>
             {
+                //设置Markdown中间件的工作文件夹
+                config.AddMarkdownProcessingFolder("/");
                 config.ConfigureMarkdigPipeline = builder =>
                 {
                     builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
@@ -39,7 +42,8 @@ namespace AnEoT.Vintage
             });
             builder.Services.AddControllersWithViews()
                 .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
-            builder.Services.AddDirectoryBrowser();
+            
+            //添加Swagger API文档
             builder.Services.AddSwaggerGen((options) =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -52,43 +56,73 @@ namespace AnEoT.Vintage
                 string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+
+            //注入IUrlHelper服务
+            builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
+                .AddScoped(provider =>
+                {
+                    return provider.GetRequiredService<IUrlHelperFactory>()
+                    .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
+                });
             builder.Services.Configure<WebEncoderOptions>(options =>
             {
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
-            builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
-                .AddScoped(x =>
-                {
-                    return x.GetRequiredService<IUrlHelperFactory>()
-                    .GetUrlHelper(x.GetRequiredService<IActionContextAccessor>().ActionContext!);
-                });
+
             WebApplication app = builder.Build();
 
-            //配置HTTP请求管道
+            //第二步：配置 HTTP 请求管道
+
+            RewriteOptions rewriteOptions = new RewriteOptions()
+                .Add((context) =>
+                {
+                    HttpRequest request = context.HttpContext.Request;
+
+                    context.Result = RuleResult.SkipRemainingRules;
+                    if (request.Path.HasValue && !request.Path.Value.Contains("swagger"))
+                    {
+                        if (request.Path.Value.Contains("api"))
+                        {
+                            request.Path = request.Path.Value
+                                .Replace(".md", string.Empty)
+                                .Replace(".html", string.Empty);
+                        }
+                        else
+                        {
+                            request.Path = request.Path.Value.Replace(".html", ".md");
+                        }
+                    }
+                });
+            
+            //启用Uri重写
+            app.UseRewriter(rewriteOptions);
 
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI();
             }
             else
             {
                 app.UseExceptionHandler("/Error/HandleError");
             }
-
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-            app.UseStaticFiles();
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
-            app.UseMarkdown();
-            app.UseRouting();
-
+            //让Markdown中间件能够自动获取到期刊页面的README.md文件
+            app.UseDefaultFiles(new DefaultFilesOptions()
+            {
+                DefaultFileNames = new string[] { "README.md" }
+            });
+           
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}");
+            app.UseMarkdown();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+            app.MapDefaultControllerRoute();
 
             app.Run();
         }

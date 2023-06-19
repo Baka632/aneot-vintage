@@ -1,0 +1,45 @@
+﻿@using AnEoT.Vintage.Helper;
+@using AnEoT.Vintage.Models;
+@model Westwind.AspNetCore.Markdown.MarkdownModel
+@{
+    ViewBag.Title = Model.Title;
+    Layout = "_Layout";
+    FrontMatter frontMatter = MarkdownHelper.ReadYaml<FrontMatter>(Model.YamlHeader);
+}
+
+<div>
+    <div>
+        <span>作者： @(string.IsNullOrWhiteSpace(frontMatter.Author) ? "Another End of Terra" : frontMatter.Author)</span>
+        <br />
+        @if (DateOnly.TryParse(frontMatter.Date, out DateOnly result))
+        {
+            <span>日期： @result</span>
+            <br />
+        }
+        @if (frontMatter.Category is not null)
+        {
+            <span>
+                分类：@foreach (string item in frontMatter.Category)
+                {
+                    <span style="margin: 0 auto 0 0;">@item</span>
+                }
+            </span>
+            <br />
+        }
+
+        @if (frontMatter.Tag is not null)
+        {
+            <span>
+                标签：@foreach (string item in frontMatter.Tag)
+                {
+                    <span style="margin: 0 auto 0 0; text-decoration: underline;">@item</span>
+                }
+            </span>
+        }
+    </div>
+    <hr />
+</div>
+
+<div>
+    @Model.RenderedMarkdown
+</div>

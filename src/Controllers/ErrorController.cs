@@ -7,6 +7,7 @@ namespace AnEoT.Vintage.Controllers
     /// <summary>
     /// 错误处理控制器
     /// </summary>
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ErrorController : Controller
     {
         /// <summary>
@@ -23,11 +24,11 @@ namespace AnEoT.Vintage.Controllers
         }
 
         /// <summary>
-        /// 显示异常处理页
+        /// 显示HTTP 错误状态码处理页
         /// </summary>
         /// <param name="code">HTTP 状态码</param>
-        [Route("Error/{code}")]
-        public IActionResult Error(int code)
+        [Route("[controller]/{code}")]
+        public IActionResult ErrorStatusCodePages(int code)
         {
             ErrorViewModel model = new();
 
@@ -56,13 +57,12 @@ namespace AnEoT.Vintage.Controllers
 
             model.MainMessage = mainMessage;
             model.SecondaryMessage = secondaryMessage;
-            return View(model);
+            return View("Error", model);
         }
 
         /// <summary>
         /// 非开发环境的异常处理器
         /// </summary>
-        [Route("Error/HandleError")]
         public IActionResult HandleError()
         {
             IExceptionHandlerPathFeature? expectionDetails = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
