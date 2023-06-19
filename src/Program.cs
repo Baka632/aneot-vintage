@@ -24,9 +24,12 @@ namespace AnEoT.Vintage
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            //向依赖注入容器添加服务
+            //第一步：向依赖注入容器添加服务
+
+            //添加Markdown解析服务
             builder.Services.AddMarkdown(config =>
             {
+                //设置Markdown中间件的工作文件夹
                 config.AddMarkdownProcessingFolder("/");
                 config.ConfigureMarkdigPipeline = builder =>
                 {
@@ -39,7 +42,8 @@ namespace AnEoT.Vintage
             });
             builder.Services.AddControllersWithViews()
                 .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
-            builder.Services.AddDirectoryBrowser();
+            
+            //添加Swagger API文档
             builder.Services.AddSwaggerGen((options) =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -56,53 +60,51 @@ namespace AnEoT.Vintage
             {
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
-            builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
-                .AddScoped(provider =>
-                {
-                    return provider.GetRequiredService<IUrlHelperFactory>()
-                    .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
-                });
+
             WebApplication app = builder.Build();
 
-            //配置 HTTP 请求管道
+            //第二步：配置 HTTP 请求管道
 
-            RewriteOptions options = new RewriteOptions()
+            RewriteOptions rewriteOptions = new RewriteOptions()
                 .Add((context) =>
                 {
                     HttpRequest request = context.HttpContext.Request;
 
                     context.Result = RuleResult.SkipRemainingRules;
-                    request.Path = request.Path.Value?.Replace(".html", ".md");
+                    if (request.Path.HasValue && !request.Path.Value.Contains("swagger"))
+                    {
+                        request.Path = request.Path.Value?.Replace(".html", ".md");
+                    }
                 });
-
-            app.UseRewriter(options);
+            
+            //启用Uri重写
+            app.UseRewriter(rewriteOptions);
 
             if (app.Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI();
             }
             else
             {
                 app.UseExceptionHandler("/Error/HandleError");
             }
-
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            //让Markdown中间件能够自动获取到期刊页面的README.md文件
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
                 DefaultFileNames = new string[] { "README.md" }
             });
 
+            app.UseAuthorization();
             app.UseMarkdown();
             app.UseStaticFiles();
-
             app.UseRouting();
-
-            app.UseAuthorization();
-
             app.MapDefaultControllerRoute();
+
             app.Run();
         }
     }
