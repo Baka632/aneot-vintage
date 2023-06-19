@@ -56,6 +56,14 @@ namespace AnEoT.Vintage
                 string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
+
+            //×¢ÈëIUrlHelper·þÎñ
+            builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
+                .AddScoped(provider =>
+                {
+                    return provider.GetRequiredService<IUrlHelperFactory>()
+                    .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
+                });
             builder.Services.Configure<WebEncoderOptions>(options =>
             {
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
@@ -73,7 +81,16 @@ namespace AnEoT.Vintage
                     context.Result = RuleResult.SkipRemainingRules;
                     if (request.Path.HasValue && !request.Path.Value.Contains("swagger"))
                     {
-                        request.Path = request.Path.Value?.Replace(".html", ".md");
+                        if (request.Path.Value.Contains("api"))
+                        {
+                            request.Path = request.Path.Value
+                                .Replace(".md", string.Empty)
+                                .Replace(".html", string.Empty);
+                        }
+                        else
+                        {
+                            request.Path = request.Path.Value.Replace(".html", ".md");
+                        }
                     }
                 });
             
@@ -98,10 +115,12 @@ namespace AnEoT.Vintage
             {
                 DefaultFileNames = new string[] { "README.md" }
             });
-
+           
             app.UseAuthorization();
+
             app.UseMarkdown();
             app.UseStaticFiles();
+
             app.UseRouting();
             app.MapDefaultControllerRoute();
 
