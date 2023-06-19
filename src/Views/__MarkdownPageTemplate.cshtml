@@ -4,7 +4,15 @@
 @{
     ViewBag.Title = Model.Title;
     Layout = "_Layout";
-    FrontMatter frontMatter = MarkdownHelper.ReadYaml<FrontMatter>(Model.YamlHeader);
+    FrontMatter frontMatter;
+    @if (Model.YamlHeader is not null)
+    {
+        frontMatter = MarkdownHelper.ReadYaml<FrontMatter>(Model.YamlHeader);
+    }
+    else
+    {
+        frontMatter = new();
+    }
 }
 
 <div>

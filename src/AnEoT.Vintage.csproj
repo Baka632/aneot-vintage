@@ -16,9 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helper\Markdown\" />
+      <None Include="..\README.md"/>
   </ItemGroup>
-
 </Project>
 
 
