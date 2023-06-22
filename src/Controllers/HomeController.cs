@@ -31,6 +31,8 @@ namespace AnEoT.Vintage.Controllers
         {
             IndexViewModel model = new();
 
+            //不用原来的"README.md"为文件名的原因是：README.md是默认文档，Markdown中间件会拦截它
+            //这里的控制器就无法被路由到
             string path = Path.Combine(environment.WebRootPath, "Homepage.md");
             string markdown = SystemIOFile.ReadAllText(path);
 

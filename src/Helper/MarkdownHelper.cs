@@ -23,7 +23,7 @@ namespace AnEoT.Vintage.Helper
         /// <param name="markdown">Markdown文件内容</param>
         /// <typeparam name="T">模型类型</typeparam>
         /// <returns>转换得到的模型</returns>
-        public static T GetFrontMatter<T>(string markdown)
+        public static T? GetFrontMatter<T>(string markdown)
         {
             MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
             YamlFrontMatterBlock? yamlBlock = doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
@@ -31,7 +31,7 @@ namespace AnEoT.Vintage.Helper
             if (yamlBlock is not null)
             {
                 string yaml = markdown.Substring(yamlBlock.Span.Start, yamlBlock.Span.Length);
-                T model = ReadYaml<T>(yaml);
+                T? model = ReadYaml<T>(yaml);
 
                 return model;
             }
@@ -47,8 +47,13 @@ namespace AnEoT.Vintage.Helper
         /// <typeparam name="T">反序列化出的对象</typeparam>
         /// <param name="yaml">Yaml字符串</param>
         /// <returns>指定的对象实例</returns>
-        public static T ReadYaml<T>(string yaml)
+        public static T? ReadYaml<T>(string yaml)
         {
+            if (string.IsNullOrWhiteSpace(yaml))
+            {
+                return default;
+            }
+
             StringReader input = new(yaml);
             Parser yamlParser = new(input);
             yamlParser.Consume<StreamStart>();
