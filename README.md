@@ -14,11 +14,19 @@ Enjoy~
 
 ## About Us
 
-If there are any errors in the website or you have any comments, 
+If there are any errors in the website or you have any comments,
 
-Or you would like to join us,
+You can open a new issue.
+
+<!-- This is not an official project yet, so we remove the following notice temporarily -->
+
+<!--
+If you would like to join us,
 
 Please use the email address [TCA_doc@163.com](mailto:TCA_doc@163.com) Contact us.
+
+*Note that for security reasons we do not accept submissions from non-collaborators*
+-->
 
 ## About copyright
 
@@ -30,7 +38,7 @@ We only grant you the right to save and share as is. At the same time you must c
 
 **No Derivatives** — If you remix, transform, or build upon the material, you may not distribute the modified material.
 
-**Refuse to train the model** — It shall not be used for artificial intelligence generation model training, including but not limited to personal, scientific research, teaching and commercial applications.
+**Refuse to train the model** — It shall not be used for any purpose artificial intelligence generation model training, including but not limited to personal, scientific research, teaching and commercial applications.
 
 We reserve all rights not granted to you, and if you violate the above requirements, we will withdraw all rights granted to you.
 
