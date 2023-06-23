@@ -12,7 +12,14 @@
             <li style="margin:0 0 10px 0">
                 @item.Name
                 <br/>
-                <a href="~/@item.Link">@item.Desc</a>
+                @if (new Uri(item.Link, UriKind.RelativeOrAbsolute).IsAbsoluteUri)
+                {
+                    <a href="@item.Link">@item.Desc</a>
+                }
+                else
+                {
+                    <a href="~/@item.Link">@item.Desc</a>
+                }
             </li>
         }
     </ul>
