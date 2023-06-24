@@ -50,6 +50,5 @@ jobs:
     - name: Upload Github Pages artifact
       uses: actions/upload-pages-artifact@v1
     
-    - name: Deploy artifact
-        id: deployment
-        uses: actions/deploy-pages@v1
+    - name: Deploy GitHub Pages site
+      uses: actions/deploy-pages@v2.0.2
