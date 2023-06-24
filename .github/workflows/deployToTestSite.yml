@@ -1,0 +1,54 @@
+name: Deploy to test site
+
+on:
+  pull_request:
+    types: [opened, reopened]
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '7.x' # The .NET SDK version to use
+
+jobs:
+  build:
+    environment: Testing
+    name: Deploy to test site
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Change working directory
+      run: cd ./src
+
+    - name: Restore NuGet dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet run --configuration Release -- static-only
+    
+    - name: Archive artifact
+      shell: sh
+      if: runner.os == 'Linux'
+      run: |
+        chmod -c -R +rX "$INPUT_PATH" |
+        while read line; do
+           echo "::warning title=Invalid file permissions automatically fixed::$line"
+        done
+        tar \
+          --dereference --hard-dereference \
+          --directory "$INPUT_PATH/src/StaticWebSite" \
+          -cvf "$RUNNER_TEMP/artifact.tar" \
+          --exclude=.git \
+          --exclude=.github \
+          .
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+
+    - name: Configure GitHub Pages
+      uses: actions/configure-pages@v3.0.6
+    
+    - name: Upload GitHub Pages artifact
+      uses: actions/upload-pages-artifact@v1.0.9
+    
+    - name: Deploy GitHub Pages site
+      uses: actions/deploy-pages@v2.0.2
