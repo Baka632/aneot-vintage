@@ -1,3 +1,5 @@
+using AnEoT.Vintage.Helper;
+using AspNetStatic;
 using Markdig;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -24,7 +26,23 @@ namespace AnEoT.Vintage
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            //第一步：向依赖注入容器添加服务
+            #region 设置静态页面的导出位置
+            string staticWebSiteOutputPath;
+
+            string? pathInConfig = builder.Configuration["StaticWebSiteOutputPath"];
+            if (!string.IsNullOrWhiteSpace(pathInConfig))
+            {
+                staticWebSiteOutputPath = pathInConfig;
+            }
+            else
+            {
+                string defaultPath = Path.Combine(builder.Environment.ContentRootPath, "StaticWebSite");
+                Directory.CreateDirectory(defaultPath);
+                staticWebSiteOutputPath = defaultPath;
+            }
+            #endregion
+
+            #region 第一步：向依赖注入容器添加服务
 
             //添加Markdown解析服务
             builder.Services.AddMarkdown(config =>
@@ -69,10 +87,14 @@ namespace AnEoT.Vintage
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
 
+            //添加静态网站生成服务
+            StaticPagesInfoProvider provider = StaticWebSiteHelper.GetStaticPagesInfoProviderAndCopyFiles(builder.Environment.WebRootPath, staticWebSiteOutputPath);
+            builder.Services.AddSingleton<IStaticPagesInfoProvider>(provider);
+
             WebApplication app = builder.Build();
+            #endregion
 
-            //第二步：配置 HTTP 请求管道
-
+            #region 第二步：配置 HTTP 请求管道
             RewriteOptions rewriteOptions = new RewriteOptions()
                 .Add((context) =>
                 {
@@ -124,7 +146,11 @@ namespace AnEoT.Vintage
             app.UseRouting();
             app.MapDefaultControllerRoute();
 
+            //生成静态网页文件
+            app.GenerateStaticPages(staticWebSiteOutputPath, args);
+
             app.Run();
+            #endregion
         }
     }
 }

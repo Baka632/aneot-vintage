@@ -63,5 +63,10 @@
         /// <!--???-->
         /// </summary>
         public bool Index { get; set; }
+
+        /// <summary>
+        /// 页面描述
+        /// </summary>
+        public string Description { get; set; } = string.Empty;
     }
 }
