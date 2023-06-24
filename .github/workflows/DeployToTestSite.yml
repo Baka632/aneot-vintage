@@ -8,6 +8,16 @@ on:
 env:
   DOTNET_VERSION: '7.x' # The .NET SDK version to use
 
+inputs:
+    name:
+        description: 'Artifact name'
+        required: false
+        default: 'artifact'
+    path:
+        description: "Path of the directory containing the static assets."
+        required: true
+        default: "src/"
+
 jobs:
   build:
     environment: Testing
@@ -44,6 +54,10 @@ jobs:
     
     - name: Upload Github Pages artifact
       uses: actions/upload-pages-artifact@v1
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ GITHUB_WORKSPACE }}/artifact.tar
+        if-no-files-found: error
     
     - name: Deploy artifact
       uses: actions/deploy-pages@v1
