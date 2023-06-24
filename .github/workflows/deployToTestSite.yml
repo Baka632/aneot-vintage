@@ -24,7 +24,7 @@ jobs:
       run: dotnet restore
 
     - name: Build
-      run: dotnet run --configuration Release -- static-only
+      run: dotnet run --configuration Release -- static-only --project .\src
     
     - name: Archive artifact
       shell: sh
