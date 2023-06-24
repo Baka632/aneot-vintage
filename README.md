@@ -12,7 +12,7 @@ A fanmade literary journal based on mobile game *Arknights*, redesigned for vint
 
 > Notice for static web site
 >
-> By default, static web site will be generated in `wwwroot/StaticWebSite` folder
+> By default, static web site will be generated in `src/StaticWebSite` folder
 >
 > If you want to change it, use the following method to do that (ordered by the priority)
 >	- Use *command line argument*:
