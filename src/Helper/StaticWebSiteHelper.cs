@@ -18,7 +18,7 @@ namespace AnEoT.Vintage.Helper
             List<PageInfo> pages = new(2000)
             {
                 new PageInfo("/"),
-                new PageInfo("/posts") { OutFile=Path.Combine("posts","index.html") }
+                new PageInfo("/posts") { OutFile = Path.Combine("posts","index.html") }
             };
 
             DirectoryInfo wwwRootDirectory = new(webRootPath);
@@ -33,8 +33,7 @@ namespace AnEoT.Vintage.Helper
                 }
 
                 string nameRemovedExtension = item.Name.Replace(".md", string.Empty);
-                PageInfo info = new($"/{nameRemovedExtension}");
-                pages.Add(info);
+                pages.Add(new($"/{nameRemovedExtension}"));
             }
             #endregion
 
@@ -75,24 +74,20 @@ namespace AnEoT.Vintage.Helper
             #endregion
 
             #region 第三步：复制必需的静态文件
-            IEnumerable<DirectoryInfo> directories = wwwRootDirectory.EnumerateDirectories().Where((dir) =>
-            {
-                //去掉posts文件夹，因为其会自动生成
-                if (dir.Name.Contains("posts"))
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            });
-
+            //复制wwwroot下的文件夹（无posts文件夹）
+            IEnumerable<DirectoryInfo> directories = wwwRootDirectory.EnumerateDirectories().Where(dir => !dir.Name.Contains("posts"));
             foreach (DirectoryInfo item in directories)
             {
                 CopyDirectory(item, Path.Combine(outputPath, item.Name), true);
             }
 
+            //复制非md扩展名的文件
+            IEnumerable<FileInfo> fileInfos = wwwRootDirectory.EnumerateFiles().Where(file => file.Extension != ".md");
+            foreach (FileInfo fileInfo in fileInfos)
+            {
+                string targetFilePath = Path.Combine(outputPath, fileInfo.Name);
+                fileInfo.CopyTo(targetFilePath, true);
+            }
             #endregion
 
             StaticPagesInfoProvider provider = new(pages);

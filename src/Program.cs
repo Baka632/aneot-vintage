@@ -96,7 +96,7 @@ namespace AnEoT.Vintage
 
             #region 第二步：配置 HTTP 请求管道
             RewriteOptions rewriteOptions = new RewriteOptions()
-                .Add((context) =>
+                .Add(context =>
                 {
                     HttpRequest request = context.HttpContext.Request;
 
