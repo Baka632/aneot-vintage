@@ -18,7 +18,11 @@ namespace AnEoT.Vintage.Helper
             List<PageInfo> pages = new(2000)
             {
                 new PageInfo("/"),
-                new PageInfo("/posts") { OutFile = Path.Combine("posts","index.html") }
+                new PageInfo("/posts") { OutFile = Path.Combine("posts","index.html") },
+                
+                //临时解决措施
+                new PageInfo("/posts/2023-06/README.md") { OutFile = Path.Combine("posts","2023-06","README.md","index.html") },
+                new PageInfo("/download.md") { OutFile = Path.Combine("download.md","index.html") },
             };
 
             DirectoryInfo wwwRootDirectory = new(webRootPath);
