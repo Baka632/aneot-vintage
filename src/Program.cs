@@ -1,4 +1,5 @@
-using AnEoT.Vintage.Helper;
+using AnEoT.Vintage.Helpers;
+using AnEoT.Vintage.Helpers.Custom;
 using AspNetStatic;
 using Markdig;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -24,6 +25,7 @@ namespace AnEoT.Vintage
         /// <param name="args">启动时传递的参数</param>
         public static void Main(string[] args)
         {
+            bool generateStaticWebSite = args.HasExitAfterStaticGenerationParameter();
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             #region 设置静态页面的导出位置
@@ -57,6 +59,11 @@ namespace AnEoT.Vintage
                         .UseEmojiAndSmiley(true)
                         .UseYamlFrontMatter();
                 };
+
+                if (generateStaticWebSite)
+                {
+                    config.MarkdownParserFactory = new CustomMarkdownParserFactory();
+                }
             });
             builder.Services.AddControllersWithViews()
                 .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
@@ -87,9 +94,12 @@ namespace AnEoT.Vintage
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
 
-            //添加静态网站生成服务
-            StaticPagesInfoProvider provider = StaticWebSiteHelper.GetStaticPagesInfoProviderAndCopyFiles(builder.Environment.WebRootPath, staticWebSiteOutputPath);
-            builder.Services.AddSingleton<IStaticPagesInfoProvider>(provider);
+            if (generateStaticWebSite)
+            {
+                //添加静态网站生成服务
+                StaticPagesInfoProvider provider = StaticWebSiteHelper.GetStaticPagesInfoProviderAndCopyFiles(builder.Environment.WebRootPath, staticWebSiteOutputPath);
+                builder.Services.AddSingleton<IStaticPagesInfoProvider>(provider);
+            }
 
             WebApplication app = builder.Build();
             #endregion
@@ -135,7 +145,7 @@ namespace AnEoT.Vintage
             //让Markdown中间件能够自动获取到期刊页面的README.md文件
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
-                DefaultFileNames = new string[] { "README.md" }
+                DefaultFileNames = new string[] { "README.md", "index.html", "index.htm" }
             });
            
             app.UseAuthorization();
@@ -146,8 +156,11 @@ namespace AnEoT.Vintage
             app.UseRouting();
             app.MapDefaultControllerRoute();
 
-            //生成静态网页文件
-            app.GenerateStaticPages(staticWebSiteOutputPath, args);
+            if (generateStaticWebSite)
+            {
+                //生成静态网页文件
+                app.GenerateStaticPages(staticWebSiteOutputPath, args);
+            }
 
             app.Run();
             #endregion

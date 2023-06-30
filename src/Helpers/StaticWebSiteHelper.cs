@@ -1,6 +1,6 @@
 ﻿using AspNetStatic;
 
-namespace AnEoT.Vintage.Helper
+namespace AnEoT.Vintage.Helpers
 {
     /// <summary>
     /// 为静态网页生成提供帮助方法
@@ -19,10 +19,6 @@ namespace AnEoT.Vintage.Helper
             {
                 new PageInfo("/"),
                 new PageInfo("/posts") { OutFile = Path.Combine("posts","index.html") },
-                
-                //临时解决措施
-                new PageInfo("/posts/2023-06/README.md") { OutFile = Path.Combine("posts","2023-06","README.md","index.html") },
-                new PageInfo("/download.md") { OutFile = Path.Combine("download.md","index.html") },
             };
 
             DirectoryInfo wwwRootDirectory = new(webRootPath);
@@ -79,7 +75,9 @@ namespace AnEoT.Vintage.Helper
 
             #region 第三步：复制必需的静态文件
             //复制wwwroot下的文件夹（无posts文件夹）
-            IEnumerable<DirectoryInfo> directories = wwwRootDirectory.EnumerateDirectories().Where(dir => !dir.Name.Contains("posts"));
+            IEnumerable<DirectoryInfo> directories = wwwRootDirectory.EnumerateDirectories()
+                .Where(dir => !dir.Name.Contains("posts"));
+
             foreach (DirectoryInfo item in directories)
             {
                 CopyDirectory(item, Path.Combine(outputPath, item.Name), true);
@@ -102,7 +100,7 @@ namespace AnEoT.Vintage.Helper
         /// 复制目录
         /// </summary>
         /// <param name="sourceDir">原目录信息</param>
-        /// <param name="destinationDir">目标目录信息</param>
+        /// <param name="destinationDir">目标目录路径</param>
         /// <param name="recursive">指示是否复制子目录的值</param>
         /// <exception cref="DirectoryNotFoundException">当找不到指定的文件夹时抛出</exception>
         private static void CopyDirectory(DirectoryInfo sourceDir, string destinationDir, bool recursive)
