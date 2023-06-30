@@ -12,11 +12,13 @@ A fanmade literary journal based on mobile game *Arknights*, redesigned for vint
 
 > Notice for static web site
 >
+> If you want to generate static files, add command line argument ```-- static-only```
+>
 > By default, static web site will be generated in `src/StaticWebSite` folder
 >
 > If you want to change it, use the following method to do that (ordered by the priority)
 >	- Use *command line argument*:
-> ```dotnet run --StaticWebSiteOutputPath "YOUR PATH"```
+> ```dotnet run --StaticWebSiteOutputPath "YOUR PATH" -- static-only```
 > - Set *environment variables* named ```StaticWebSiteOutputPath```: set it in ```launchSettings.json``` or in your command line interface
 > 
 > - Add ```StaticWebSiteOutputPath``` in *appsettings.json*
@@ -27,7 +29,6 @@ A fanmade literary journal based on mobile game *Arknights*, redesigned for vint
 >	......
 > }
 > ```
->  If you just want to generate static files and don't want to start the website, use ```dotnet run -- static-only```
 
 Enjoy~
 

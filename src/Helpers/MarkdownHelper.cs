@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Core.Events;
 using Markdig.Syntax;
 
-namespace AnEoT.Vintage.Helper
+namespace AnEoT.Vintage.Helpers
 {
     /// <summary>
     /// 为Markdown处理提供通用操作

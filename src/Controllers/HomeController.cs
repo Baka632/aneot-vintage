@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SystemIOFile = System.IO.File;
 using AnEoT.Vintage.Models.HomePage;
-using AnEoT.Vintage.Helper;
+using AnEoT.Vintage.Helpers;
 
 namespace AnEoT.Vintage.Controllers
 {
