@@ -1,4 +1,5 @@
 ﻿using AspNetStatic;
+using SixLabors.ImageSharp;
 
 namespace AnEoT.Vintage.Helpers
 {
@@ -12,8 +13,9 @@ namespace AnEoT.Vintage.Helpers
         /// </summary>
         /// <param name="webRootPath">“wwwroot”文件夹所在路径</param>
         /// <param name="outputPath">静态网页的输出路径</param>
+        /// <param name="convertWebpToJpg">指示是否将WebP图像转换为JPG图像的值</param>
         /// <returns>描述网站内容的<see cref="StaticPagesInfoProvider"/></returns>
-        public static StaticPagesInfoProvider GetStaticPagesInfoProviderAndCopyFiles(string webRootPath, string outputPath)
+        public static StaticPagesInfoProvider GetStaticPagesInfoProviderAndCopyFiles(string webRootPath, string outputPath, bool convertWebpToJpg)
         {
             List<PageInfo> pages = new(2000)
             {
@@ -68,7 +70,7 @@ namespace AnEoT.Vintage.Helpers
                 DirectoryInfo resDirInfo = new(Path.Combine(Path.Combine(volDirInfo.FullName, "res")));
                 if (resDirInfo.Exists)
                 {
-                    CopyDirectory(resDirInfo, Path.Combine(outputPath, "posts", volDirInfo.Name, "res"), true);
+                    CopyDirectory(resDirInfo, Path.Combine(outputPath, "posts", volDirInfo.Name, "res"), true, convertWebpToJpg);
                 }
             }
             #endregion
@@ -80,7 +82,7 @@ namespace AnEoT.Vintage.Helpers
 
             foreach (DirectoryInfo item in directories)
             {
-                CopyDirectory(item, Path.Combine(outputPath, item.Name), true);
+                CopyDirectory(item, Path.Combine(outputPath, item.Name), true, convertWebpToJpg);
             }
 
             //复制非md扩展名的文件
@@ -102,8 +104,9 @@ namespace AnEoT.Vintage.Helpers
         /// <param name="sourceDir">原目录信息</param>
         /// <param name="destinationDir">目标目录路径</param>
         /// <param name="recursive">指示是否复制子目录的值</param>
+        /// <param name="convertWebp">指示是否对文件夹中的WebP图像进行转换的值</param>
         /// <exception cref="DirectoryNotFoundException">当找不到指定的文件夹时抛出</exception>
-        private static void CopyDirectory(DirectoryInfo sourceDir, string destinationDir, bool recursive)
+        private static void CopyDirectory(DirectoryInfo sourceDir, string destinationDir, bool recursive, bool convertWebp)
         {
             //源代码来自：https://learn.microsoft.com/dotnet/standard/io/how-to-copy-directories
 
@@ -120,8 +123,17 @@ namespace AnEoT.Vintage.Helpers
 
             foreach (FileInfo file in dir.GetFiles())
             {
-                string targetFilePath = Path.Combine(destinationDir, file.Name);
-                file.CopyTo(targetFilePath, true);
+                if (convertWebp && file.Extension.Equals(".webp"))
+                {
+                    string targetFilePath = Path.Combine(destinationDir, Path.ChangeExtension(file.Name, ".jpg"));
+                    using Image image = Image.Load(file.FullName);
+                    image.SaveAsJpeg(targetFilePath);
+                }
+                else
+                {
+                    string targetFilePath = Path.Combine(destinationDir, file.Name);
+                    file.CopyTo(targetFilePath, true);
+                }
             }
 
             if (recursive)
@@ -129,7 +141,7 @@ namespace AnEoT.Vintage.Helpers
                 foreach (DirectoryInfo subDir in dirs)
                 {
                     string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
-                    CopyDirectory(subDir, newDestinationDir, true);
+                    CopyDirectory(subDir, newDestinationDir, true, convertWebp);
                 }
             }
         }

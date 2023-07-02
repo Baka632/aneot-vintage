@@ -11,13 +11,12 @@ namespace AnEoT.Vintage.Helpers.Custom
         /// <summary>
         /// 使用指定的参数构造<seealso cref="CustomHtmlRenderer"/>的新实例
         /// </summary>
-        /// <param name="writer"></param>
-        public CustomHtmlRenderer(TextWriter writer) : base(writer)
+        public CustomHtmlRenderer(TextWriter writer, bool convertWebP) : base(writer)
         {
             IMarkdownObjectRenderer target = ObjectRenderers.First(obj => obj is LinkInlineRenderer);
             
             int targetIndex = ObjectRenderers.IndexOf(target);
-            ObjectRenderers.Insert(targetIndex, new CustomLinkInlineRenderer());
+            ObjectRenderers.Insert(targetIndex, new CustomLinkInlineRenderer(convertWebP));
             ObjectRenderers.Remove(target);
         }
     }
