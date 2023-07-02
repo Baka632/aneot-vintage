@@ -168,7 +168,10 @@ namespace AnEoT.Vintage
                     {
                         string acceptHeader = context.Context.Request.Headers["Accept"].ToString();
 
-                        if (!acceptHeader.Contains("image/webp") && context.File.Name.EndsWith(".webp") && context.Context.Response.StatusCode != StatusCodes.Status304NotModified)
+                        if (!acceptHeader.Contains("image/webp")
+                            && context.File.Name.EndsWith(".webp")
+                            && context.Context.Response.StatusCode != StatusCodes.Status304NotModified
+                            && context.File.PhysicalPath is not null)
                         {
                             context.Context.Response.Headers.Remove("Content-Length");
 
