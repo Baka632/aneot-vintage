@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.WebEncoders;
 using Microsoft.OpenApi.Models;
+using SixLabors.ImageSharp;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
@@ -25,10 +26,11 @@ namespace AnEoT.Vintage
         /// <param name="args">启动时传递的参数</param>
         public static void Main(string[] args)
         {
-            bool generateStaticWebSite = args.HasExitAfterStaticGenerationParameter();
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            #region 设置静态页面的导出位置
+            #region 读取应用程序配置
+
+            //设置静态页面的导出位置
             string staticWebSiteOutputPath;
 
             string? pathInConfig = builder.Configuration["StaticWebSiteOutputPath"];
@@ -42,6 +44,12 @@ namespace AnEoT.Vintage
                 Directory.CreateDirectory(defaultPath);
                 staticWebSiteOutputPath = defaultPath;
             }
+
+            //确定是否生成静态网页
+            bool generateStaticWebSite = args.HasExitAfterStaticGenerationParameter();
+
+            //确定是否启用WebP图像转换功能
+            _ = bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP);
             #endregion
 
             #region 第一步：向依赖注入容器添加服务
@@ -62,7 +70,7 @@ namespace AnEoT.Vintage
 
                 if (generateStaticWebSite)
                 {
-                    config.MarkdownParserFactory = new CustomMarkdownParserFactory();
+                    config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
                 }
             });
             builder.Services.AddControllersWithViews()
@@ -97,7 +105,7 @@ namespace AnEoT.Vintage
             if (generateStaticWebSite)
             {
                 //添加静态网站生成服务
-                StaticPagesInfoProvider provider = StaticWebSiteHelper.GetStaticPagesInfoProviderAndCopyFiles(builder.Environment.WebRootPath, staticWebSiteOutputPath);
+                StaticPagesInfoProvider provider = StaticWebSiteHelper.GetStaticPagesInfoProviderAndCopyFiles(builder.Environment.WebRootPath, staticWebSiteOutputPath, convertWebP);
                 builder.Services.AddSingleton<IStaticPagesInfoProvider>(provider);
             }
 
@@ -151,7 +159,31 @@ namespace AnEoT.Vintage
             app.UseAuthorization();
 
             app.UseMarkdown();
-            app.UseStaticFiles();
+
+            if (convertWebP)
+            {
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    OnPrepareResponse = async context =>
+                    {
+                        string acceptHeader = context.Context.Request.Headers["Accept"].ToString();
+
+                        if (!acceptHeader.Contains("image/webp") && context.File.Name.EndsWith(".webp") && context.Context.Response.StatusCode != StatusCodes.Status304NotModified)
+                        {
+                            context.Context.Response.Headers.Remove("Content-Length");
+
+                            using Image image = Image.Load(context.File.PhysicalPath);
+                            context.Context.Response.ContentType = "image/jpeg";
+
+                            await image.SaveAsJpegAsync(context.Context.Response.Body);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                app.UseStaticFiles();
+            }
 
             app.UseRouting();
             app.MapDefaultControllerRoute();

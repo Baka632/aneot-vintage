@@ -7,6 +7,16 @@ namespace AnEoT.Vintage.Helpers.Custom
     /// </summary>
     public class CustomMarkdownParserFactory : IMarkdownParserFactory
     {
+        private bool convertWebP;
+
+        /// <summary>
+        /// 使用指定的参数构造<seealso cref="CustomMarkdownParserFactory"/>的新实例
+        /// </summary>
+        public CustomMarkdownParserFactory(bool convertWebP)
+        {
+            this.convertWebP = convertWebP;
+        }
+
         /// <inheritdoc/>
         public IMarkdownParser? CurrentParser { get; private set; }
 
@@ -18,7 +28,7 @@ namespace AnEoT.Vintage.Helpers.Custom
                 return CurrentParser;
             }
 
-            CurrentParser = new CustomMarkdownParser(usePragmaLines, forceLoad);
+            CurrentParser = new CustomMarkdownParser(usePragmaLines, forceLoad, convertWebP);
             return CurrentParser;
         }
     }
