@@ -46,7 +46,7 @@ namespace AnEoT.Vintage
             }
 
             //确定是否生成静态网页
-            bool generateStaticWebSite = args.HasExitAfterStaticGenerationParameter();
+            bool generateStaticWebSite = args.HasExitWhenDoneArg();
 
             //确定是否启用WebP图像转换功能
             _ = bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP);
@@ -70,6 +70,7 @@ namespace AnEoT.Vintage
 
                 if (generateStaticWebSite)
                 {
+                    //为静态网页启用特殊的Markdown解析机制
                     config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
                 }
             });
@@ -194,7 +195,7 @@ namespace AnEoT.Vintage
             if (generateStaticWebSite)
             {
                 //生成静态网页文件
-                app.GenerateStaticPages(staticWebSiteOutputPath, args);
+                app.GenerateStaticPages(staticWebSiteOutputPath, exitWhenDone: generateStaticWebSite, dontOptimizeContent: false);
             }
 
             app.Run();

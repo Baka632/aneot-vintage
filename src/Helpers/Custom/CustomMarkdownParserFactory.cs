@@ -7,7 +7,7 @@ namespace AnEoT.Vintage.Helpers.Custom
     /// </summary>
     public class CustomMarkdownParserFactory : IMarkdownParserFactory
     {
-        private bool convertWebP;
+        private readonly bool convertWebP;
 
         /// <summary>
         /// 使用指定的参数构造<seealso cref="CustomMarkdownParserFactory"/>的新实例
