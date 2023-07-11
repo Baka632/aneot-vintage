@@ -1,27 +1,29 @@
-# Another End of Terra (AnEot) for Vintage Devices
+[English](README-EN.md) | [原仓库](https://github.com/TCA-Arknights/aneot)
 
-A fanmade literary journal based on mobile game *Arknights*, redesigned for vintage devices.
+# 回归线 - 简易版
 
-## Build Instructions
+《明日方舟》同人文学期刊《回归线》，现在为旧式设备重新设计。
 
-- Clone the repository locally
+## 构建指引
 
-- Make sure .NET 7 SDK is available on your computer
+- 克隆本仓库
 
-- Run `dotnet run` command in `src` folder
+- 确保 .NET 7 SDK 安装在您的电脑上
 
-> Notice for static web site
+- 在 `src` 文件夹中运行 `dotnet run` 命令
+
+> 关于静态网站...
 >
-> If you want to generate static files, add command line argument ```-- static-only```
+> 如果您想生成静态网站所需的文件，请在运行 `dotnet run` 命令时添加 ```-- static-only``` 参数。
 >
-> By default, static web site will be generated in `src/StaticWebSite` folder
+> 默认情况下，静态网站所需的文件将在 `src/StaticWebSite` 文件夹中生成。
 >
-> If you want to change it, use the following method to do that (ordered by the priority)
->	- Use *command line argument*:
+> 若要改变生成位置，请使用下面的方法（按优先级排序）
+>	- 使用 *命令行参数*：
 > ```dotnet run --StaticWebSiteOutputPath "YOUR PATH" -- static-only```
-> - Set *environment variables* named ```StaticWebSiteOutputPath```: set it in ```launchSettings.json``` or in your command line interface
+> - 设置名为 ```StaticWebSiteOutputPath``` 的 *环境变量* ：既可在 ```launchSettings.json``` 中设置，也可在命令行界面中配置。
 > 
-> - Add ```StaticWebSiteOutputPath``` in *appsettings.json*
+> - 在 *appsettings.json* 中添加名为 ```StaticWebSiteOutputPath``` 的键值对
 > ```
 > {
 >	......
@@ -30,19 +32,19 @@ A fanmade literary journal based on mobile game *Arknights*, redesigned for vint
 > }
 > ```
 
-Enjoy~
+请尽情地阅读吧。
 
-## About WebP image support for vintage devices...
-Most vintage devices don't support WebP image, so WebP image can't be displayed on these devices.
+## 关于旧式设备的 WebP 图像支持...
+大多数旧式设备不支持 WebP 图像，因此在这些设备中无法显示它们。
 
-To solve this problem, we can dynamically convert WebP image to JPEG image, but due to performance <!-- and copyright [I don't know whether AnEoT's offical members allow me to do this, even dynamically] -->  reason, this function is disabled by default.
+为了解决这个问题，我们可以将 WebP 图像动态转换为JPEG图像，但由于性能<!-- 及版权 [我不知道回归线编辑部是否允许我这样做 XD（尽管此转换为动态转换）] -->原因，我们默认禁用此功能。
 
-To enable it, use the following method to do that (ordered by the priority)
->	- Use *command line argument*:
+要启用此功能，请使用下面的方法（按优先级排序）
+>	- 使用 *命令行参数*：
 > ```dotnet run --ConvertWebP true```
-> - Set *environment variables* named ```ConvertWebP```: set it in ```launchSettings.json``` or in your command line interface
+> - 设置名为 ```ConvertWebP``` 的*环境变量*： 既可在 ```launchSettings.json``` 中设置，也可在命令行界面中配置。
 > 
-> - Add ```ConvertWebP``` in *appsettings.json*
+> - 在 *appsettings.json* 中添加名为 ```ConvertWebP``` 的键值对
 > ```
 > {
 >	......
@@ -51,36 +53,32 @@ To enable it, use the following method to do that (ordered by the priority)
 > }
 > ```
 
-This configuration will affect static web site generation.
+此设置将影响静态网站生成。
 
-## About Us
+## 关于我们
 
-If there are any errors in the website or you have any comments,
+如果网页中有任何问题，或者您有任何意见，欢迎打开一个新的 Issue。
 
-You can open a new issue.
-
-<!-- This is not an official project yet, so we remove the following notice temporarily -->
+<!-- 由于此项目目前不由TCA管理，我们暂时注释了下面的提示 -->
 
 <!--
-If you would like to join us,
+若您想加入我们，请向 [TCA_doc@163.com](mailto:TCA_doc@163.com) 发送电子邮件来联系我们。
 
-Please use the email address [TCA_doc@163.com](mailto:TCA_doc@163.com) Contact us.
-
-*Note that for security reasons we do not accept submissions from non-collaborators*
+*请注意，由于安全原因，我们目前不接受来自外部人员的提交*
 -->
 
-## About copyright
+## 关于版权
 
-We only grant you the right to save and share as is. At the same time you must comply with the following requirements:
+我们仅授予您按原样保存和共享的权利。同时，您必须遵守以下要求：
 
-**Attribution** — You must give appropriate credit, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+**署名** —  您必须给出适当的署名，同时标明是否对原始作品作了修改。您可以用任何合理的方式来署名，但是不得以任何方式暗示许可人为您或您的使用背书。
 
-**Non Commercial** — You may not use the material for commercial purposes.
+**非商业性使用** — 您不得将材料用于商业目的。
 
-**No Derivatives** — If you remix, transform, or build upon the material, you may not distribute the modified material.
+**禁止演绎** — 如果您再混合、转换、或者基于该作品创作，您不可以分发修改作品。
 
-**Refuse to train the model** — It shall not be used for any purpose artificial intelligence generation model training, including but not limited to personal, scientific research, teaching and commercial applications.
+**禁止用于模型训练** — 本刊所有内容不得用于人工智能生成模型训练，包括但不限于个人、科研、教学和商业化应用。
 
-We reserve all rights not granted to you, and if you violate the above requirements, we will withdraw all rights granted to you.
+我们保留所有未授予您的权利，如果您违反上述要求，我们将撤回授予您的所有权利。
 
 **Copyright © 2022-2023 All Rights Reserved**
