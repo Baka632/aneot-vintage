@@ -12,27 +12,27 @@
 
 - 在 `src` 文件夹中运行 `dotnet run` 命令
 
-> 关于静态网站...
->
-> 如果您想生成静态网站所需的文件，请在运行 `dotnet run` 命令时添加 ```-- static-only``` 参数。
->
-> 默认情况下，静态网站所需的文件将在 `src/StaticWebSite` 文件夹中生成。
->
-> 若要改变生成位置，请使用下面的方法（按优先级排序）
->	- 使用 *命令行参数*：
-> ```dotnet run --StaticWebSiteOutputPath "YOUR PATH" -- static-only```
-> - 设置名为 ```StaticWebSiteOutputPath``` 的 *环境变量* ：既可在 ```launchSettings.json``` 中设置，也可在命令行界面中配置。
-> 
-> - 在 *appsettings.json* 中添加名为 ```StaticWebSiteOutputPath``` 的键值对
-> ```
-> {
->	......
->  "StaticWebSiteOutputPath": "YOUR PATH"
->	......
-> }
-> ```
-
 请尽情地阅读吧。
+
+## 关于静态网站...
+
+如果您想生成静态网站所需的文件，请在运行 `dotnet run` 命令时添加 ```-- static-only``` 参数。
+
+默认情况下，静态网站所需的文件将在 `src/StaticWebSite` 文件夹中生成。
+
+若要改变生成位置，请使用下面的方法（按优先级排序）
+- 使用 *命令行参数*：
+```dotnet run --StaticWebSiteOutputPath "YOUR PATH" -- static-only```
+- 设置名为 ```StaticWebSiteOutputPath``` 的 *环境变量* ：既可在 ```launchSettings.json``` 中设置，也可在命令行界面中配置。
+
+- 在 *appsettings.json* 中添加名为 ```StaticWebSiteOutputPath``` 的键值对
+```
+{
+   ......
+   "StaticWebSiteOutputPath": "YOUR PATH"
+   ......
+}
+```
 
 ## 关于旧式设备的 WebP 图像支持...
 大多数旧式设备不支持 WebP 图像，因此在这些设备中无法显示它们。
