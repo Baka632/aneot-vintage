@@ -167,13 +167,10 @@ namespace AnEoT.Vintage
             app.Use(async (context, next) =>
             {
                 string requestPath = context.Request.Path.ToString();
-                foreach (var uri in filteredUris)
+                if (filteredUris.Contains(requestPath))
                 {
-                    if (requestPath.Equals(uri))
-                    {
-                        context.Response.StatusCode = StatusCodes.Status404NotFound;
-                        return;
-                    }
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    return;
                 }
 
                 await next.Invoke();
