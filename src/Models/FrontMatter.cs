@@ -45,9 +45,9 @@
         /// </summary>
         public IEnumerable<string>? Tag { get; set; }
         /// <summary>
-        /// 文档在本期期刊的顺序，若值为-1，则表示其不参与排序
+        /// 文档在本期期刊的顺序
         /// </summary>
-        public int Order { get; set; } = -1;
+        public int Order { get; set; }
         /// <summary>
         /// 
         /// </summary>

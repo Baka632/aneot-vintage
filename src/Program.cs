@@ -28,7 +28,7 @@ namespace AnEoT.Vintage
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            #region 读取应用程序配置
+            #region 第一步：读取应用程序配置
 
             //设置静态页面的导出位置
             string staticWebSiteOutputPath;
@@ -56,7 +56,7 @@ namespace AnEoT.Vintage
                 ?? Array.Empty<string>();
             #endregion
 
-            #region 第一步：向依赖注入容器添加服务
+            #region 第二步：向依赖注入容器添加服务
 
             //添加Markdown解析服务
             builder.Services.AddMarkdown(config =>
@@ -117,7 +117,7 @@ namespace AnEoT.Vintage
             WebApplication app = builder.Build();
             #endregion
 
-            #region 第二步：配置 HTTP 请求管道
+            #region 第三步：配置 HTTP 请求管道
             RewriteOptions rewriteOptions = new RewriteOptions()
                 .Add(context =>
                 {
@@ -209,6 +209,7 @@ namespace AnEoT.Vintage
             app.UseRouting();
             app.MapDefaultControllerRoute();
 
+            app.GenerateRssFeed();
             if (generateStaticWebSite)
             {
                 //生成静态网页文件
