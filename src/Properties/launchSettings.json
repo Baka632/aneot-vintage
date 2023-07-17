@@ -2,7 +2,6 @@
   "profiles": {
     "AnEoT.Vintage": {
       "commandName": "Project",
-      "commandLineArgs": "--ConvertWebP true --RssBaseUri \"http://192.168.0.103:1145\"",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
