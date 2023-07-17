@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Hosting.Server;
 using Westwind.AspNetCore.Markdown;
 using Microsoft.AspNetCore.Http.Features;
+using System.Text;
+using System.Collections.Immutable;
 
 namespace AnEoT.Vintage.Helpers
 {
@@ -19,33 +21,51 @@ namespace AnEoT.Vintage.Helpers
         /// <param name="host">当前程序的通用主机</param>
         public static void GenerateRssFeed(this IHost host)
         {
-            //获取描述应用生命周期的IHostApplicationLifetime
             IHostApplicationLifetime requiredService = host.Services.GetRequiredService<IHostApplicationLifetime>();
 
-            requiredService.ApplicationStarted.Register(() => StartGenerateRssFeed(host));
+            //在应用完全启动后再进行我们的操作，否则不能获取到某些必需的组件
+            requiredService.ApplicationStarted.Register(() => StartRssFeedGeneration(host));
         }
 
-        private static void StartGenerateRssFeed(IHost host)
+        private static void StartRssFeedGeneration(IHost host)
         {
-            IFeatureCollection hostFeatures = host.Services.GetRequiredService<IServer>().Features;
-            IServerAddressesFeature serverAddresses = hostFeatures.Get<IServerAddressesFeature>()
-                ?? throw new InvalidOperationException("功能IServerAddressesFeature现在不可用");
-            ICollection<string> hostUrls = serverAddresses.Addresses;
+            #region 第一步：获取必需的基础组件，并设置相应的变量
+            IConfiguration? config = host.Services.GetService<IConfiguration>()
+                ?? throw new InvalidOperationException("IConfiguration现在不可用");
+            #region 设置RSS源的基Uri
+            string baseUri;
+            string? rssBaseUri = config["RssBaseUri"];
+            if (string.IsNullOrWhiteSpace(rssBaseUri))
+            {
+                IFeatureCollection hostFeatures = host.Services.GetRequiredService<IServer>().Features;
+                IServerAddressesFeature serverAddresses = hostFeatures.Get<IServerAddressesFeature>()
+                    ?? throw new InvalidOperationException("功能IServerAddressesFeature现在不可用");
+                ICollection<string> hostUrls = serverAddresses.Addresses;
 
-            string baseUri =
-                (hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttps)) ?? hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttp)))
-                ?? throw new InvalidOperationException("现在无法获取到基Uri");
+                baseUri =
+                    (hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttps)) ?? hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttp)))
+                    ?? throw new InvalidOperationException("现在无法获取到基Uri");
+            }
+            else
+            {
+                baseUri = rssBaseUri;
+            }
+            #endregion
 
             //获取IWebHostEnvironment来确定放置Feed的文件夹
             IWebHostEnvironment env = host.Services.GetService<IWebHostEnvironment>()
                 ?? throw new ArgumentException("IWebHostEnvironment现在不可用");
 
+            string webRootPath = env.WebRootPath;
+            #endregion
+
+            #region 第二步：生成RSS源信息
             SyndicationFeed feed = new(
-                "回归线",
-                "Another End of Terra",
-                new Uri("https://aneot.terrach.net"),
-                "AnEoT",
-                DateTime.Now)
+               "回归线",
+               "Another End of Terra",
+               new Uri(baseUri),
+               "AnEoT",
+               DateTime.Now)
             {
                 Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2023 TCA. All rights reserved."),
                 Language = "zh-CN",
@@ -75,27 +95,26 @@ namespace AnEoT.Vintage.Helpers
             List<SyndicationItem> items = new();
 
             //反向读取文件夹，以获取到最新的期刊；我们只生成前两个期刊的信息，避免RSS源过长
-            foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories().Reverse().Take(2))
+            IEnumerable<DirectoryInfo> volDirInfos = postsDirectoryInfo.EnumerateDirectories().Reverse().Take(2);
+            foreach (DirectoryInfo volDirInfo in volDirInfos)
             {
-                foreach (FileInfo article in volDirInfo.EnumerateFiles("*.md"))
+                IOrderedEnumerable<FileInfo> articles = volDirInfo
+                                    .EnumerateFiles("*.md")
+                                    .Where(file => !file.Name.Contains("README.md"))
+                                    .Order(new ArticleOrderComparer());
+                foreach (FileInfo article in articles)
                 {
-                    //去掉README.md，因为RSS源不应该包含这个东西
-                    if (article.Name.Contains("README.md"))
-                    {
-                        continue;
-                    }
-
                     string markdown = File.ReadAllText(article.FullName);
-                    FrontMatter frontMatter = MarkdownHelper.GetFrontMatter<FrontMatter>(markdown);
+                    FrontMatter frontMatter = MarkdownHelper.GetFromFrontMatter<FrontMatter>(markdown);
                     string articleLink = $"{baseUri}/posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}";
-                    
+
                     string html = Markdown.Parse(markdown);
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
                     SyndicationItem item = new(
                         frontMatter.Title,
                         content,
-                        new Uri(articleLink, UriKind.RelativeOrAbsolute),
+                        new Uri(articleLink, UriKind.Absolute),
                         articleLink,
                         DateTime.Now);
 
@@ -116,16 +135,70 @@ namespace AnEoT.Vintage.Helpers
             }
 
             feed.Items = items;
+            #endregion
 
-            XmlWriter atomWriter = XmlWriter.Create(Path.Combine(env.WebRootPath, "atom.xml"));
+            #region 第三步：将RSS源信息序列化为XML文件
+            XmlWriterSettings settings = new()
+            {
+                Encoding = Encoding.UTF8,
+                NewLineHandling = NewLineHandling.Entitize,
+                NewLineOnAttributes = true,
+                Indent = true
+            };
+
+            XmlWriter atomWriter = XmlWriter.Create(Path.Combine(webRootPath, "atom.xml"), settings);
             Atom10FeedFormatter atomFormatter = new(feed);
             atomFormatter.WriteTo(atomWriter);
             atomWriter.Close();
 
-            XmlWriter rssWriter = XmlWriter.Create(Path.Combine(env.WebRootPath, "rss.xml"));
+            XmlWriter rssWriter = XmlWriter.Create(Path.Combine(webRootPath, "rss.xml"), settings);
             Rss20FeedFormatter rssFormatter = new(feed);
             rssFormatter.WriteTo(rssWriter);
             rssWriter.Close();
+            #endregion
+        }
+    }
+
+    file class ArticleOrderComparer : Comparer<FileInfo>
+    {
+        public override int Compare(FileInfo? x, FileInfo? y)
+        {
+            if (object.ReferenceEquals(x, y))
+            {
+                return 0;
+            }
+
+            if (x is null)
+            {
+                return -1;
+            }
+            else if (y is null)
+            {
+                return 1;
+            }
+
+            string markdownX = File.ReadAllText(x.FullName);
+            string markdownY = File.ReadAllText(y.FullName);
+
+            FrontMatter frontMatterX = MarkdownHelper.GetFromFrontMatter<FrontMatter>(markdownX);
+            FrontMatter frontMatterY = MarkdownHelper.GetFromFrontMatter<FrontMatter>(markdownY);
+
+            if (frontMatterX.Order > 0 && frontMatterY.Order > 0)
+            {
+                return Comparer<int>.Default.Compare(frontMatterX.Order, frontMatterY.Order);
+            }
+            else if (frontMatterX.Order > 0 && frontMatterY.Order < 0)
+            {
+                return -1;
+            }
+            else if (frontMatterX.Order < 0 && frontMatterY.Order > 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return Comparer<int>.Default.Compare(-frontMatterX.Order, -frontMatterY.Order);
+            }
         }
     }
 }

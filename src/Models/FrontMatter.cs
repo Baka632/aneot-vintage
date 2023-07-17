@@ -1,4 +1,4 @@
-﻿namespace AnEoT.Vintage.Models
+namespace AnEoT.Vintage.Models
 {
     /// <summary>
     /// 表示Markdown文档中FrontMatter的结构

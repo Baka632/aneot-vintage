@@ -16,21 +16,21 @@ using Westwind.AspNetCore.Markdown;
 namespace AnEoT.Vintage
 {
     /// <summary>
-    /// ³ÌĞòÆô¶¯µÄÈë¿ÚÀà
+    /// ç¨‹åºå¯åŠ¨çš„å…¥å£ç±»
     /// </summary>
     public class Program
     {
         /// <summary>
-        /// Èë¿Úµã·½·¨
+        /// å…¥å£ç‚¹æ–¹æ³•
         /// </summary>
-        /// <param name="args">Æô¶¯Ê±´«µİµÄ²ÎÊı</param>
+        /// <param name="args">å¯åŠ¨æ—¶ä¼ é€’çš„å‚æ•°</param>
         public static void Main(string[] args)
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            #region µÚÒ»²½£º¶ÁÈ¡Ó¦ÓÃ³ÌĞòÅäÖÃ
+            #region ç¬¬ä¸€æ­¥ï¼šè¯»å–åº”ç”¨ç¨‹åºé…ç½®
 
-            //ÉèÖÃ¾²Ì¬Ò³ÃæµÄµ¼³öÎ»ÖÃ
+            //è®¾ç½®é™æ€é¡µé¢çš„å¯¼å‡ºä½ç½®
             string staticWebSiteOutputPath;
 
             string? pathInConfig = builder.Configuration["StaticWebSiteOutputPath"];
@@ -45,23 +45,23 @@ namespace AnEoT.Vintage
                 staticWebSiteOutputPath = defaultPath;
             }
 
-            //È·¶¨ÊÇ·ñÉú³É¾²Ì¬ÍøÒ³
+            //ç¡®å®šæ˜¯å¦ç”Ÿæˆé™æ€ç½‘é¡µ
             bool generateStaticWebSite = args.HasExitWhenDoneArg();
 
-            //È·¶¨ÊÇ·ñÆôÓÃWebPÍ¼Ïñ×ª»»¹¦ÄÜ
+            //ç¡®å®šæ˜¯å¦å¯ç”¨WebPå›¾åƒè½¬æ¢åŠŸèƒ½
             _ = bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP);
 
-            //»ñÈ¡Òª±»É¸Ñ¡µÄUriÁĞ±í
+            //è·å–è¦è¢«ç­›é€‰çš„Uriåˆ—è¡¨
             IEnumerable<string> filteredUris = builder.Configuration.GetSection("IgnoreEndpoints").Get<string[]>()
                 ?? Array.Empty<string>();
             #endregion
 
-            #region µÚ¶ş²½£ºÏòÒÀÀµ×¢ÈëÈİÆ÷Ìí¼Ó·şÎñ
+            #region ç¬¬äºŒæ­¥ï¼šå‘ä¾èµ–æ³¨å…¥å®¹å™¨æ·»åŠ æœåŠ¡
 
-            //Ìí¼ÓMarkdown½âÎö·şÎñ
+            //æ·»åŠ Markdownè§£ææœåŠ¡
             builder.Services.AddMarkdown(config =>
             {
-                //ÉèÖÃMarkdownÖĞ¼ä¼şµÄ¹¤×÷ÎÄ¼ş¼Ğ
+                //è®¾ç½®Markdownä¸­é—´ä»¶çš„å·¥ä½œæ–‡ä»¶å¤¹
                 config.AddMarkdownProcessingFolder("/");
                 config.ConfigureMarkdigPipeline = builder =>
                 {
@@ -74,28 +74,28 @@ namespace AnEoT.Vintage
 
                 if (generateStaticWebSite)
                 {
-                    //Îª¾²Ì¬ÍøÒ³ÆôÓÃÌØÊâµÄMarkdown½âÎö»úÖÆ
+                    //ä¸ºé™æ€ç½‘é¡µå¯ç”¨ç‰¹æ®Šçš„Markdownè§£ææœºåˆ¶
                     config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
                 }
             });
             builder.Services.AddControllersWithViews()
                 .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
             
-            //Ìí¼ÓSwagger APIÎÄµµ
+            //æ·»åŠ Swagger APIæ–‡æ¡£
             builder.Services.AddSwaggerGen((options) =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
                     Title = "AnEoT API",
-                    Description = "¡¶»Ø¹éÏß¡·µÄ¹«¹²API"
+                    Description = "ã€Šå›å½’çº¿ã€‹çš„å…¬å…±API"
                 });
 
                 string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
-            //×¢ÈëIUrlHelper·şÎñ
+            //æ³¨å…¥IUrlHelperæœåŠ¡
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
                 .AddScoped(provider =>
                 {
@@ -109,7 +109,7 @@ namespace AnEoT.Vintage
 
             if (generateStaticWebSite)
             {
-                //Ìí¼Ó¾²Ì¬ÍøÕ¾Éú³É·şÎñ
+                //æ·»åŠ é™æ€ç½‘ç«™ç”ŸæˆæœåŠ¡
                 StaticPagesInfoProvider provider = StaticWebSiteHelper.GetStaticPagesInfoProviderAndCopyFiles(builder.Environment.WebRootPath, staticWebSiteOutputPath, convertWebP);
                 builder.Services.AddSingleton<IStaticPagesInfoProvider>(provider);
             }
@@ -117,7 +117,7 @@ namespace AnEoT.Vintage
             WebApplication app = builder.Build();
             #endregion
 
-            #region µÚÈı²½£ºÅäÖÃ HTTP ÇëÇó¹ÜµÀ
+            #region ç¬¬ä¸‰æ­¥ï¼šé…ç½® HTTP è¯·æ±‚ç®¡é“
             RewriteOptions rewriteOptions = new RewriteOptions()
                 .Add(context =>
                 {
@@ -139,7 +139,7 @@ namespace AnEoT.Vintage
                     }
                 });
             
-            //ÆôÓÃUriÖØĞ´
+            //å¯ç”¨Urié‡å†™
             app.UseRewriter(rewriteOptions);
 
             if (app.Environment.IsDevelopment())
@@ -155,7 +155,7 @@ namespace AnEoT.Vintage
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            //ÈÃMarkdownÖĞ¼ä¼şÄÜ¹»×Ô¶¯»ñÈ¡µ½ÆÚ¿¯Ò³ÃæµÄREADME.mdÎÄ¼ş
+            //è®©Markdownä¸­é—´ä»¶èƒ½å¤Ÿè‡ªåŠ¨è·å–åˆ°æœŸåˆŠé¡µé¢çš„README.mdæ–‡ä»¶
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
                 DefaultFileNames = new string[] { "README.md", "index.html", "index.htm" }
@@ -163,7 +163,7 @@ namespace AnEoT.Vintage
            
             app.UseAuthorization();
 
-            //É¸Ñ¡ÇëÇó£¬ÒÔ×èÖ¹Ä³Ğ©MarkdownÒ³Ãæ±»ÏÔÊ¾
+            //ç­›é€‰è¯·æ±‚ï¼Œä»¥é˜»æ­¢æŸäº›Markdowné¡µé¢è¢«æ˜¾ç¤º
             app.Use(async (context, next) =>
             {
                 string requestPath = context.Request.Path.ToString();
@@ -212,7 +212,7 @@ namespace AnEoT.Vintage
             app.GenerateRssFeed();
             if (generateStaticWebSite)
             {
-                //Éú³É¾²Ì¬ÍøÒ³ÎÄ¼ş
+                //ç”Ÿæˆé™æ€ç½‘é¡µæ–‡ä»¶
                 app.GenerateStaticPages(staticWebSiteOutputPath, exitWhenDone: generateStaticWebSite, dontOptimizeContent: false);
             }
 

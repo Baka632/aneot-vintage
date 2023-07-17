@@ -36,7 +36,7 @@ namespace AnEoT.Vintage.Controllers
             string path = Path.Combine(environment.WebRootPath, "Homepage.md");
             string markdown = SystemIOFile.ReadAllText(path);
 
-            model.HomePageInfo = MarkdownHelper.GetFrontMatter<HomePageInfo>(markdown);
+            model.HomePageInfo = MarkdownHelper.GetFromFrontMatter<HomePageInfo>(markdown);
             return View(model);
         }
     }
