@@ -32,7 +32,14 @@ namespace AnEoT.Vintage.Helpers.Custom
 
                 if (baseUri is not null && !isAbsoluteUri)
                 {
-                    renderer.BaseUrl = new Uri(baseUri, UriKind.RelativeOrAbsolute);
+                    if (baseUri.EndsWith('/'))
+                    {
+                        renderer.BaseUrl = new Uri(baseUri, UriKind.RelativeOrAbsolute);
+                    }
+                    else
+                    {
+                        renderer.BaseUrl = new Uri($"{baseUri}/", UriKind.RelativeOrAbsolute);
+                    }
                 }
 
                 if (isAbsoluteUri is not true)
@@ -43,11 +50,6 @@ namespace AnEoT.Vintage.Helpers.Custom
                 if (convertWebP && link.IsImage)
                 {
                     link.Url = link.Url?.Replace(".webp", ".jpg");
-
-                    if (baseUri is not null)
-                    {
-                        link.Url = $"{baseUri}{link.Url?.TrimStart('.')}";
-                    }
                 }
             }
 
