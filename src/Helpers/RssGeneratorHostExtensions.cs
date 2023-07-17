@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Westwind.AspNetCore.Markdown;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text;
-using System.Collections.Immutable;
+using Markdig;
+using AnEoT.Vintage.Helpers.Custom;
 
 namespace AnEoT.Vintage.Helpers
 {
@@ -50,6 +51,14 @@ namespace AnEoT.Vintage.Helpers
             {
                 baseUri = rssBaseUri;
             }
+
+            MarkdownPipelineBuilder builder = new();
+            builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
+                .UseAdvancedExtensions()
+                .UseListExtras()
+                .UseEmojiAndSmiley(true)
+                .UseYamlFrontMatter();
+            MarkdownPipeline markdownPipeline = builder.Build();
             #endregion
 
             //获取IWebHostEnvironment来确定放置Feed的文件夹
@@ -108,7 +117,10 @@ namespace AnEoT.Vintage.Helpers
                     FrontMatter frontMatter = MarkdownHelper.GetFromFrontMatter<FrontMatter>(markdown);
                     string articleLink = $"{baseUri}/posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}";
 
-                    string html = Markdown.Parse(markdown);
+                    CustomMarkdownParser parser = new(false, false, true, $"{baseUri}/posts/{volDirInfo.Name}");
+                    string html = parser.Parse(markdown);
+                    //string html = Markdig.Markdown.ToHtml(markdown, markdownPipeline);
+                    //string html = Westwind.AspNetCore.Markdown.Markdown.Parse(markdown);
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
                     SyndicationItem item = new(

@@ -12,26 +12,43 @@ namespace AnEoT.Vintage.Helpers.Custom
     public class CustomLinkInlineRenderer : LinkInlineRenderer
     {
         private readonly bool convertWebP;
+        private readonly string? baseUri;
 
         /// <summary>
         /// 使用指定的参数构造<seealso cref="CustomLinkInlineRenderer"/>的新实例
         /// </summary>
-        public CustomLinkInlineRenderer(bool convertWebP)
+        public CustomLinkInlineRenderer(bool convertWebP, string? baseUri = null)
         {
             this.convertWebP = convertWebP;
+            this.baseUri = baseUri;
         }
 
         /// <inheritdoc/>
         protected override void Write(HtmlRenderer renderer, LinkInline link)
         {
-            if (link.Url is not null && new Uri(link.Url, UriKind.RelativeOrAbsolute).IsAbsoluteUri is not true)
+            if (link.Url is not null)
             {
-                link.Url = link.Url?.Replace(".md", ".html").Replace("README", "index");
-            }
+                bool isAbsoluteUri = new Uri(link.Url, UriKind.RelativeOrAbsolute).IsAbsoluteUri;
 
-            if (convertWebP && link.IsImage)
-            {
-                link.Url = link.Url?.Replace(".webp", ".jpg");
+                if (baseUri is not null && !isAbsoluteUri)
+                {
+                    renderer.BaseUrl = new Uri(baseUri, UriKind.RelativeOrAbsolute);
+                }
+
+                if (isAbsoluteUri is not true)
+                {
+                    link.Url = link.Url?.Replace(".md", ".html").Replace("README", "index");
+                }
+
+                if (convertWebP && link.IsImage)
+                {
+                    link.Url = link.Url?.Replace(".webp", ".jpg");
+
+                    if (baseUri is not null)
+                    {
+                        link.Url = $"{baseUri}{link.Url?.TrimStart('.')}";
+                    }
+                }
             }
 
             base.Write(renderer, link);
