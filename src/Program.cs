@@ -5,7 +5,6 @@ using Markdig;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.WebEncoders;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
