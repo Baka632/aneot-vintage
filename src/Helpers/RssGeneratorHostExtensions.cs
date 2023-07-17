@@ -70,7 +70,7 @@ namespace AnEoT.Vintage.Helpers
 
             #region 第二步：生成RSS源信息
             SyndicationFeed feed = new(
-               "回归线",
+               "回归线简易版",
                "Another End of Terra",
                new Uri(baseUri),
                "AnEoT",
@@ -119,8 +119,6 @@ namespace AnEoT.Vintage.Helpers
 
                     CustomMarkdownParser parser = new(false, false, true, $"{baseUri}/posts/{volDirInfo.Name}");
                     string html = parser.Parse(markdown);
-                    //string html = Markdig.Markdown.ToHtml(markdown, markdownPipeline);
-                    //string html = Westwind.AspNetCore.Markdown.Markdown.Parse(markdown);
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
                     SyndicationItem item = new(
