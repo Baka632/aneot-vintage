@@ -34,11 +34,11 @@ namespace AnEoT.Vintage.Helpers.Custom
                 {
                     if (baseUri.EndsWith('/'))
                     {
-                        renderer.BaseUrl = new Uri(baseUri, UriKind.RelativeOrAbsolute);
+                        renderer.BaseUrl = new Uri(baseUri, UriKind.Absolute);
                     }
                     else
                     {
-                        renderer.BaseUrl = new Uri($"{baseUri}/", UriKind.RelativeOrAbsolute);
+                        renderer.BaseUrl = new Uri($"{baseUri}/", UriKind.Absolute);
                     }
                 }
 
