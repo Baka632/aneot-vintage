@@ -155,12 +155,25 @@ namespace AnEoT.Vintage.Helpers
                 Indent = true
             };
 
-            XmlWriter atomWriter = XmlWriter.Create(Path.Combine(webRootPath, "atom.xml"), settings);
+
+            string atomFilePath = Path.Combine(webRootPath, "atom.xml");
+            if (Path.Exists(atomFilePath))
+            {
+                File.Delete(atomFilePath);
+            }
+
+            XmlWriter atomWriter = XmlWriter.Create(atomFilePath, settings);
             Atom10FeedFormatter atomFormatter = new(feed);
             atomFormatter.WriteTo(atomWriter);
             atomWriter.Close();
 
-            XmlWriter rssWriter = XmlWriter.Create(Path.Combine(webRootPath, "rss.xml"), settings);
+            string rssFilePath = Path.Combine(webRootPath, "rss.xml");
+            if (Path.Exists(rssFilePath))
+            {
+                File.Delete(rssFilePath);
+            }
+
+            XmlWriter rssWriter = XmlWriter.Create(rssFilePath, settings);
             Rss20FeedFormatter rssFormatter = new(feed);
             rssFormatter.WriteTo(rssWriter);
             rssWriter.Close();
