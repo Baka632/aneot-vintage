@@ -1,14 +1,14 @@
 namespace AnEoT.Vintage.Models
 {
     /// <summary>
-    /// 表示Markdown文档中FrontMatter的结构
+    /// 表示文章信息的结构
     /// </summary>
-    public struct FrontMatter
+    public struct ArticleInfo
     {
         /// <summary>
-        /// 构造一个已按默认值初始化的<see cref="FrontMatter"/>的新实例
+        /// 构造一个已按默认值初始化的<see cref="ArticleInfo"/>的新实例
         /// </summary>
-        public FrontMatter()
+        public ArticleInfo()
         {
         }
 

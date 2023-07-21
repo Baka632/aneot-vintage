@@ -1,11 +1,11 @@
 ﻿using System.ServiceModel.Syndication;
 using System.Xml;
-using AnEoT.Vintage.Models;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text;
 using Markdig;
+using AnEoT.Vintage.Models;
 using AnEoT.Vintage.Helpers.Custom;
 
 namespace AnEoT.Vintage.Helpers
@@ -113,7 +113,7 @@ namespace AnEoT.Vintage.Helpers
                 foreach (FileInfo article in articles)
                 {
                     string markdown = File.ReadAllText(article.FullName);
-                    FrontMatter frontMatter = MarkdownHelper.GetFromFrontMatter<FrontMatter>(markdown);
+                    ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
                     string articleLink = $"{baseUri}/posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}";
 
                     CustomMarkdownParser parser = new(false, false, true, $"{baseUri}/posts/{volDirInfo.Name}");
@@ -121,20 +121,20 @@ namespace AnEoT.Vintage.Helpers
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
                     SyndicationItem item = new(
-                        frontMatter.Title,
+                        articleInfo.Title,
                         content,
                         new Uri(articleLink, UriKind.Absolute),
                         articleLink,
                         DateTime.Now);
 
-                    item.Authors.Add(new SyndicationPerson() { Name = frontMatter.Author });
+                    item.Authors.Add(new SyndicationPerson() { Name = articleInfo.Author });
 
-                    foreach (var category in frontMatter.Category ?? Array.Empty<string>())
+                    foreach (var category in articleInfo.Category ?? Array.Empty<string>())
                     {
                         item.Categories.Add(new SyndicationCategory(category));
                     }
 
-                    if (DateTimeOffset.TryParse(frontMatter.Date, out DateTimeOffset publishDate))
+                    if (DateTimeOffset.TryParse(articleInfo.Date, out DateTimeOffset publishDate))
                     {
                         item.PublishDate = publishDate;
                     }
@@ -168,8 +168,12 @@ namespace AnEoT.Vintage.Helpers
         }
     }
 
+    /// <summary>
+    /// 为表示文章的<see cref="FileInfo"/>提供比较方法，以用于排序
+    /// </summary>
     file class ArticleOrderComparer : Comparer<FileInfo>
     {
+        /// <inheritdoc/>
         public override int Compare(FileInfo? x, FileInfo? y)
         {
             if (object.ReferenceEquals(x, y))
@@ -189,24 +193,24 @@ namespace AnEoT.Vintage.Helpers
             string markdownX = File.ReadAllText(x.FullName);
             string markdownY = File.ReadAllText(y.FullName);
 
-            FrontMatter frontMatterX = MarkdownHelper.GetFromFrontMatter<FrontMatter>(markdownX);
-            FrontMatter frontMatterY = MarkdownHelper.GetFromFrontMatter<FrontMatter>(markdownY);
+            ArticleInfo articleInfoX = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdownX);
+            ArticleInfo articleInfoY = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdownY);
 
-            if (frontMatterX.Order > 0 && frontMatterY.Order > 0)
+            if (articleInfoX.Order > 0 && articleInfoY.Order > 0)
             {
-                return Comparer<int>.Default.Compare(frontMatterX.Order, frontMatterY.Order);
+                return Comparer<int>.Default.Compare(articleInfoX.Order, articleInfoY.Order);
             }
-            else if (frontMatterX.Order > 0 && frontMatterY.Order < 0)
+            else if (articleInfoX.Order > 0 && articleInfoY.Order < 0)
             {
                 return -1;
             }
-            else if (frontMatterX.Order < 0 && frontMatterY.Order > 0)
+            else if (articleInfoX.Order < 0 && articleInfoY.Order > 0)
             {
                 return 1;
             }
             else
             {
-                return Comparer<int>.Default.Compare(-frontMatterX.Order, -frontMatterY.Order);
+                return Comparer<int>.Default.Compare(-articleInfoX.Order, -articleInfoY.Order);
             }
         }
     }

@@ -1,8 +1,6 @@
 ﻿using Markdig.Renderers;
 using Markdig.Renderers.Html.Inlines;
-using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace AnEoT.Vintage.Helpers.Custom
 {
