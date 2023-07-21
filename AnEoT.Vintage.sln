@@ -5,6 +5,8 @@ VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnEoT.Vintage", "src\AnEoT.Vintage.csproj", "{5DFCAD6A-3E95-428B-9B79-1588A7D1CF9C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnEoT.Vintage.Tool", "tool\AnEoT.Vintage.Tool.csproj", "{944B2D56-4C03-4487-9888-06A07CD1A2FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5DFCAD6A-3E95-428B-9B79-1588A7D1CF9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DFCAD6A-3E95-428B-9B79-1588A7D1CF9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DFCAD6A-3E95-428B-9B79-1588A7D1CF9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{944B2D56-4C03-4487-9888-06A07CD1A2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{944B2D56-4C03-4487-9888-06A07CD1A2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{944B2D56-4C03-4487-9888-06A07CD1A2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{944B2D56-4C03-4487-9888-06A07CD1A2FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

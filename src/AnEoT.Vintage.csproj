@@ -5,7 +5,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Version>0.1.2-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,4 +27,5 @@
 
 <!--
     To be the largest magazine in Terra
+    Per Aspera Ad Astra
 -->
