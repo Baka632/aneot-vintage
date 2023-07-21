@@ -8,7 +8,7 @@ namespace AnEoT.Vintage.Controllers
     /// 错误处理控制器
     /// </summary>
     [ApiExplorerSettings(IgnoreApi = true)]
-    public class ErrorController : Controller
+    public partial class ErrorController : Controller
     {
         /// <summary>
         /// 日志记录器
@@ -66,7 +66,7 @@ namespace AnEoT.Vintage.Controllers
         public IActionResult HandleError()
         {
             IExceptionHandlerPathFeature? expectionDetails = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            _logger.LogError(expectionDetails?.Error, "出现错误。请求的 Uri 为：{uri}", expectionDetails?.Path);
+            LogRequestError(expectionDetails?.Path);
 
             ErrorViewModel model = new()
             {
@@ -75,5 +75,8 @@ namespace AnEoT.Vintage.Controllers
             };
             return View("Error", model);
         }
+
+        [LoggerMessage(Level = LogLevel.Error, Message = "出现错误。请求的 Uri 为：{requestUri}")]
+        internal partial void LogRequestError(string? requestUri);
     }
 }

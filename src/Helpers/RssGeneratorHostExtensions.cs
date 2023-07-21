@@ -42,9 +42,10 @@ namespace AnEoT.Vintage.Helpers
                     ?? throw new InvalidOperationException("功能IServerAddressesFeature现在不可用");
                 ICollection<string> hostUrls = serverAddresses.Addresses;
 
-                baseUri =
-                    (hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttps)) ?? hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttp)))
-                    ?? throw new InvalidOperationException("现在无法获取到基Uri");
+                baseUri = (
+                    hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                    ?? hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+                    )?? throw new InvalidOperationException("现在无法获取到基Uri");
             }
             else
             {
@@ -184,7 +185,7 @@ namespace AnEoT.Vintage.Helpers
     /// <summary>
     /// 为表示文章的<see cref="FileInfo"/>提供比较方法，以用于排序
     /// </summary>
-    file class ArticleOrderComparer : Comparer<FileInfo>
+    file sealed class ArticleOrderComparer : Comparer<FileInfo>
     {
         /// <inheritdoc/>
         public override int Compare(FileInfo? x, FileInfo? y)

@@ -123,9 +123,9 @@ namespace AnEoT.Vintage
                     HttpRequest request = context.HttpContext.Request;
 
                     context.Result = RuleResult.SkipRemainingRules;
-                    if (request.Path.HasValue && !request.Path.Value.Contains("swagger"))
+                    if (request.Path.HasValue && !request.Path.Value.Contains("swagger", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (request.Path.Value.Contains("api"))
+                        if (request.Path.Value.Contains("api", StringComparison.OrdinalIgnoreCase))
                         {
                             request.Path = request.Path.Value
                                 .Replace(".md", string.Empty)
@@ -185,8 +185,8 @@ namespace AnEoT.Vintage
                     {
                         string acceptHeader = context.Context.Request.Headers["Accept"].ToString();
 
-                        if (!acceptHeader.Contains("image/webp")
-                            && context.File.Name.EndsWith(".webp")
+                        if (!acceptHeader.Contains("image/webp", StringComparison.OrdinalIgnoreCase)
+                            && context.File.Name.EndsWith(".webp", StringComparison.OrdinalIgnoreCase)
                             && context.Context.Response.StatusCode != StatusCodes.Status304NotModified
                             && context.File.PhysicalPath is not null)
                         {

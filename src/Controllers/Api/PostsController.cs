@@ -90,7 +90,7 @@ namespace AnEoT.Vintage.Controllers.Api
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetArticle(string post, string article)
         {
-            if (!article.EndsWith(".md"))
+            if (!article.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
             {
                 article += ".md";
             }

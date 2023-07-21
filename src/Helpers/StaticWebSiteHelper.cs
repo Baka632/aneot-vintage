@@ -123,7 +123,7 @@ namespace AnEoT.Vintage.Helpers
 
             foreach (FileInfo file in dir.GetFiles())
             {
-                if (convertWebp && file.Extension.Equals(".webp"))
+                if (convertWebp && file.Extension.Equals(".webp", StringComparison.OrdinalIgnoreCase))
                 {
                     string targetFilePath = Path.Combine(destinationDir, Path.ChangeExtension(file.Name, ".jpg"));
                     using Image image = Image.Load(file.FullName);
