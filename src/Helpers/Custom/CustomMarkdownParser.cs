@@ -9,13 +9,15 @@ namespace AnEoT.Vintage.Helpers.Custom
     public class CustomMarkdownParser : MarkdownParserMarkdig
     {
         private readonly bool convertWebP;
+        private readonly string? baseUri;
 
         /// <summary>
         /// 使用指定的参数构造<seealso cref="CustomMarkdownParser"/>的新实例
         /// </summary>
-        public CustomMarkdownParser(bool usePragmaLines, bool forceLoad, bool convertWebP) : base(usePragmaLines, forceLoad)
+        public CustomMarkdownParser(bool usePragmaLines, bool forceLoad, bool convertWebP, string? baseUri = null) : base(usePragmaLines, forceLoad)
         {
             this.convertWebP = convertWebP;
+            this.baseUri = baseUri;
         }
 
         /// <inheritdoc/>
@@ -29,7 +31,7 @@ namespace AnEoT.Vintage.Helpers.Custom
             string html;
             using (StringWriter stringWriter = new())
             {
-                IMarkdownRenderer renderer = new CustomHtmlRenderer(stringWriter, convertWebP);
+                IMarkdownRenderer renderer = new CustomHtmlRenderer(stringWriter, convertWebP, baseUri);
                 Markdig.Markdown.Convert(markdown, renderer, Pipeline);
                 html = stringWriter.ToString();
             }

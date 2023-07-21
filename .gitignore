@@ -365,3 +365,10 @@ FodyWeavers.xsd
 # Auto-generated static file
 # Run 'dotnet run -- static-only' to generate
 src/StaticWebSite
+
+# Auto-generated feed file
+src/wwwroot/atom.xml
+src/wwwroot/rss.xml
+
+# Visual Studio Code cache/options directory
+/.vscode

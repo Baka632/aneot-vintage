@@ -1,14 +1,14 @@
-﻿namespace AnEoT.Vintage.Models
+namespace AnEoT.Vintage.Models
 {
     /// <summary>
-    /// 表示Markdown文档中FrontMatter的结构
+    /// 表示文章信息的结构
     /// </summary>
-    public struct FrontMatter
+    public struct ArticleInfo
     {
         /// <summary>
-        /// 构造一个已按默认值初始化的<see cref="FrontMatter"/>的新实例
+        /// 构造一个已按默认值初始化的<see cref="ArticleInfo"/>的新实例
         /// </summary>
-        public FrontMatter()
+        public ArticleInfo()
         {
         }
 
@@ -33,7 +33,7 @@
         /// </summary>
         public string? Author { get; set; }
         /// <summary>
-        /// 文档创建日期
+        /// 文档创建日期的字符串
         /// </summary>
         public string? Date { get; set; }
         /// <summary>
@@ -45,9 +45,9 @@
         /// </summary>
         public IEnumerable<string>? Tag { get; set; }
         /// <summary>
-        /// 文档在本期期刊的顺序，若值为-1，则表示其不参与排序
+        /// 文档在本期期刊的顺序
         /// </summary>
-        public int Order { get; set; } = -1;
+        public int Order { get; set; }
         /// <summary>
         /// 
         /// </summary>

@@ -8,13 +8,15 @@ namespace AnEoT.Vintage.Helpers.Custom
     public class CustomMarkdownParserFactory : IMarkdownParserFactory
     {
         private readonly bool convertWebP;
+        private readonly string? baseUri;
 
         /// <summary>
         /// 使用指定的参数构造<seealso cref="CustomMarkdownParserFactory"/>的新实例
         /// </summary>
-        public CustomMarkdownParserFactory(bool convertWebP)
+        public CustomMarkdownParserFactory(bool convertWebP, string? baseUri = null)
         {
             this.convertWebP = convertWebP;
+            this.baseUri = baseUri;
         }
 
         /// <inheritdoc/>
@@ -28,7 +30,7 @@ namespace AnEoT.Vintage.Helpers.Custom
                 return CurrentParser;
             }
 
-            CurrentParser = new CustomMarkdownParser(usePragmaLines, forceLoad, convertWebP);
+            CurrentParser = new CustomMarkdownParser(usePragmaLines, forceLoad, convertWebP, baseUri);
             return CurrentParser;
         }
     }

@@ -32,6 +32,11 @@
   text-indent: 0;
 }
 
+.aleft {
+  text-align: left !important;
+  text-indent: 0 !important;
+}
+
 .aright {
   text-align: right !important;
   text-indent: 0 !important;
@@ -65,12 +70,6 @@
 
 .hero-image {
   max-width: 80%;
-}
-
-.borderless tr,
-.borderless td,
-.borderless th {
-  border: 0;
 }
 
 .flexbox {

@@ -48,7 +48,7 @@ namespace AnEoT.Vintage.Controllers.Api
             }
 
             string markdown = SystemIOFile.ReadAllText(contentPath);
-            string volName = MarkdownHelper.GetFrontMatter<FrontMatter>(markdown).Title;
+            string volName = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown).Title;
             MarkdownDocument document = Markdown.Parse(markdown);
 
             IEnumerable<LinkInline> links = document.Descendants<LinkInline>();

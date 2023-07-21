@@ -23,7 +23,7 @@ namespace AnEoT.Vintage.Helpers
         /// <param name="markdown">Markdown文件内容</param>
         /// <typeparam name="T">模型类型</typeparam>
         /// <returns>转换得到的模型</returns>
-        public static T? GetFrontMatter<T>(string markdown)
+        public static T? GetFromFrontMatter<T>(string markdown)
         {
             MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
             YamlFrontMatterBlock? yamlBlock = doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
