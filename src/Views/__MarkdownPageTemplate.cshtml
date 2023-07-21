@@ -1,6 +1,9 @@
 ﻿@using AnEoT.Vintage.Helpers;
 @using AnEoT.Vintage.Models;
+@using System.Globalization;
+
 @model Westwind.AspNetCore.Markdown.MarkdownModel
+
 @{
     ViewBag.Title = Model.Title;
     Layout = "_Layout";
@@ -19,9 +22,9 @@
     <div>
         <span>作者： @(string.IsNullOrWhiteSpace(articleInfo.Author) ? "Another End of Terra" : articleInfo.Author)</span>
         <br />
-        @if (DateOnly.TryParse(articleInfo.Date, out DateOnly result))
+        @if (DateOnly.TryParse(articleInfo.Date, CultureInfo.InvariantCulture, out DateOnly result))
         {
-            <span>日期： @result</span>
+            <span>日期： @result.ToString("yyyy年M月d日")</span>
             <br />
         }
         @if (articleInfo.Category is not null)

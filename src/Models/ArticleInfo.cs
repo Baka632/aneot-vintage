@@ -33,7 +33,7 @@ namespace AnEoT.Vintage.Models
         /// </summary>
         public string? Author { get; set; }
         /// <summary>
-        /// 文档创建日期
+        /// 文档创建日期的字符串
         /// </summary>
         public string? Date { get; set; }
         /// <summary>
