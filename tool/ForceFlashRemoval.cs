@@ -14,11 +14,6 @@ internal sealed class ForceflashRemoval
     /// <exception cref="IOException">目录<paramref name="webRootPath"/>不存在</exception>
     public ForceflashRemoval(string webRootPath)
     {
-        if (!Directory.Exists(webRootPath))
-        {
-            throw new IOException($"目录 {webRootPath} 不存在");
-        }
-
         _webRootPath = webRootPath;
     }
 
