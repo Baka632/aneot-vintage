@@ -24,14 +24,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build
-      run: dotnet run --project ./src/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048"
-    - name: Setup Pages
+    - name: 预处理
+      run: dotnet run --configuration Release --project ./src/AnEoT.Vintage.Tool/AnEoT.Vintage.Tool.csproj remove-unnecessary-component --webroot-path "./src/AnEot.Vintage/wwwroot"
+    - name: 构建主项目及生成静态网页
+      run: dotnet run --configuration Release --project ./src/AnEoT.Vintage/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048"
+    - name: 配置 GitHub Pages
       uses: actions/configure-pages@v3
-    - name: Upload artifact
+    - name: 上传生成的静态网页
       uses: actions/upload-pages-artifact@v2
       with:
-        path: './src/StaticWebSite'
-    - name: Deploy to GitHub Pages
+        path: './src/AnEoT.Vintage/StaticWebSite'
+    - name: 将静态网页部署到 GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v2
