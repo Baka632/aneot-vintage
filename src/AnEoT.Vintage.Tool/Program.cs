@@ -18,8 +18,7 @@ internal sealed class Program
             string? filePath = result.GetValueForOption(webRootPathOption);
             if (!Directory.Exists(filePath))
             {
-                result.ErrorMessage = "指定的目录不存在。";
-                result.ErrorMessage = $"传入路径：{filePath}";
+                result.ErrorMessage = "指定的目录不存在，传入路径：{filePath}";
                 return;
             }
         });
