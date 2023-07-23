@@ -125,8 +125,11 @@ namespace AnEoT.Vintage.Helpers
             {
                 if (convertWebp && file.Extension.Equals(".webp", StringComparison.OrdinalIgnoreCase))
                 {
+                    Console.WriteLine($"正在转换：{file.Name}");
+
                     string targetFilePath = Path.Combine(destinationDir, Path.ChangeExtension(file.Name, ".jpg"));
                     using Image image = Image.Load(file.FullName);
+                    image.Mutate(x => x.BackgroundColor(Color.White));
                     image.SaveAsJpeg(targetFilePath);
                 }
                 else
