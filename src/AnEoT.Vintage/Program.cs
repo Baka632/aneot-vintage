@@ -49,10 +49,6 @@ namespace AnEoT.Vintage
 
             //确定是否启用WebP图像转换功能
             _ = bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP);
-
-            //获取要被筛选的Uri列表
-            IEnumerable<string> filteredUris = builder.Configuration.GetSection("IgnoreEndpoints").Get<string[]>()
-                ?? Array.Empty<string>();
             #endregion
 
             #region 第二步：向依赖注入容器添加服务
@@ -161,19 +157,6 @@ namespace AnEoT.Vintage
             });
            
             app.UseAuthorization();
-
-            //筛选请求，以阻止某些Markdown页面被显示
-            app.Use(async (context, next) =>
-            {
-                string requestPath = context.Request.Path.ToString();
-                if (filteredUris.Contains(requestPath))
-                {
-                    context.Response.StatusCode = StatusCodes.Status404NotFound;
-                    return;
-                }
-
-                await next.Invoke();
-            });
 
             app.UseMarkdown();
 

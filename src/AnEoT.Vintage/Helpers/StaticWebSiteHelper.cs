@@ -1,5 +1,4 @@
 ﻿using AspNetStatic;
-using SixLabors.ImageSharp;
 
 namespace AnEoT.Vintage.Helpers
 {

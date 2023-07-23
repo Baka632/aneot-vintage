@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="StaticWebSite/**" />
+    <UpToDateCheckInput Remove="StaticWebSite/**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.SassCompiler" Version="1.64.1" />
     <PackageReference Include="AspNetStatic" Version="0.18.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.8" />
@@ -24,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AnEoT.Vintage.Common\AnEoT.Vintage.Common.csproj" />
+    <ProjectReference Include="../AnEoT.Vintage.Common/AnEoT.Vintage.Common.csproj" />
   </ItemGroup>
 </Project>
 

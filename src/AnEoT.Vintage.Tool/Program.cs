@@ -28,8 +28,13 @@ internal sealed class Program
         removeForceFlashCommand.AddOption(webRootPathOption);
         removeForceFlashCommand.SetHandler(wwwrootPath =>
         {
-            //TODO: Add more...
-            ForceflashRemoval.RemoveForceFlash(wwwrootPath);
+            Console.WriteLine($"工作目录：{wwwrootPath}");
+            Console.WriteLine("======");
+            ComponentRemoval.Remove("forceflash", wwwrootPath);
+            Console.WriteLine("======");
+            ComponentRemoval.Remove("installpwa", wwwrootPath);
+            Console.WriteLine();
+            Console.WriteLine("操作成功完成。");
         }, webRootPathOption);
 
         rootCommand.AddCommand(removeForceFlashCommand);
