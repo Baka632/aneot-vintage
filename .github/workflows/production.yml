@@ -25,7 +25,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: 预处理
-      run: dotnet run --configuration Release --project ./src/AnEoT.Vintage.Tool/AnEoT.Vintage.Tool.csproj remove-unnecessary-component --webroot-path ${GITHUB_ACTION_PATH}/src/AnEot.Vintage/wwwroot
+      run: dotnet run --configuration Release --project ./src/AnEoT.Vintage.Tool/AnEoT.Vintage.Tool.csproj remove-unnecessary-component --webroot-path ${{ github.action_path }}/src/AnEot.Vintage/wwwroot
     - name: 构建主项目及生成静态网页
       run: dotnet run --configuration Release --project ./src/AnEoT.Vintage/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048"
     - name: 配置 GitHub Pages
