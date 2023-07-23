@@ -1,18 +1,13 @@
 ﻿using Markdig;
 using Markdig.Extensions.Yaml;
-using YamlDotNet.Core;
-using YamlDotNet.Serialization.NamingConventions;
-using YamlDotNet.Serialization;
-using YamlDotNet.Core.Events;
 using Markdig.Syntax;
 using System.Linq;
-using System.IO;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AnEoT.Vintage.Common.Helpers;
 
 /// <summary>
-/// 为Markdown处理提供通用操作
+/// 为 Markdown 处理提供通用操作
 /// </summary>
 public static class MarkdownHelper
 {
@@ -26,8 +21,8 @@ public static class MarkdownHelper
     /// <param name="markdown">Markdown文件内容</param>
     /// <typeparam name="T">模型类型</typeparam>
     /// <returns>转换得到的模型</returns>
-    [RequiresDynamicCode("此方法调用了不支持 IL 裁剪的 AnEoT.Vintage.Tool.Helpers.MarkdownHelper.ReadYaml<T>(String)")]
-    public static T? GetFromFrontMatter<T>(string markdown)
+    [RequiresDynamicCode("此方法调用了不支持 IL 裁剪的 AnEoT.Vintage.Tool.Helpers.YamlHelper.ReadYaml<T>(String)")]
+    public static T GetFromFrontMatter<T>(string markdown)
     {
         MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
         YamlFrontMatterBlock? yamlBlock = doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
@@ -35,7 +30,7 @@ public static class MarkdownHelper
         if (yamlBlock is not null)
         {
             string yaml = markdown.Substring(yamlBlock.Span.Start, yamlBlock.Span.Length);
-            T? model = ReadYaml<T>(yaml);
+            T model = YamlHelper.ReadYaml<T>(yaml);
 
             return model;
         }
@@ -46,30 +41,36 @@ public static class MarkdownHelper
     }
 
     /// <summary>
-    /// 从Yaml字符串中反序列化出指定的对象
+    /// 尝试获取由 Markdown 中 Front Matter 转换而来的模型
     /// </summary>
-    /// <typeparam name="T">反序列化出的对象</typeparam>
-    /// <param name="yaml">Yaml字符串</param>
-    /// <returns>指定的对象实例</returns>
-    [RequiresDynamicCode("此方法调用了不支持 IL 裁剪的 YamlDotNet.Serialization.DeserializerBuilder.DeserializerBuilder()")]
-    public static T? ReadYaml<T>(string yaml)
+    /// <param name="markdown">Markdown 文件内容</param>
+    /// <param name="result">转换得到的模型</param>
+    /// <typeparam name="T">模型类型</typeparam>
+    /// <returns>指示操作是否成功的值</returns>
+    [RequiresDynamicCode("此方法调用了不支持 IL 裁剪的 AnEoT.Vintage.Tool.Helpers.YamlHelper.TryReadYaml<T>(String, out T)")]
+    public static bool TryGetFromFrontMatter<T>(string markdown, [MaybeNullWhen(false)] out T result)
     {
-        if (string.IsNullOrWhiteSpace(yaml))
+        MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
+        YamlFrontMatterBlock? yamlBlock = doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
+
+        if (yamlBlock is not null)
         {
-            return default;
+            string yaml = markdown.Substring(yamlBlock.Span.Start, yamlBlock.Span.Length);
+            if (YamlHelper.TryReadYaml(yaml, out T? model) && model is not null)
+            {
+                result = model;
+                return true;
+            }
+            else
+            {
+                result = default;
+                return false;
+            }
         }
-
-        StringReader input = new(yaml);
-        Parser yamlParser = new(input);
-        yamlParser.Consume<StreamStart>();
-        yamlParser.Consume<DocumentStart>();
-
-        IDeserializer yamlDes = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-
-        T obj = yamlDes.Deserialize<T>(yamlParser);
-        yamlParser.Consume<DocumentEnd>();
-        return obj;
+        else
+        {
+            result = default;
+            return false;
+        }
     }
 }

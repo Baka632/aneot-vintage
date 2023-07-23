@@ -41,8 +41,9 @@ internal static class ForceflashRemoval
         }
         else
         {
+            Console.WriteLine("DEBUG: 跳过 forceflash.md 的删除...");
             //forceflashFile.Delete();
-            Console.WriteLine("已删除 forceflash.md 文件。");
+            //Console.WriteLine("已删除 forceflash.md 文件。");
         }
         #endregion
 

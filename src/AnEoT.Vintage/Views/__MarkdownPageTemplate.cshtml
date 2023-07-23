@@ -8,7 +8,7 @@
     ArticleInfo articleInfo;
     @if (Model.YamlHeader is not null)
     {
-        articleInfo = MarkdownHelper.ReadYaml<ArticleInfo>(Model.YamlHeader);
+        articleInfo = YamlHelper.ReadYaml<ArticleInfo>(Model.YamlHeader);
     }
     else
     {
