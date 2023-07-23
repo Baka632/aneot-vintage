@@ -58,9 +58,9 @@ internal static class ForceflashRemoval
             IEnumerable<LinkInline> linkInlines = document.Descendants<LinkInline>();
             YamlFrontMatterBlock? yamlBlock = document.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
 
-            if (yamlBlock is not null)
+            if (yamlBlock is not null && MarkdownHelper.TryGetFromFrontMatter(markdown, out HomePageInfo result))
             {
-                HomePageInfo homepageInfo = MarkdownHelper.GetFromFrontMatter<HomePageInfo>(markdown);
+
             }
 
             foreach (LinkInline link in linkInlines)

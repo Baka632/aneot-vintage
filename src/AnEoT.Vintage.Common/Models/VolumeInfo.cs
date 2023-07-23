@@ -1,9 +1,11 @@
-﻿namespace AnEoT.Vintage.Common.Models;
+﻿using System.Linq;
+
+namespace AnEoT.Vintage.Common.Models;
 
 /// <summary>
 /// 表示期刊信息的结构
 /// </summary>
-public readonly struct VolumeInfo
+public readonly struct VolumeInfo : IEquatable<VolumeInfo>
 {
     /// <summary>
     /// 当前期刊的名称
@@ -25,5 +27,30 @@ public readonly struct VolumeInfo
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Articles = articles ?? throw new ArgumentNullException(nameof(articles));
+    }
+
+    public override readonly bool Equals(object? obj)
+    {
+        return obj is VolumeInfo info && Equals(info);
+    }
+
+    public readonly bool Equals(VolumeInfo other)
+    {
+        return Name.Equals(other.Name, StringComparison.Ordinal) && Articles.SequenceEqual(other.Articles);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Name, Articles);
+    }
+
+    public static bool operator ==(VolumeInfo left, VolumeInfo right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(VolumeInfo left, VolumeInfo right)
+    {
+        return !(left == right);
     }
 }
