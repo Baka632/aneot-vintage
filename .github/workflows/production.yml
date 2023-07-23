@@ -25,13 +25,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      run: dotnet run --project ./src/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048"
+      run: dotnet run --project ./src/AnEoT.Vintage/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048"
     - name: Setup Pages
       uses: actions/configure-pages@v3
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v2
       with:
-        path: './src/StaticWebSite'
+        path: './src/AnEoT.Vintage/StaticWebSite'
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v2
