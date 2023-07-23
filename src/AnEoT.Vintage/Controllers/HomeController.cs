@@ -1,7 +1,6 @@
 ﻿using AnEoT.Vintage.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc;
 using SystemIOFile = System.IO.File;
-using AnEoT.Vintage.Helpers;
 
 namespace AnEoT.Vintage.Controllers
 {

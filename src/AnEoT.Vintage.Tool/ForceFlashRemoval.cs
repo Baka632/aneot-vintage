@@ -1,9 +1,9 @@
-﻿using Markdig;
+﻿using AnEoT.Vintage.Common.Models.HomePage;
+using AnEoT.Vintage.Common.Helpers;
+using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
-using YamlDotNet.Core;
-using YamlDotNet.Core.Events;
 
 namespace AnEoT.Vintage.Tool;
 
@@ -59,11 +59,7 @@ internal static class ForceflashRemoval
 
             if (yamlBlock is not null)
             {
-                string yaml = markdown.Substring(yamlBlock.Span.Start, yamlBlock.Span.Length);
-                StringReader input = new(yaml);
-                Parser yamlParser = new(input);
-                yamlParser.Consume<StreamStart>();
-                yamlParser.Consume<DocumentStart>();
+                HomePageInfo homepageInfo = MarkdownHelper.GetFromFrontMatter<HomePageInfo>(markdown);
             }
 
             foreach (LinkInline link in linkInlines)

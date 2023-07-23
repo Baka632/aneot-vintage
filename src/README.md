@@ -8,7 +8,7 @@
 
 ## AnEoT.Vintage.Common
 
-公共项目，负责共享各种模型类，如 ArticleInfo。
+公用项目，负责共享各种模型类，如 ArticleInfo。
 
 类型为 .NET Standard 2.0 类库
 
