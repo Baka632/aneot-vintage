@@ -19,6 +19,7 @@ internal sealed class Program
             if (!Directory.Exists(filePath))
             {
                 result.ErrorMessage = "指定的目录不存在。";
+                result.ErrorMessage = $"传入路径：{filePath}";
                 return;
             }
         });
