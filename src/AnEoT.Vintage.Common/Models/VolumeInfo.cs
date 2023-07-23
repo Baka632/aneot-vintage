@@ -1,4 +1,4 @@
-﻿namespace AnEoT.Vintage.Models;
+﻿namespace AnEoT.Vintage.Common.Models;
 
 /// <summary>
 /// 表示期刊信息的结构

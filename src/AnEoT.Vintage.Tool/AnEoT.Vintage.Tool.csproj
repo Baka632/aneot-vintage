@@ -7,12 +7,16 @@
     <Nullable>enable</Nullable>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
-    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.31.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageReference Include="YamlDotNet" Version="13.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AnEoT.Vintage.Common\AnEoT.Vintage.Common.csproj" />
   </ItemGroup>
 
 </Project>

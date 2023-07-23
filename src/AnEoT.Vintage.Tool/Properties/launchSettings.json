@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AnEoT.Vintage.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": "remove-forceflash --webroot-path \"E:\\Code\\AnEoT.Vintage\\src\\wwwroot\""
+    }
+  }
+}

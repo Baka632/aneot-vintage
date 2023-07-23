@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http.Features;
 using System.Text;
 using Markdig;
-using AnEoT.Vintage.Models;
+using AnEoT.Vintage.Common.Models;
 using AnEoT.Vintage.Helpers.Custom;
 
 namespace AnEoT.Vintage.Helpers

@@ -23,11 +23,13 @@ internal sealed class Program
             }
         });
         
-        Command removeForceFlashCommand = new("remove-forceflash", "移除 forceflash.md 文件，并移除其他文件对其的引用");
+        Command removeForceFlashCommand = new("remove-unnecessary-component", "移除不需要的文件及其引用。");
+        removeForceFlashCommand.AddAlias("ruc");
         removeForceFlashCommand.AddOption(webRootPathOption);
         removeForceFlashCommand.SetHandler(wwwrootPath =>
         {
-            ForceflashRemoval forceflashRemoval = new(wwwrootPath ?? string.Empty);
+            //TODO: Add more...
+            ForceflashRemoval.RemoveForceFlash(wwwrootPath);
         }, webRootPathOption);
 
         rootCommand.AddCommand(removeForceFlashCommand);

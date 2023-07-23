@@ -1,5 +1,5 @@
 ﻿using AnEoT.Vintage.Helpers;
-using AnEoT.Vintage.Models;
+using AnEoT.Vintage.Common.Models;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
