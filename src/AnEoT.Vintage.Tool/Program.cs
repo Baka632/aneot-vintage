@@ -60,7 +60,7 @@ internal sealed class Program
             NavBarFix.FixNavBar(staticWebSitePath);
             Console.WriteLine();
             Console.WriteLine("操作成功完成。");
-        }, webRootPathOption);
+        }, staticWebSiteOutputPathOption);
 
         rootCommand.AddCommand(removeUnnecessaryComponentCommand);
         rootCommand.AddCommand(fixNavBarCommand);
