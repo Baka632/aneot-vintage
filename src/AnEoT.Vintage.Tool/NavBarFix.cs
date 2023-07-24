@@ -1,0 +1,102 @@
+﻿using AngleSharp.Dom;
+using AngleSharp.Html;
+using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
+
+namespace AnEoT.Vintage.Tool
+{
+    /// <summary>
+    /// 为修改导航栏提供帮助的类
+    /// </summary>
+    internal static class NavBarFix
+    {
+        public static void FixNavBar(string staticContentPath)
+        {
+            Console.WriteLine("正在修改导航栏以适配 GitHub Pages...");
+            DirectoryInfo staticContentDirectory = new(staticContentPath);
+
+            ModifyRecursively(staticContentDirectory);
+        }
+
+        private static void ModifyRecursively(DirectoryInfo directory)
+        {
+            //目标：当前文件夹中的文件
+            foreach (FileInfo file in directory.EnumerateFiles("*.html"))
+            {
+                ModifyNavBarLinks(file);
+            }
+
+            foreach (DirectoryInfo subDirectory in directory.EnumerateDirectories())
+            {
+                //目标：子文件夹中的文件
+                foreach (FileInfo file in subDirectory.EnumerateFiles("*.html"))
+                {
+                    ModifyNavBarLinks(file);
+                }
+
+                //递归：对子文件夹的子文件夹进行操作
+                ModifyRecursively(subDirectory);
+            }
+        }
+
+        private static void ModifyNavBarLinks(FileInfo file)
+        {
+            string html = File.ReadAllText(file.FullName);
+            HtmlParser parser = new();
+
+            using IHtmlDocument document = parser.ParseDocument(html);
+            IEnumerable<IElement> navBarLinks = document.All
+                .Where(element => element.TagName.ToUpperInvariant() is "A" or "IMG" or "LINK");
+
+            bool isModified = false;
+
+            foreach (IElement item in navBarLinks)
+            {
+                switch (item)
+                {
+                    case IHtmlAnchorElement anchor:
+                        string? originalHref = anchor.GetAttribute("href");
+                        if (originalHref is not null && originalHref.StartsWith('/'))
+                        {
+                            anchor.SetAttribute("href", $"/aneot-vintage{originalHref}");
+                            isModified = true;
+                        }
+                        break;
+                    case IHtmlImageElement image:
+                        string? originalSrc = image.GetAttribute("src");
+                        if (originalSrc is not null && originalSrc.StartsWith('/'))
+                        {
+                            image.SetAttribute("src", $"/aneot-vintage{originalSrc}");
+                            isModified = true;
+                        }
+                        break;
+                    case IHtmlLinkElement link:
+                        string? originalLink = link.GetAttribute("href");
+                        if (originalLink is not null && originalLink.StartsWith('/'))
+                        {
+                            link.SetAttribute("src", $"/aneot-vintage{originalLink}");
+                            isModified = true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (isModified)
+            {
+                using StreamWriter writer = File.CreateText(file.FullName);
+                
+                //这样既能保留IE条件注释又能压缩文件
+                PrettyMarkupFormatter formatter = new()
+                {
+                    NewLine = string.Empty,
+                    Indentation = string.Empty,
+                };
+                document.ToHtml(writer, formatter);
+
+                Console.WriteLine($"已修改文件 {file.FullName}");
+            }
+        }
+    }
+}
