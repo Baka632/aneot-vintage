@@ -1,6 +1,6 @@
 [中文](README.md) | [Original repository](https://github.com/TCA-Arknights/aneot)
 
-# Another End of Terra (AnEot) for Vintage Devices
+# Another End of Terra (AnEoT) for Vintage Devices
 
 A fanmade literary journal based on mobile game *Arknights*, redesigned for vintage devices.
 
