@@ -2,6 +2,7 @@
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AnEoT.Vintage.Tool
 {
@@ -54,28 +55,42 @@ namespace AnEoT.Vintage.Tool
             {
                 switch (item)
                 {
+                    //额外加大括号的原因是防止变量外溢而影响其他case块
                     case IHtmlAnchorElement anchor:
-                        string? originalHref = anchor.GetAttribute("href");
-                        if (originalHref is not null && originalHref.StartsWith('/'))
                         {
-                            anchor.SetAttribute("href", $"/aneot-vintage{originalHref}");
-                            isModified = true;
+                            string? originalHref = anchor.GetAttribute("href");
+                            if (originalHref is not null && originalHref.StartsWith('/') && originalHref.Contains("/aneot-vintage") is not true)
+                            {
+                                anchor.SetAttribute("href", $"/aneot-vintage{originalHref}");
+                                isModified = true;
+                            }
                         }
                         break;
                     case IHtmlImageElement image:
-                        string? originalSrc = image.GetAttribute("src");
-                        if (originalSrc is not null && originalSrc.StartsWith('/'))
                         {
-                            image.SetAttribute("src", $"/aneot-vintage{originalSrc}");
-                            isModified = true;
+                            string? originalSrc = image.GetAttribute("src");
+                            if (originalSrc is not null && originalSrc.StartsWith('/') && originalSrc.Contains("/aneot-vintage") is not true)
+                            {
+                                image.SetAttribute("src", $"/aneot-vintage{originalSrc}");
+                                isModified = true;
+                            }
                         }
                         break;
                     case IHtmlLinkElement link:
-                        string? originalLink = link.GetAttribute("href");
-                        if (originalLink is not null && originalLink.StartsWith('/'))
                         {
-                            link.SetAttribute("src", $"/aneot-vintage{originalLink}");
-                            isModified = true;
+                            string? originalLink = link.GetAttribute("href");
+                            if (originalLink is not null && originalLink.StartsWith('/') && originalLink.Contains("/aneot-vintage") is not true)
+                            {
+                                link.SetAttribute("src", $"/aneot-vintage{originalLink}");
+                                isModified = true;
+                            }
+
+                            string? originalSrc = link.GetAttribute("src");
+                            if (originalSrc is not null && originalSrc.StartsWith('/') && originalSrc.Contains("/aneot-vintage") is not true)
+                            {
+                                link.SetAttribute("src", $"/aneot-vintage{originalSrc}");
+                                isModified = true;
+                            }
                         }
                         break;
                     default:
