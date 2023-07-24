@@ -81,14 +81,7 @@ namespace AnEoT.Vintage.Tool
                             string? originalLink = link.GetAttribute("href");
                             if (originalLink is not null && originalLink.StartsWith('/') && originalLink.Contains("/aneot-vintage") is not true)
                             {
-                                link.SetAttribute("src", $"/aneot-vintage{originalLink}");
-                                isModified = true;
-                            }
-
-                            string? originalSrc = link.GetAttribute("src");
-                            if (originalSrc is not null && originalSrc.StartsWith('/') && originalSrc.Contains("/aneot-vintage") is not true)
-                            {
-                                link.SetAttribute("src", $"/aneot-vintage{originalSrc}");
+                                link.SetAttribute("href", $"/aneot-vintage{originalLink}");
                                 isModified = true;
                             }
                         }
