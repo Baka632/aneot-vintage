@@ -1,10 +1,6 @@
 ﻿using System.ServiceModel.Syndication;
 using System.Xml;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http.Features;
 using System.Text;
-using Markdig;
 using AnEoT.Vintage.Helpers.Custom;
 
 namespace AnEoT.Vintage.Helpers
@@ -12,73 +8,39 @@ namespace AnEoT.Vintage.Helpers
     /// <summary>
     /// 协助在程序中使用 RSS 生成功能的类
     /// </summary>
-    public static class RssGeneratorHostExtensions
+    public static class RssGenerationHelper
     {
         /// <summary>
         /// 生成 RSS 源
         /// </summary>
-        /// <param name="host">当前程序的通用主机</param>
-        public static void GenerateRssFeed(this IHost host)
+        /// <param name="rssBaseUri">RSS 源的基Uri</param>
+        /// <param name="webRootPath">“wwwroot”文件夹所在路径</param>
+        public static void GenerateRssFeed(string rssBaseUri, string webRootPath)
         {
-            IHostApplicationLifetime requiredService = host.Services.GetRequiredService<IHostApplicationLifetime>();
-
-            //在应用完全启动后再进行我们的操作，否则不能获取到某些必需的组件
-            requiredService.ApplicationStarted.Register(() => StartRssFeedGeneration(host));
-        }
-
-        private static void StartRssFeedGeneration(IHost host)
-        {
-            #region 第一步：获取必需的基础组件，并设置相应的变量
-            IConfiguration? config = host.Services.GetService<IConfiguration>()
-                ?? throw new InvalidOperationException("IConfiguration现在不可用");
-            #region 设置RSS源的基Uri
-            string baseUri;
-            string? rssBaseUri = config["RssBaseUri"];
             if (string.IsNullOrWhiteSpace(rssBaseUri))
             {
-                IFeatureCollection hostFeatures = host.Services.GetRequiredService<IServer>().Features;
-                IServerAddressesFeature serverAddresses = hostFeatures.Get<IServerAddressesFeature>()
-                    ?? throw new InvalidOperationException("功能IServerAddressesFeature现在不可用");
-                ICollection<string> hostUrls = serverAddresses.Addresses;
-
-                baseUri = (
-                    hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
-                    ?? hostUrls.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
-                    )?? throw new InvalidOperationException("现在无法获取到基Uri");
+                throw new ArgumentException($"“{nameof(rssBaseUri)}”不能为 null 或空白。", nameof(rssBaseUri));
             }
-            else
+
+            if (string.IsNullOrWhiteSpace(webRootPath))
             {
-                baseUri = rssBaseUri;
+                throw new ArgumentException($"“{nameof(webRootPath)}”不能为 null 或空白。", nameof(webRootPath));
             }
 
-            MarkdownPipelineBuilder builder = new();
-            builder.UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
-                .UseAdvancedExtensions()
-                .UseListExtras()
-                .UseEmojiAndSmiley(true)
-                .UseYamlFrontMatter();
-            MarkdownPipeline markdownPipeline = builder.Build();
-            #endregion
+            Console.WriteLine("正在生成 RSS 源...");
 
-            //获取IWebHostEnvironment来确定放置Feed的文件夹
-            IWebHostEnvironment env = host.Services.GetService<IWebHostEnvironment>()
-                ?? throw new ArgumentException("IWebHostEnvironment现在不可用");
-
-            string webRootPath = env.WebRootPath;
-            #endregion
-
-            #region 第二步：生成RSS源信息
+            #region 第一步：生成RSS源信息
             SyndicationFeed feed = new(
                "回归线简易版",
                "Another End of Terra",
-               new Uri(baseUri),
+               new Uri(rssBaseUri),
                "AnEoT",
                DateTime.Now)
             {
                 Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2023 TCA. All rights reserved."),
                 Language = "zh-CN",
                 Generator = "System.ServiceModel.Syndication.SyndicationFeed, used in AnEoT.Vintage",
-                ImageUrl = new Uri($"{baseUri}/images/logo.jpg"),
+                ImageUrl = new Uri($"{rssBaseUri}/images/logo.jpg"),
             };
 
             SyndicationCategory[] categories = new SyndicationCategory[]
@@ -98,7 +60,7 @@ namespace AnEoT.Vintage.Helpers
             }
 
             //获取posts文件夹的信息
-            DirectoryInfo postsDirectoryInfo = new(Path.Combine(env.WebRootPath, "posts"));
+            DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
 
             List<SyndicationItem> items = new();
 
@@ -114,9 +76,9 @@ namespace AnEoT.Vintage.Helpers
                 {
                     string markdown = File.ReadAllText(article.FullName);
                     ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
-                    string articleLink = $"{baseUri}/posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}";
+                    string articleLink = $"{rssBaseUri}/posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}";
 
-                    CustomMarkdownParser parser = new(false, false, true, $"{baseUri}/posts/{volDirInfo.Name}");
+                    CustomMarkdownParser parser = new(false, false, true, $"{rssBaseUri}/posts/{volDirInfo.Name}");
                     string html = parser.Parse(markdown);
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
@@ -146,7 +108,7 @@ namespace AnEoT.Vintage.Helpers
             feed.Items = items;
             #endregion
 
-            #region 第三步：将RSS源信息序列化为XML文件
+            #region 第二步：将RSS源信息序列化为XML文件
             XmlWriterSettings settings = new()
             {
                 Encoding = Encoding.UTF8,
@@ -178,6 +140,8 @@ namespace AnEoT.Vintage.Helpers
             rssFormatter.WriteTo(rssWriter);
             rssWriter.Close();
             #endregion
+
+            Console.WriteLine("RSS 源生成完成！");
         }
     }
 
