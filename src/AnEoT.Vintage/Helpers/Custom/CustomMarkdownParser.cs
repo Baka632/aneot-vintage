@@ -1,4 +1,5 @@
-﻿using Markdig.Renderers;
+﻿using AnEoT.Vintage.Helpers.Custom.Renderer;
+using Markdig.Renderers;
 using Westwind.AspNetCore.Markdown;
 
 namespace AnEoT.Vintage.Helpers.Custom

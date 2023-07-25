@@ -2,7 +2,7 @@
 using Markdig.Renderers.Html;
 using Markdig.Renderers.Html.Inlines;
 
-namespace AnEoT.Vintage.Helpers.Custom
+namespace AnEoT.Vintage.Helpers.Custom.Renderer
 {
     /// <summary>
     /// 自定义的HTML渲染器
