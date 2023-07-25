@@ -64,9 +64,13 @@ namespace AnEoT.Vintage.Helpers
 
             List<SyndicationItem> items = new();
 
-            //反向读取文件夹，以获取到最新的期刊；我们只生成前两个期刊的信息，避免RSS源过长
-            IEnumerable<DirectoryInfo> volDirInfos = postsDirectoryInfo.EnumerateDirectories().Reverse().Take(2);
-            foreach (DirectoryInfo volDirInfo in volDirInfos)
+            //反向读取文件夹，以获取到最新的期刊
+            List<DirectoryInfo> volDirInfos = new(postsDirectoryInfo.EnumerateDirectories());
+            volDirInfos.Sort(new VolumeOrderComparer());
+            volDirInfos.Reverse();
+
+            //我们只获取前两个文件夹的信息，避免RSS源过长
+            foreach (DirectoryInfo volDirInfo in volDirInfos.Take(2))
             {
                 IOrderedEnumerable<FileInfo> articles = volDirInfo
                                     .EnumerateFiles("*.md")
@@ -189,6 +193,28 @@ namespace AnEoT.Vintage.Helpers
             {
                 return Comparer<int>.Default.Compare(-articleInfoX.Order, -articleInfoY.Order);
             }
+        }
+    }
+
+    file sealed class VolumeOrderComparer : IComparer<DirectoryInfo>
+    {
+        public int Compare(DirectoryInfo? x, DirectoryInfo? y)
+        {
+            if (object.ReferenceEquals(x, y))
+            {
+                return 0;
+            }
+
+            if (x is null)
+            {
+                return -1;
+            }
+            else if (y is null)
+            {
+                return 1;
+            }
+
+            return string.CompareOrdinal(x.Name, y.Name);
         }
     }
 }
