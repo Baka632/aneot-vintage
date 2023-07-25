@@ -93,13 +93,8 @@ namespace AnEoT.Vintage.Tool
             if (isModified)
             {
                 using StreamWriter writer = File.CreateText(file.FullName);
-                
-                //这样既能保留IE条件注释又能压缩文件
-                PrettyMarkupFormatter formatter = new()
-                {
-                    NewLine = string.Empty,
-                    Indentation = string.Empty,
-                };
+
+                PrettyMarkupFormatter formatter = new();
                 document.ToHtml(writer, formatter);
 
                 Console.WriteLine($"已修改文件 {file.FullName}");
