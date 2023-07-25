@@ -1,4 +1,5 @@
-﻿using AngleSharp.Dom;
+﻿using System.Xml.Linq;
+using AngleSharp.Dom;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -45,32 +46,23 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
 
                     HtmlParser parser = new();
                     using IHtmlDocument document = parser.ParseDocument(html);
-                    IEnumerable<IElement> imgElements = document.All
-                        .Where(element => element.TagName.ToUpperInvariant() is "IMG");
+                    IElement? element = document.All
+                        .Where(element => element.TagName.ToUpperInvariant() is "IMG").FirstOrDefault();
 
-                    bool isModified = false;
-
-                    foreach (IElement element in imgElements)
+                    if (element is IHtmlImageElement image)
                     {
-                        if (element is IHtmlImageElement image)
+                        string? originalSrc = image.GetAttribute("src");
+                        if (originalSrc is not null)
                         {
-                            string? originalSrc = image.GetAttribute("src");
-                            if (originalSrc is not null)
-                            {
-                                image.SetAttribute("src", originalSrc.Replace(".webp", ".jpg"));
-                                isModified = true;
-                            }
+                            image.SetAttribute("src", originalSrc.Replace(".webp", ".jpg"));
+
+                            using StringWriter writer = new();
+                            PrettyMarkupFormatter formatter = new();
+                            image.ToHtml(writer, formatter);
+
+                            string text = writer.ToString().Trim();
+                            slice = new StringSlice(text);
                         }
-                    }
-
-                    if (isModified)
-                    {
-                        using StringWriter writer = new();
-
-                        PrettyMarkupFormatter formatter = new();
-                        document.ToHtml(writer, formatter);
-
-                        slice = new StringSlice(writer.ToString());
                     }
                 }
             }
