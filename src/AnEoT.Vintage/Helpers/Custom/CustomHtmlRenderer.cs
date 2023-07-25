@@ -1,4 +1,5 @@
 ﻿using Markdig.Renderers;
+using Markdig.Renderers.Html;
 using Markdig.Renderers.Html.Inlines;
 
 namespace AnEoT.Vintage.Helpers.Custom
@@ -13,11 +14,20 @@ namespace AnEoT.Vintage.Helpers.Custom
         /// </summary>
         public CustomHtmlRenderer(TextWriter writer, bool convertWebP, string? baseUri = null) : base(writer)
         {
-            IMarkdownObjectRenderer target = ObjectRenderers.First(obj => obj is LinkInlineRenderer);
-            
-            int targetIndex = ObjectRenderers.IndexOf(target);
-            ObjectRenderers.Insert(targetIndex, new CustomLinkInlineRenderer(convertWebP, baseUri));
-            ObjectRenderers.Remove(target);
+            {
+                IMarkdownObjectRenderer linkInlineRenderer = ObjectRenderers.First(obj => obj is LinkInlineRenderer);
+
+                int linkInlineRendererIndex = ObjectRenderers.IndexOf(linkInlineRenderer);
+                ObjectRenderers.Insert(linkInlineRendererIndex, new CustomLinkInlineRenderer(convertWebP, baseUri));
+                ObjectRenderers.Remove(linkInlineRenderer);
+            }
+
+            {
+                IMarkdownObjectRenderer htmlBlockRenderer = ObjectRenderers.First(obj => obj is HtmlBlockRenderer);
+                int htmlBlockRendererIndex = ObjectRenderers.IndexOf(htmlBlockRenderer);
+                ObjectRenderers.Insert(htmlBlockRendererIndex, new CustomHtmlBlockRenderer(convertWebP));
+                ObjectRenderers.Remove(htmlBlockRenderer);
+            }
         }
     }
 }

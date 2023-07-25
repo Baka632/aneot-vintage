@@ -5,7 +5,7 @@ using Markdig.Syntax.Inlines;
 namespace AnEoT.Vintage.Helpers.Custom
 {
     /// <summary>
-    /// 自定义的链接渲染器
+    /// 自定义的<see cref="LinkInline"/>渲染器
     /// </summary>
     public class CustomLinkInlineRenderer : LinkInlineRenderer
     {

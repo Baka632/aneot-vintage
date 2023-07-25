@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="1.0.4" />
     <PackageReference Include="AspNetCore.SassCompiler" Version="1.64.1" />
     <PackageReference Include="AspNetStatic" Version="0.18.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.8" />
@@ -21,6 +22,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="7.0.0" />
     <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.11.0" />
+    <PackageReference Include="AngleSharp" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>
