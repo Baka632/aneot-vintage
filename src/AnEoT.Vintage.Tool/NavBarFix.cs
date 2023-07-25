@@ -2,7 +2,6 @@
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AnEoT.Vintage.Tool
 {
