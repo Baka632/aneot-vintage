@@ -18,6 +18,7 @@
 
 <div>
     <div>
+        <h1>@ViewData["Title"]</h1>
         <span>作者： @(string.IsNullOrWhiteSpace(articleInfo.Author) ? "Another End of Terra" : articleInfo.Author)</span>
         <br />
         @if (DateOnly.TryParse(articleInfo.Date, CultureInfo.InvariantCulture, out DateOnly result))
