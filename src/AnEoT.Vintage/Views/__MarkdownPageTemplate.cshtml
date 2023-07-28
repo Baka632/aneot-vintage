@@ -1,4 +1,5 @@
 ﻿@using System.Globalization;
+@using Microsoft.AspNetCore.Http.Features;
 
 @model Westwind.AspNetCore.Markdown.MarkdownModel
 
@@ -6,6 +7,7 @@
     ViewBag.Title = Model.Title;
     Layout = "_Layout";
     ArticleInfo articleInfo;
+    IHttpRequestFeature? httpRequestFeature = Context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpRequestFeature>();
     @if (Model.YamlHeader is not null)
     {
         articleInfo = YamlHelper.ReadYaml<ArticleInfo>(Model.YamlHeader);
@@ -18,6 +20,10 @@
 
 <div>
     <div>
+        @if(httpRequestFeature is not null)
+        {
+            <div>@httpRequestFeature.RawTarget</div>
+        }
         <h1>@ViewData["Title"]</h1>
         <span>作者： @(string.IsNullOrWhiteSpace(articleInfo.Author) ? "Another End of Terra" : articleInfo.Author)</span>
         <br />
