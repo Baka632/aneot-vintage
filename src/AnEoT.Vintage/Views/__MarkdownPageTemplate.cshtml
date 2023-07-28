@@ -1,13 +1,17 @@
 ﻿@using System.Globalization;
 @using Microsoft.AspNetCore.Http.Features;
+@using AnEoT.Vintage.Helpers;
 
+@inject IWebHostEnvironment env
 @model Westwind.AspNetCore.Markdown.MarkdownModel
 
 @{
     ViewBag.Title = Model.Title;
     Layout = "_Layout";
+    IHttpRequestFeature? httpRequestFeature = Context.Features.Get<IHttpRequestFeature>();
+    string[] uriParts = httpRequestFeature?.RawTarget.Split('/', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
+
     ArticleInfo articleInfo;
-    IHttpRequestFeature? httpRequestFeature = Context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpRequestFeature>();
     @if (Model.YamlHeader is not null)
     {
         articleInfo = YamlHelper.ReadYaml<ArticleInfo>(Model.YamlHeader);
@@ -20,11 +24,30 @@
 
 <div>
     <div>
-        @if(httpRequestFeature is not null)
+        @if(uriParts.Any() && uriParts.Length > 1)
         {
-            <div>@httpRequestFeature.RawTarget</div>
+            <div style="margin-top:5px">
+                @for (int i = 0; i < uriParts.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        <span style="margin-left:1px;margin-right:1px">/</span>
+                    }
+                    
+                    if (i != uriParts.Length - 1)
+                    {
+                        string target = string.Join('/', uriParts[..(i + 1)]);
+                        string displayTitle = @PageTitleHelper.GetPageTitle(env.WebRootPath, target);
+                        <a href="~/@target">@displayTitle</a>
+                    }
+                    else
+                    {
+                        <span>@Model.Title</span>
+                    }
+                }
+            </div>
         }
-        <h1>@ViewData["Title"]</h1>
+        <h1>@Model.Title</h1>
         <span>作者： @(string.IsNullOrWhiteSpace(articleInfo.Author) ? "Another End of Terra" : articleInfo.Author)</span>
         <br />
         @if (DateOnly.TryParse(articleInfo.Date, CultureInfo.InvariantCulture, out DateOnly result))
