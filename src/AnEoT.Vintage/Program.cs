@@ -70,6 +70,9 @@ public class Program
                 rssBaseUri = rssBaseUriInConfig;
             }
         }
+
+        //确定是否生成完整的 RSS 源 （包含全部文章）
+        _ = bool.TryParse(builder.Configuration["RssIncludeAllArticles"], out bool rssIncludeAllArticles);
         #endregion
 
         #region 第二步：向依赖注入容器添加服务
@@ -133,7 +136,7 @@ public class Program
         WebApplication app = builder.Build();
         #endregion
 
-        #region 第三步：配置 HTTP 请求管道
+        #region 第三步：配置 HTTP 请求管道 + 额外工作
         RewriteOptions rewriteOptions = new RewriteOptions()
             .Add(context =>
             {
@@ -212,6 +215,10 @@ public class Program
         app.UseRouting();
         app.MapDefaultControllerRoute();
 
+        if (rssIncludeAllArticles)
+        {
+            RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath, true, "rss_full.xml", "atom_full.xml");
+        }
         RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath);
 
         if (generateStaticWebSite)
