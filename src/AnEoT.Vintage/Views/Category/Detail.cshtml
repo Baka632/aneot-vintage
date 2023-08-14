@@ -18,10 +18,10 @@
         <br>
     </div>
 
-    在此分类下，有以下文章：
+    在此分类中，有以下文章：
 
     <ul>
-        @foreach (string uri in Model.ArticleUris.Reverse())
+        @foreach (string uri in Model.ArticleUris.OrderBy(uri => uri.Split('/')[1]).Reverse())
         {
             string markdownPath = System.IO.Path.Combine(env.WebRootPath, uri);
             string markdown = File.ReadAllText(markdownPath);
