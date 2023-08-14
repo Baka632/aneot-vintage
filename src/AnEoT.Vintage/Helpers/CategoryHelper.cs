@@ -28,7 +28,7 @@ public static class CategoryHelper
                 string markdown = File.ReadAllText(file.FullName);
                 ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
 
-                if (articleInfo.Category is not null && articleInfo.Category.Any())
+                if (articleInfo.Article && articleInfo.Category is not null && articleInfo.Category.Any())
                 {
                     foreach (string categoryString in articleInfo.Category)
                     {
