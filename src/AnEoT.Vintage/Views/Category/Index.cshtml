@@ -1,7 +1,22 @@
-﻿@{
+﻿@using AnEoT.Vintage.ViewModels.Category
+@model IndexViewModel
+
+@{
     ViewData["Title"] = "分类";
 }
 
 <div>
     <h1>@ViewData["Title"]</h1>
+    <ul>
+        @foreach (var item in Model.CategoryToArticleRelativePathMapping)
+        {
+            <li style="margin:0 0 10px 0">
+                <a href="~/category/@item.Key">
+                    @item.Key
+                </a>
+                <br/>
+                共@(Model.CategoryToArticleRelativePathMapping[item.Key].Count)篇
+            </li>
+        }
+    </ul>
 </div>
