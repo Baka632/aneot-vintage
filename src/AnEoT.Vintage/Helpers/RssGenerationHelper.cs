@@ -13,9 +13,12 @@ namespace AnEoT.Vintage.Helpers
         /// <summary>
         /// 生成 RSS 源
         /// </summary>
-        /// <param name="rssBaseUri">RSS 源的基Uri</param>
+        /// <param name="rssBaseUri">RSS 源的基 Uri</param>
         /// <param name="webRootPath">“wwwroot”文件夹所在路径</param>
-        public static void GenerateRssFeed(string rssBaseUri, string webRootPath)
+        /// <param name="includeAllArticles">确定 RSS 源是否包含全部文章信息的值</param>
+        /// <param name="rss20FileName"></param>
+        /// <param name="atomFileName"></param>
+        public static void GenerateRssFeed(string rssBaseUri, string webRootPath, bool includeAllArticles = false, string rss20FileName = "rss.xml", string atomFileName = "atom.xml")
         {
             if (string.IsNullOrWhiteSpace(rssBaseUri))
             {
@@ -69,8 +72,18 @@ namespace AnEoT.Vintage.Helpers
             volDirInfos.Sort(new VolumeOrderComparer());
             volDirInfos.Reverse();
 
-            //我们只获取前两个文件夹的信息，避免RSS源过长
-            foreach (DirectoryInfo volDirInfo in volDirInfos.Take(2))
+            IEnumerable<DirectoryInfo> targetDirectories;
+            if (includeAllArticles)
+            {
+                targetDirectories = volDirInfos;
+            }
+            else
+            {
+                //我们只获取前两个文件夹的信息，避免RSS源过长
+                targetDirectories = volDirInfos.Take(2);
+            }
+
+            foreach (DirectoryInfo volDirInfo in targetDirectories)
             {
                 IOrderedEnumerable<FileInfo> articles = volDirInfo
                                     .EnumerateFiles("*.md")
@@ -95,7 +108,7 @@ namespace AnEoT.Vintage.Helpers
 
                     item.Authors.Add(new SyndicationPerson() { Name = articleInfo.Author });
 
-                    foreach (var category in articleInfo.Category ?? Array.Empty<string>())
+                    foreach (string category in articleInfo.Category ?? Array.Empty<string>())
                     {
                         item.Categories.Add(new SyndicationCategory(category));
                     }
@@ -122,7 +135,7 @@ namespace AnEoT.Vintage.Helpers
             };
 
 
-            string atomFilePath = Path.Combine(webRootPath, "atom.xml");
+            string atomFilePath = Path.Combine(webRootPath, atomFileName);
             if (Path.Exists(atomFilePath))
             {
                 File.Delete(atomFilePath);
@@ -133,7 +146,7 @@ namespace AnEoT.Vintage.Helpers
             atomFormatter.WriteTo(atomWriter);
             atomWriter.Close();
 
-            string rssFilePath = Path.Combine(webRootPath, "rss.xml");
+            string rssFilePath = Path.Combine(webRootPath, rss20FileName);
             if (Path.Exists(rssFilePath))
             {
                 File.Delete(rssFilePath);

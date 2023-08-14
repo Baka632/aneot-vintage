@@ -12,6 +12,10 @@ namespace AnEoT.Vintage.Common.Helpers;
 public static class MarkdownHelper
 {
     private static readonly MarkdownPipeline pipeline = new MarkdownPipelineBuilder()
+            .UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
+            .UseAdvancedExtensions()
+            .UseListExtras()
+            .UseEmojiAndSmiley(true)
             .UseYamlFrontMatter()
             .Build();
 
@@ -72,5 +76,44 @@ public static class MarkdownHelper
             result = default;
             return false;
         }
+    }
+
+    /// <summary>
+    /// 获取 Markdown 的文章引言
+    /// </summary>
+    /// <param name="markdown">Markdown 文件内容</param>
+    /// <returns>文章引言，若不存在，则返回空字符串</returns>
+    public static string GetArticleQuote(string markdown)
+    {
+        if (markdown.Contains("<!-- more -->") != true)
+        {
+            return string.Empty;
+        }
+
+        string? quote = null;
+        MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
+        YamlFrontMatterBlock? yamlBlock = doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
+
+        foreach (MarkdownObject item in doc)
+        {
+            if (item is HtmlBlock htmlBlock)
+            {
+                string html = markdown.Substring(htmlBlock.Span.Start, htmlBlock.Span.Length);
+                if (html == "<!-- more -->")
+                {
+                    if (yamlBlock is not null)
+                    {
+                        quote = markdown[(yamlBlock.Span.End + 1)..htmlBlock.Span.Start];
+                    }
+                    else
+                    {
+                        quote = markdown[..htmlBlock.Span.Start];
+                    }
+                    break;
+                }
+            }
+        }
+
+        return quote ?? string.Empty;
     }
 }

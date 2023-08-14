@@ -369,6 +369,8 @@ src/AnEoT.Vintage/StaticWebSite
 # Auto-generated feed file
 src/AnEoT.Vintage/wwwroot/atom.xml
 src/AnEoT.Vintage/wwwroot/rss.xml
+src/AnEoT.Vintage/wwwroot/atom_full.xml
+src/AnEoT.Vintage/wwwroot/rss_full.xml
 
 # Visual Studio Code cache/options directory
 /.vscode
