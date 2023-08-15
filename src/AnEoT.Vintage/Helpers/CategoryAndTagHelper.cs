@@ -1,12 +1,14 @@
 ﻿namespace AnEoT.Vintage.Helpers;
 
 /// <summary>
-/// 为文章分类相关功能提供帮助的类
+/// 为文章分类及标签的相关功能提供帮助的类
 /// </summary>
-public static class CategoryHelper
+public static class CategoryAndTagHelper
 {
     private static readonly List<string> _categories = new(10);
+    private static readonly List<string> _tags = new(100);
     private static readonly Dictionary<string, List<string>> _categoryArticleMapping = new(500);
+    private static readonly Dictionary<string, List<string>> _tagArticleMapping = new(500);
 
     /// <summary>
     /// 获取全部文章分类
@@ -42,6 +44,42 @@ public static class CategoryHelper
         }
 
         return _categories;
+    }
+    
+    /// <summary>
+    /// 获取全部文章标签
+    /// </summary>
+    /// <returns>包含文章标签的<see cref="IEnumerable{String}"/></returns>
+    public static IEnumerable<string> GetAllTags(string webRootPath)
+    {
+        if (_tags.Any())
+        {
+            return _tags;
+        }
+
+        DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
+        foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories())
+        {
+            //添加特定期刊下的文章的信息
+            foreach (FileInfo file in volDirInfo.EnumerateFiles("*.md"))
+            {
+                string markdown = File.ReadAllText(file.FullName);
+                ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
+
+                if (articleInfo.Tag is not null && articleInfo.Tag.Any())
+                {
+                    foreach (string tagString in articleInfo.Tag)
+                    {
+                        if (_tags.Contains(tagString) is not true)
+                        {
+                            _tags.Add(tagString);
+                        }
+                    }
+                }
+            }
+        }
+
+        return _tags;
     }
 
     /// <summary>
@@ -90,5 +128,53 @@ public static class CategoryHelper
         }
 
         return _categoryArticleMapping;
+    }
+    
+    /// <summary>
+    /// 获取文章标签与文章相对地址的映射
+    /// </summary>
+    /// <param name="webRootPath"></param>
+    /// <returns>一个包含映射的字典</returns>
+    public static IDictionary<string, List<string>> GetTagToArticleMapping(string webRootPath)
+    {
+        if (_tagArticleMapping.Any())
+        {
+            return _tagArticleMapping;
+        }
+
+        DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
+        foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories())
+        {
+            //添加特定期刊下的文章的信息
+            foreach (FileInfo file in volDirInfo.EnumerateFiles("*.md"))
+            {
+                string markdown = File.ReadAllText(file.FullName);
+                ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
+
+                if (articleInfo.Tag is not null && articleInfo.Tag.Any())
+                {
+                    string relativePath = Path.GetRelativePath(webRootPath, file.FullName).Replace('\\','/');
+
+                    foreach (string tagString in articleInfo.Tag)
+                    {
+                        if (_tagArticleMapping.TryGetValue(tagString, out List<string>? list))
+                        {
+                            list.Add(relativePath);
+                        }
+                        else
+                        {
+                            list = new List<string>(50)
+                            {
+                                relativePath
+                            };
+
+                            _tagArticleMapping.Add(tagString, list);
+                        }
+                    }
+                }
+            }
+        }
+
+        return _tagArticleMapping;
     }
 }

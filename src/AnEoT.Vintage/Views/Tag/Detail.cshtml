@@ -1,0 +1,64 @@
+﻿@using AnEoT.Vintage.ViewModels.Tag;
+@using Microsoft.AspNetCore.Html;
+@using System.Globalization;
+@using Westwind.AspNetCore.Markdown;
+
+@inject IWebHostEnvironment env
+@model DetailViewModel
+
+@{
+    ViewData["Title"] = $"标签：{Model.Tag}";
+}
+
+<div>
+    <h1 style="margin-bottom:10px">@ViewData["Title"]</h1>
+
+    <div style="margin-bottom:10px">
+        <a href="~/tag/">返回到标签列表</a>
+        <br>
+    </div>
+
+    在此标签中，有以下文章：
+
+    <ul>
+        @foreach (string uri in Model.ArticleUris.OrderBy(uri => uri.Split('/')[1]).Reverse())
+        {
+            string markdownPath = System.IO.Path.Combine(env.WebRootPath, uri);
+            string markdown = File.ReadAllText(markdownPath);
+            string quote = MarkdownHelper.GetArticleQuote(markdown);
+            ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
+
+            <li style="margin:0 0 10px 0">
+                <span style="font-weight:bold">@articleInfo.Title</span>
+                <br />
+
+                @if (string.IsNullOrWhiteSpace(quote) is not true)
+                {
+                    <div style="overflow: hidden;line-height: 1.6;cursor: default;">
+                        @Markdown.ParseHtmlString(quote)
+                    </div>
+                }
+                else if (string.IsNullOrWhiteSpace(articleInfo.Description) is not true)
+                {
+                    <p>@articleInfo.Description</p>
+                }
+                else
+                {
+                    <br />
+                }
+
+                <div style="font-style:italic;">
+                    <span>作者：@(string.IsNullOrWhiteSpace(articleInfo.Author) ? "Another End of Terra" : articleInfo.Author)</span>
+                    <br />
+                    @if (DateOnly.TryParse(articleInfo.Date, CultureInfo.InvariantCulture, out DateOnly result))
+                    {
+                        <span>日期：@result.ToString("yyyy年M月d日")</span>
+                        <br />
+                    }
+                </div>
+
+                <a href="~/@uri.Replace(".md", ".html")">查看文章</a>
+            </li>
+        }
+    </ul>
+</div>

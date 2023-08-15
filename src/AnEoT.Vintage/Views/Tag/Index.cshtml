@@ -1,0 +1,22 @@
+﻿@using AnEoT.Vintage.ViewModels.Tag
+@model IndexViewModel
+
+@{
+    ViewData["Title"] = "标签";
+}
+
+<div>
+    <h1>@ViewData["Title"]</h1>
+    <ul>
+        @foreach (var item in Model.TagToArticleRelativePathMapping)
+        {
+            <li>
+                <a href="~/tag/@item.Key">
+                    @item.Key
+                </a>
+                <br/>
+                共@(Model.TagToArticleRelativePathMapping[item.Key].Count)篇
+            </li>
+        }
+    </ul>
+</div>
