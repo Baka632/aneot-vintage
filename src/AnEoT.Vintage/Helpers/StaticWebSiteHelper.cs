@@ -18,6 +18,7 @@ public static class StaticWebSiteHelper
         {
             new PageInfo("/"),
             new PageInfo("/category") { OutFile = Path.Combine("category","index.html") },
+            new PageInfo("/tag") { OutFile = Path.Combine("tag","index.html") },
             new PageInfo("/posts") { OutFile = Path.Combine("posts","index.html") },
         };
 
@@ -38,9 +39,14 @@ public static class StaticWebSiteHelper
         #endregion
 
         #region 第二步：根据wwwroot\posts下的文件与文件夹来生成网页内容信息
-        foreach (string category in CategoryHelper.GetAllCategories(webRootPath))
+        foreach (string category in CategoryAndTagHelper.GetAllCategories(webRootPath))
         {
             pages.Add(new PageInfo($"/category/{WebUtility.UrlEncode(category)}") { OutFile = Path.Combine("category", category, $"index.html") });
+        }
+        
+        foreach (string tag in CategoryAndTagHelper.GetAllTags(webRootPath))
+        {
+            pages.Add(new PageInfo($"/tag/{WebUtility.UrlEncode(tag)}") { OutFile = Path.Combine("tag", tag, $"index.html") });
         }
 
         //获取posts文件夹的信息

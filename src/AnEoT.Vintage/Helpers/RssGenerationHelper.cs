@@ -47,7 +47,7 @@ namespace AnEoT.Vintage.Helpers
                 ImageUrl = new Uri($"{rssBaseUri}/images/logo.jpg"),
             };
 
-            IEnumerable<string> categories = CategoryHelper.GetAllCategories(webRootPath);
+            IEnumerable<string> categories = CategoryAndTagHelper.GetAllCategories(webRootPath);
             foreach (string item in categories)
             {
                 feed.Categories.Add(new SyndicationCategory(item));

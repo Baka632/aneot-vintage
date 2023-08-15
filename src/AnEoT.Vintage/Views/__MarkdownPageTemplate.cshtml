@@ -67,7 +67,7 @@
         <span>
             分类：@foreach (string item in articleInfo.Category)
             {
-                @if (CategoryHelper.GetAllCategories(env.WebRootPath).Contains(item))
+                @if (CategoryAndTagHelper.GetAllCategories(env.WebRootPath).Contains(item))
                 {
                     <a style="margin: 0 auto 0 0;" href="~/category/@item">@item</a>
                 }
@@ -85,7 +85,14 @@
         <span>
             标签：@foreach (string item in articleInfo.Tag)
             {
-                <span style="margin: 0 auto 0 0; text-decoration: underline;">@item</span>
+                @if (CategoryAndTagHelper.GetAllTags(env.WebRootPath).Contains(item))
+                {
+                    <a style="margin: 0 auto 0 0;" href="~/tag/@item">@item</a>
+                }
+                else
+                {
+                    <span style="margin: 0 auto 0 0; text-decoration: underline;">@item</span>
+                }
             }
         </span>
     }
