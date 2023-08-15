@@ -39,7 +39,7 @@ namespace AnEoT.Vintage.Helpers
                "Another End of Terra",
                new Uri(rssBaseUri),
                "AnEoT-Vintage",
-               DateTime.Now)
+               DateTimeOffset.Now)
             {
                 Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2023 TCA. All rights reserved."),
                 Language = "zh-CN",
@@ -91,18 +91,18 @@ namespace AnEoT.Vintage.Helpers
 
                     if (addCssStyle)
                     {
-                        //添加样式
-                        html = string.Concat(@$"<link href=""{rssBaseUri}/css/site.css"" rel=""stylesheet"" type=""text/css"" /><link href=""{rssBaseUri}/css/index.css"" rel=""stylesheet"" type=""text/css"" /><link href=""{rssBaseUri}/css/palette.css"" rel=""stylesheet"" type=""text/css"" /><!--[if !IE]> --><link href=""https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css"" rel=""stylesheet"" type=""text/css"" /><!-- <![endif]-->", html);
+                        html = $"""<head><link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" /><link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" /><link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" /><link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" /></head><body>{html}</body>""";
                     }
 
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
+                    bool hasDate = DateTimeOffset.TryParse(articleInfo.Date, out DateTimeOffset publishDate);
                     SyndicationItem item = new(
                         articleInfo.Title,
                         content,
                         new Uri(articleLink, UriKind.Absolute),
                         articleLink,
-                        DateTime.Now);
+                        hasDate ? publishDate : DateTimeOffset.Now);
 
                     item.Authors.Add(new SyndicationPerson() { Name = articleInfo.Author });
 
@@ -111,9 +111,13 @@ namespace AnEoT.Vintage.Helpers
                         item.Categories.Add(new SyndicationCategory(category));
                     }
 
-                    if (DateTimeOffset.TryParse(articleInfo.Date, out DateTimeOffset publishDate))
+                    if (hasDate)
                     {
                         item.PublishDate = publishDate;
+                    }
+                    else
+                    {
+                        item.PublishDate = DateTimeOffset.Now;
                     }
 
                     items.Add(item);
