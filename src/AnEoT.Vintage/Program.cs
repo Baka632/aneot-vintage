@@ -28,7 +28,10 @@ public class Program
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
         #region 第一步：读取应用程序配置
+        //确定是否启用WebP图像转换功能
+        _ = bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP);
 
+        #region 静态页面
         //设置静态页面的导出位置
         string staticWebSiteOutputPath;
 
@@ -48,10 +51,9 @@ public class Program
 
         //确定是否生成静态网页
         bool generateStaticWebSite = args.HasExitWhenDoneArg();
+        #endregion
 
-        //确定是否启用WebP图像转换功能
-        _ = bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP);
-
+        #region RSS
         //设置RSS源的基Uri
         string rssBaseUri;
 
@@ -73,6 +75,10 @@ public class Program
 
         //确定是否生成完整的 RSS 源 （包含全部文章）
         _ = bool.TryParse(builder.Configuration["RssIncludeAllArticles"], out bool rssIncludeAllArticles);
+        
+        //确定生成的 RSS 源是否包含样式
+        _ = bool.TryParse(builder.Configuration["RssAddCssStyle"], out bool rssAddCssStyle);
+        #endregion
         #endregion
 
         #region 第二步：向依赖注入容器添加服务
@@ -217,9 +223,9 @@ public class Program
 
         if (rssIncludeAllArticles)
         {
-            RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath, true, "rss_full.xml", "atom_full.xml");
+            RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath, includeAllArticles: true, addCssStyle: rssAddCssStyle, rss20FileName: "rss_full.xml", atomFileName: "atom_full.xml");
         }
-        RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath);
+        RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath, addCssStyle: rssAddCssStyle);
 
         if (generateStaticWebSite)
         {

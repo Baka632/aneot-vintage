@@ -16,9 +16,10 @@ namespace AnEoT.Vintage.Helpers
         /// <param name="rssBaseUri">RSS 源的基 Uri</param>
         /// <param name="webRootPath">“wwwroot”文件夹所在路径</param>
         /// <param name="includeAllArticles">确定 RSS 源是否包含全部文章信息的值</param>
-        /// <param name="rss20FileName"></param>
-        /// <param name="atomFileName"></param>
-        public static void GenerateRssFeed(string rssBaseUri, string webRootPath, bool includeAllArticles = false, string rss20FileName = "rss.xml", string atomFileName = "atom.xml")
+        /// <param name="rss20FileName">RSS 2.0 源的文件名</param>
+        /// <param name="atomFileName">ATOM 源的文件名</param>
+        /// <param name="addCssStyle">确定 RSS 源是否包含 CSS 样式的值</param>
+        public static void GenerateRssFeed(string rssBaseUri, string webRootPath, bool includeAllArticles = false, bool addCssStyle = false, string rss20FileName = "rss.xml", string atomFileName = "atom.xml")
         {
             if (string.IsNullOrWhiteSpace(rssBaseUri))
             {
@@ -37,7 +38,7 @@ namespace AnEoT.Vintage.Helpers
                "回归线简易版",
                "Another End of Terra",
                new Uri(rssBaseUri),
-               "AnEoT",
+               "AnEoT-Vintage",
                DateTime.Now)
             {
                 Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2023 TCA. All rights reserved."),
@@ -46,20 +47,10 @@ namespace AnEoT.Vintage.Helpers
                 ImageUrl = new Uri($"{rssBaseUri}/images/logo.jpg"),
             };
 
-            SyndicationCategory[] categories = new SyndicationCategory[]
+            IEnumerable<string> categories = CategoryHelper.GetAllCategories(webRootPath);
+            foreach (string item in categories)
             {
-                new("干员秘闻"),
-                new("此地之外"),
-                new("罗德岛日志"),
-                new("午间逸话"),
-                new("画中秘境"),
-                new("特别企划"),
-                new("创作者访谈"),
-            };
-
-            foreach (var item in categories)
-            {
-                feed.Categories.Add(item);
+                feed.Categories.Add(new SyndicationCategory(item));
             }
 
             //获取posts文件夹的信息
@@ -97,6 +88,13 @@ namespace AnEoT.Vintage.Helpers
 
                     CustomMarkdownParser parser = new(false, false, true, $"{rssBaseUri}/posts/{volDirInfo.Name}");
                     string html = parser.Parse(markdown);
+
+                    if (addCssStyle)
+                    {
+                        //添加样式
+                        html = string.Concat(@$"<link href=""{rssBaseUri}/css/site.css"" rel=""stylesheet"" type=""text/css"" /><link href=""{rssBaseUri}/css/index.css"" rel=""stylesheet"" type=""text/css"" /><link href=""{rssBaseUri}/css/palette.css"" rel=""stylesheet"" type=""text/css"" /><!--[if !IE]> --><link href=""https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css"" rel=""stylesheet"" type=""text/css"" /><!-- <![endif]-->", html);
+                    }
+
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
                     SyndicationItem item = new(
