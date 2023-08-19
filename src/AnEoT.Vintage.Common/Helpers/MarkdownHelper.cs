@@ -103,11 +103,11 @@ public static class MarkdownHelper
                 {
                     if (yamlBlock is not null)
                     {
-                        quote = markdown[(yamlBlock.Span.End + 1)..htmlBlock.Span.Start];
+                        quote = markdown[(yamlBlock.Span.End + 1)..htmlBlock.Span.Start].Trim();
                     }
                     else
                     {
-                        quote = markdown[..htmlBlock.Span.Start];
+                        quote = markdown[..htmlBlock.Span.Start].Trim();
                     }
                     break;
                 }
