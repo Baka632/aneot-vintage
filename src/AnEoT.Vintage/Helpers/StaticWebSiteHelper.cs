@@ -14,12 +14,15 @@ public static class StaticWebSiteHelper
     /// <returns>描述网站内容的<see cref="StaticPagesInfoProvider"/></returns>
     public static StaticPagesInfoProvider GetStaticPagesInfoProvider(string webRootPath)
     {
+        //TODO: 让页面信息能自动加入到静态网页生成器中
+
         List<PageInfo> pages = new(2000)
         {
             new PageInfo("/"),
             new PageInfo("/category") { OutFile = Path.Combine("category","index.html") },
             new PageInfo("/tag") { OutFile = Path.Combine("tag","index.html") },
             new PageInfo("/posts") { OutFile = Path.Combine("posts","index.html") },
+            new PageInfo("/bulletin") { OutFile = Path.Combine("bulletin","index.html") },
         };
 
         DirectoryInfo wwwRootDirectory = new(webRootPath);
@@ -41,16 +44,18 @@ public static class StaticWebSiteHelper
         #region 第二步：根据wwwroot\posts下的文件与文件夹来生成网页内容信息
         foreach (string category in CategoryAndTagHelper.GetAllCategories(webRootPath))
         {
-            pages.Add(new PageInfo($"/category/{WebUtility.UrlEncode(category)}") { OutFile = Path.Combine("category", category, $"index.html") });
+            pages.Add(new PageInfo($"/category/{WebUtility.UrlEncode(category)}") { OutFile = Path.Combine("category", category, "index.html") });
         }
         
         foreach (string tag in CategoryAndTagHelper.GetAllTags(webRootPath))
         {
-            pages.Add(new PageInfo($"/tag/{WebUtility.UrlEncode(tag)}") { OutFile = Path.Combine("tag", tag, $"index.html") });
+            pages.Add(new PageInfo($"/tag/{WebUtility.UrlEncode(tag)}") { OutFile = Path.Combine("tag", tag, "index.html") });
         }
 
         //获取posts文件夹的信息
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
+        //获取bulletin文件夹的信息
+        DirectoryInfo bulletinDirectoryInfo = new(Path.Combine(webRootPath, "bulletin"));
 
         foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories())
         {
@@ -74,6 +79,12 @@ public static class StaticWebSiteHelper
                 string nameRemovedExtension = article.Name.Replace(".md", string.Empty);
                 pages.Add(new($"/posts/{volDirInfo.Name}/{nameRemovedExtension}"));
             }
+        }
+
+        foreach (FileInfo bulletinFile in bulletinDirectoryInfo.EnumerateFiles("*.md"))
+        {
+            string nameRemovedExtension = bulletinFile.Name.Replace(".md", string.Empty);
+            pages.Add(new($"/bulletin/{nameRemovedExtension}"));
         }
         #endregion
 
