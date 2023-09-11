@@ -28,6 +28,13 @@ namespace AnEoT.Vintage.Helpers.Custom.Renderer
                 ObjectRenderers.Insert(htmlBlockRendererIndex, new CustomHtmlBlockRenderer(convertWebP));
                 ObjectRenderers.Remove(htmlBlockRenderer);
             }
+            
+            {
+                IMarkdownObjectRenderer paragraphRenderer = ObjectRenderers.First(obj => obj is HtmlInlineRenderer);
+                int htmlBlockRendererIndex = ObjectRenderers.IndexOf(paragraphRenderer);
+                ObjectRenderers.Insert(htmlBlockRendererIndex, new CustomHtmlInlineRenderer());
+                ObjectRenderers.Remove(paragraphRenderer);
+            }
         }
     }
 }

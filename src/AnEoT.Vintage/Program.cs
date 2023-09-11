@@ -97,11 +97,12 @@ public class Program
                     .UseYamlFrontMatter();
             };
 
-            if (generateStaticWebSite)
-            {
-                //为静态网页启用特殊的Markdown解析机制
-                config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
-            }
+            //if (generateStaticWebSite)
+            //{
+            //    //为静态网页启用特殊的Markdown解析机制
+            //    config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
+            //}
+            config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
         });
         builder.Services.AddControllersWithViews()
             .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);

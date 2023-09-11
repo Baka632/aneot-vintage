@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-using AngleSharp.Dom;
+﻿using AngleSharp.Dom;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -40,12 +39,12 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                     break;
                 }
 
+                string html = slice.ToString();
+                HtmlParser parser = new();
+                using IHtmlDocument document = parser.ParseDocument(html);
+
                 if (convertWebP)
                 {
-                    string html = slice.ToString();
-
-                    HtmlParser parser = new();
-                    using IHtmlDocument document = parser.ParseDocument(html);
                     IElement? element = document.All
                         .Where(element => element.TagName.ToUpperInvariant() is "IMG").FirstOrDefault();
 
@@ -65,6 +64,8 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                         }
                     }
                 }
+
+
             }
         }
 
