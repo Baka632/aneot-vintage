@@ -97,11 +97,6 @@ public class Program
                     .UseYamlFrontMatter();
             };
 
-            //if (generateStaticWebSite)
-            //{
-            //    //为静态网页启用特殊的Markdown解析机制
-            //    config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
-            //}
             config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
         });
         builder.Services.AddControllersWithViews()
@@ -221,6 +216,8 @@ public class Program
 
         app.UseRouting();
         app.MapDefaultControllerRoute();
+
+        FakeAdHelper.PrepareData(app.Environment.WebRootPath);
 
         if (rssIncludeAllArticles)
         {

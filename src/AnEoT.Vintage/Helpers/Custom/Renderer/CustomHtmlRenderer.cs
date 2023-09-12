@@ -32,7 +32,7 @@ namespace AnEoT.Vintage.Helpers.Custom.Renderer
             {
                 IMarkdownObjectRenderer paragraphRenderer = ObjectRenderers.First(obj => obj is HtmlInlineRenderer);
                 int htmlBlockRendererIndex = ObjectRenderers.IndexOf(paragraphRenderer);
-                ObjectRenderers.Insert(htmlBlockRendererIndex, new CustomHtmlInlineRenderer());
+                ObjectRenderers.Insert(htmlBlockRendererIndex, new CustomHtmlInlineRenderer(convertWebP));
                 ObjectRenderers.Remove(paragraphRenderer);
             }
         }

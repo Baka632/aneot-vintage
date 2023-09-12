@@ -6,6 +6,7 @@ using Markdig.Helpers;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AnEoT.Vintage.Helpers.Custom.Renderer;
 
@@ -43,6 +44,9 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                 HtmlParser parser = new();
                 using IHtmlDocument document = parser.ParseDocument(html);
 
+                IElement? fakeAd = document.All
+                        .FirstOrDefault(element => element.TagName.ToUpperInvariant() is "FAKEADS");
+
                 if (convertWebP)
                 {
                     IElement? element = document.All
@@ -63,6 +67,24 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                             slice = new StringSlice(text);
                         }
                     }
+                }
+
+                if (fakeAd is not null)
+                {
+                    Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
+                    string fakeAdHtml = $"""
+                <div class="ads-container no-print">
+                    <p class="ads-hint">{ad.AdText}<a href="{ad.AboutLink}">{ad.AdAbout}</a></p>
+                    <div class="image-container">
+                      <a href="{ad.AdLink}" target="/" rel="noopener noreferrer">
+                        <img src="/fake-ads/{ad.AdImageLink}" alt="Advertisement" />
+                      </a>
+                    </div>
+                </div>
+                """
+                    ;
+
+                    slice = new StringSlice(fakeAdHtml);
                 }
 
 

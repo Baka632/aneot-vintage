@@ -1,0 +1,25 @@
+﻿.ads-hint {
+    text-align: right;
+    margin: 10px;
+    font-size: 9px;
+    font-style: italic;
+}
+
+.ads-container {
+    text-align: center;
+    margin-top: 75px;
+    min-width: 250px;
+    min-height: 50px;
+}
+
+.image-container {
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+}
