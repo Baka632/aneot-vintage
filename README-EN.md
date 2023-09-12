@@ -4,6 +4,8 @@
 
 A fanmade literary journal based on mobile game *Arknights*, redesigned for vintage devices.
 
+Notice: This is a unofficial project.
+
 ## Build Instructions
 
 - Clone the repository locally
