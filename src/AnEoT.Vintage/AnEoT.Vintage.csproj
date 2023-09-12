@@ -27,6 +27,14 @@
   <ItemGroup>
       <None Include="../../README.md" />
       <None Include="../../README-EN.md" />
+      <None Include="wwwroot\fake-ads\fl1.webp" />
+      <None Include="wwwroot\fake-ads\ld1.webp" />
+      <None Include="wwwroot\fake-ads\ld2.webp" />
+      <None Include="wwwroot\fake-ads\rn1.webp" />
+      <None Include="wwwroot\fake-ads\yh1.webp" />
+      <None Include="wwwroot\fake-ads\yh2.webp" />
+      <None Include="wwwroot\fake-ads\ym1.webp" />
+      <None Include="wwwroot\fake-ads\ym2.webp" />
   </ItemGroup>
 
   <ItemGroup>
