@@ -6,7 +6,6 @@ using Markdig.Helpers;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AnEoT.Vintage.Helpers.Custom.Renderer;
 
