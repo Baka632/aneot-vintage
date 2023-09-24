@@ -15,13 +15,15 @@ namespace AnEoT.Vintage.Helpers.Custom.Renderer;
 public class CustomHtmlBlockRenderer : HtmlBlockRenderer
 {
     private readonly bool convertWebP;
+    private readonly bool noAd;
 
     /// <summary>
     /// 使用指定的参数构造<seealso cref="CustomHtmlBlockRenderer"/>的新实例
     /// </summary>
-    public CustomHtmlBlockRenderer(bool convertWebP)
+    public CustomHtmlBlockRenderer(bool convertWebP, bool noAd)
     {
         this.convertWebP = convertWebP;
+        this.noAd = noAd;
     }
 
     /// <inheritdoc/>
@@ -68,7 +70,7 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                     }
                 }
 
-                if (fakeAd is not null)
+                if (fakeAd is not null && noAd is not true)
                 {
                     Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
                     string fakeAdHtml = $"""
@@ -80,13 +82,10 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                       </a>
                     </div>
                 </div>
-                """
-                    ;
+                """;
 
                     slice = new StringSlice(fakeAdHtml);
                 }
-
-
             }
         }
 
