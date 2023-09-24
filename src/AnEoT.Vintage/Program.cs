@@ -139,6 +139,7 @@ public class Program
         #endregion
 
         #region 第三步：配置 HTTP 请求管道 + 额外工作
+        //配置Uri重写
         RewriteOptions rewriteOptions = new RewriteOptions()
             .Add(context =>
             {
@@ -155,7 +156,14 @@ public class Program
                     }
                     else
                     {
-                        request.Path = request.Path.Value.Replace(".html", ".md");
+                        if (request.Path.Value.Contains("index.html", StringComparison.OrdinalIgnoreCase))
+                        {
+                            request.Path = request.Path.Value.Replace("index.html", "README.md");
+                        }
+                        else
+                        {
+                            request.Path = request.Path.Value.Replace(".html", ".md");
+                        }
                     }
                 }
             });

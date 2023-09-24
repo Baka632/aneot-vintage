@@ -5,8 +5,8 @@ icon: home
 title: 主页
 heroText: 回归线
 heroFullScreen: false
-tagline: © oY柚柚Yo 2023·08
-heroAlt: '#d54440'
+tagline: © niche 2023·09
+heroAlt: '#e82c36'
 projects:
 - icon: read
   name: 期刊一览
@@ -14,8 +14,8 @@ projects:
   link: posts/
 - icon: article
   name: 最新一期
-  desc: Vol.15 2023-08
-  link: posts/2023-08
+  desc: Vol.16 2023-09
+  link: posts/2023-09
 - icon: cache
   name: 下载 PDF
   desc: Download

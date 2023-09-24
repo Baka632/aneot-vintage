@@ -86,7 +86,7 @@ namespace AnEoT.Vintage.Helpers
                     ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
                     string articleLink = $"{rssBaseUri}/posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}";
 
-                    CustomMarkdownParser parser = new(false, false, true, $"{rssBaseUri}/posts/{volDirInfo.Name}");
+                    CustomMarkdownParser parser = new(false, false, true, $"{rssBaseUri}/posts/{volDirInfo.Name}", true, true);
                     string html = parser.Parse(markdown);
 
                     if (addCssStyle)
