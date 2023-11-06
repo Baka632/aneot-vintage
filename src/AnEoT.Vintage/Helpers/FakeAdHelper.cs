@@ -48,7 +48,7 @@ public static class FakeAdHelper
 
         float cumulativeProbability = 0;
         Random random = new();
-        foreach (var item in fakeAdConfigurations)
+        foreach (KeyValuePair<string, FakeAdConfiguration> item in fakeAdConfigurations)
         {
             cumulativeProbability += item.Value.probability;
 
