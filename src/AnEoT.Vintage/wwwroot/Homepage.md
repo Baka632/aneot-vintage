@@ -5,8 +5,8 @@ icon: home
 title: 主页
 heroText: 回归线
 heroFullScreen: false
-tagline: © niche 2023·09
-heroAlt: '#e82c36'
+tagline: © 相落 2023·10
+heroAlt: '#e1dfe0'
 projects:
 - icon: read
   name: 期刊一览
@@ -14,8 +14,8 @@ projects:
   link: posts/
 - icon: article
   name: 最新一期
-  desc: Vol.16 2023-09
-  link: posts/2023-09
+  desc: Vol.17 2023-10
+  link: posts/2023-10
 - icon: cache
   name: 下载 PDF
   desc: Download
