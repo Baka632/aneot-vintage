@@ -5,7 +5,7 @@ icon: home
 title: 主页
 heroText: 回归线
 heroFullScreen: false
-tagline: © 相落 2023·10
+tagline: © 和庭 2023·10
 heroAlt: '#e1dfe0'
 projects:
 - icon: read
