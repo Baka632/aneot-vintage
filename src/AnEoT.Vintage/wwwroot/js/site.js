@@ -35,10 +35,7 @@ function autoSwitchTheme() {
         return;
     }
 
-    if (window.matchMedia == undefined) {
-        return;
-    }
-    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (window.matchMedia != undefined && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         modifyThemeCssLink("dark");
     }
     else {

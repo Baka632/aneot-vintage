@@ -18,26 +18,48 @@
         <div>
             <span>页面颜色主题:</span>
             <select id="themeSelect" title="页面颜色主题">
-                <option value="">--请选择--</option>
+                <option value="null">自动选择</option>
                 <option value="light">亮色</option>
                 <option value="dark">暗色</option>
-                <option value="null">自动选择</option>
             </select>
         </div>
     </div>
 </div>
 
 <script>
-     var select = document.getElementById("themeSelect")
+    var themeSelect = document.getElementById("themeSelect");
+    setThemeSelect(themeSelect);
 
-    if (select.addEventListener) {
-        select.addEventListener("change", function () {
-            switchTheme(select.value)
-        });
-    }
-    else if (select.attachEvent) {
-        select.attachEvent('onchange', function (){
-            switchTheme(select.value)
-        });
+    function setThemeSelect(select) {
+        var preDefTheme = docCookies.getItem("pageTheme");
+        if (preDefTheme != null && (preDefTheme == "light" || preDefTheme == "dark")) {
+            for (var i = 0; i < select.options.length; i++) {
+                var single = select.options[i];
+                if (single.value == preDefTheme) {
+                    single.selected = true;
+                    break;
+                }
+            }
+        }
+        else {
+            for (var i = 0; i < select.options.length; i++) {
+                var single = select.options[i];
+                if (single.value == "null") {
+                    single.selected = true;
+                    break;
+                }
+            }
+        }
+
+        if (select.addEventListener) {
+            select.addEventListener("change", function () {
+                switchTheme(select.value)
+            });
+        }
+        else if (select.attachEvent) {
+            select.attachEvent('onchange', function () {
+                switchTheme(select.value)
+            });
+        }
     }
 </script>
