@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using AnEoT.Vintage.ViewModels.Settings;
 
 namespace AnEoT.Vintage.Controllers
 {
@@ -13,8 +12,7 @@ namespace AnEoT.Vintage.Controllers
         /// </summary>
         public IActionResult Index()
         {
-            IndexViewModel model = new();
-            return View(model);
+            return View();
         }
     }
 }

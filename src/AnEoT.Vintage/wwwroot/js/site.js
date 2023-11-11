@@ -7,6 +7,7 @@ else if (window.attachEvent) {
 
 function onPageLoad() {
     autoSwitchTheme();
+    autoSwitchLayout();
 }
 
 function switchTheme(theme) {
@@ -46,5 +47,39 @@ function autoSwitchTheme() {
 function modifyThemeCssLink(theme) {
     var link = document.getElementById("theme-css");
     var str = link.href.replace(/(light|dark)\.css/i, theme + ".css");
+    link.href = str;
+}
+
+function switchLayout(layout) {
+    if (layout == "") {
+        return;
+    }
+    else if (layout == null || layout == "null") {
+        docCookies.setItem("pageLayout", "", 0, "/")
+        autoSwitchLayout();
+        return;
+    }
+    else if (layout != "left" && layout != "center") {
+        autoSwitchLayout();
+        return;
+    }
+
+    modifyLayoutCssLink(layout);
+    docCookies.setItem("pageLayout", layout, Infinity, "/")
+}
+
+function autoSwitchLayout() {
+    var preDefLayout = docCookies.getItem("pageLayout");
+    if (preDefLayout != null && (preDefLayout == "left" || preDefLayout == "center")) {
+        modifyLayoutCssLink(preDefLayout);
+    }
+    else {
+        modifyLayoutCssLink("left");
+    }
+}
+
+function modifyLayoutCssLink(layout) {
+    var link = document.getElementById("layout-css");
+    var str = link.href.replace(/(left|center)\.css/i, layout + ".css");
     link.href = str;
 }
