@@ -1,0 +1,43 @@
+﻿@using AnEoT.Vintage.ViewModels.Settings
+@model IndexViewModel
+
+@{
+    ViewData["Title"] = "设置";
+}
+
+<div>
+    <h1>@ViewData["Title"]</h1>
+    <div>
+        <noscript>
+            <span style="color: red">
+                <strong>JavaScript 不可用，因此对设置进行的任何修改将不起作用。</strong>
+            </span>
+            <br />
+            <br />
+        </noscript>
+        <div>
+            <span>页面颜色主题:</span>
+            <select id="themeSelect" title="页面颜色主题">
+                <option value="">--请选择--</option>
+                <option value="light">亮色</option>
+                <option value="dark">暗色</option>
+                <option value="null">自动选择</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+     var select = document.getElementById("themeSelect")
+
+    if (select.addEventListener) {
+        select.addEventListener("change", function () {
+            switchTheme(select.value)
+        });
+    }
+    else if (select.attachEvent) {
+        select.attachEvent('onchange', function (){
+            switchTheme(select.value)
+        });
+    }
+</script>

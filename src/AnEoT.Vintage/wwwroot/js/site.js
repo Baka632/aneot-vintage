@@ -1,12 +1,21 @@
-window.addEventListener("DOMContentLoaded", (event) => { onPageLoad(); })
+if (window.addEventListener) {
+    window.addEventListener("DOMContentLoaded", onPageLoad)
+}
+else if (window.attachEvent) {
+    window.attachEvent('onload', onPageLoad);
+}
 
 function onPageLoad() {
     autoSwitchTheme();
 }
 
 function switchTheme(theme) {
-    if (theme == null) {
-        docCookies.removeItem("pageTheme")
+
+    if (theme == "") {
+        return;
+    }
+    else if (theme == null || theme == "null") {
+        docCookies.setItem("pageTheme", "", 0, "/")
         autoSwitchTheme();
         return;
     }
@@ -16,30 +25,29 @@ function switchTheme(theme) {
     }
 
     modifyThemeCssLink(theme);
-    docCookies.setItem("pageTheme", theme, Infinity)
+    docCookies.setItem("pageTheme", theme, Infinity, "/")
 }
 
 function autoSwitchTheme() {
-    let preDefTheme = docCookies.getItem("pageTheme");
+    var preDefTheme = docCookies.getItem("pageTheme");
     if (preDefTheme != null && (preDefTheme == "light" || preDefTheme == "dark")) {
         modifyThemeCssLink(preDefTheme);
         return;
     }
 
-    if (window.matchMedia("(prefers-color-scheme)").media === "not all") {
-        console.log("This browser doesn\'t support 'prefers-color-scheme' media query");
+    if (window.matchMedia == undefined) {
         return;
     }
     else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         modifyThemeCssLink("dark");
     }
-    else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    else {
         modifyThemeCssLink("light");
     }
 }
 
 function modifyThemeCssLink(theme) {
-    let link = document.getElementById("theme-css");
-    let str = link.href.replace(/(light|dark)\.css/i, theme + ".css");
+    var link = document.getElementById("theme-css");
+    var str = link.href.replace(/(light|dark)\.css/i, theme + ".css");
     link.href = str;
 }

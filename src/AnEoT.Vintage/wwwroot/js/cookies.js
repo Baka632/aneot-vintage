@@ -27,10 +27,10 @@ var docCookies = {
                     new RegExp(
                         "(?:(?:^|.*;)\\s*" +
                         encodeURIComponent(sKey).replace(/[-.+*]/g, "\\$&") +
-                        "\\s*\\=\\s*([^;]*).*$)|^.*$",
+                        "\\s*\\=\\s*([^;]*).*$)|^.*$"
                     ),
-                    "$1",
-                ),
+                    "$1"
+                )
             ) || null
         );
     },
@@ -80,7 +80,7 @@ var docCookies = {
         return new RegExp(
             "(?:^|;\\s*)" +
             encodeURIComponent(sKey).replace(/[-.+*]/g, "\\$&") +
-            "\\s*\\=",
+            "\\s*\\="
         ).test(document.cookie);
     },
     keys: /* optional method: you can safely remove it! */ function () {
