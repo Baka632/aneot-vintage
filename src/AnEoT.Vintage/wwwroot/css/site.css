@@ -22,3 +22,15 @@ img {
     overflow: clip;
     max-width: 100%;
 }
+
+a:link {
+    color: #0077cc;
+}
+
+a:visited {
+    color: #0077cc;
+}
+
+a:active {
+    color: #0077cc;
+}

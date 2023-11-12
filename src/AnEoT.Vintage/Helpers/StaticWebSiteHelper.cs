@@ -23,6 +23,7 @@ public static class StaticWebSiteHelper
             new PageInfo("/tag") { OutFile = Path.Combine("tag","index.html") },
             new PageInfo("/posts") { OutFile = Path.Combine("posts","index.html") },
             new PageInfo("/bulletin") { OutFile = Path.Combine("bulletin","index.html") },
+            new PageInfo("/settings")
         };
 
         DirectoryInfo wwwRootDirectory = new(webRootPath);

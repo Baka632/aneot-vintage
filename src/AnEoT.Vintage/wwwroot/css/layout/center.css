@@ -1,0 +1,15 @@
+﻿.navbar-center {
+    margin: auto;
+    width: 400px;
+    text-align: center
+}
+
+.content-margin {
+    margin-left: 10%;
+    margin-right: 10%
+}
+
+.navbar-image {
+    margin-right: 5px;
+    width: 35%
+}

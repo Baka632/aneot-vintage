@@ -8,25 +8,33 @@
     <link href="~/css/index.css" rel="stylesheet" type="text/css" />
     <link href="~/css/palette.css" rel="stylesheet" type="text/css" />
     <link href="~/css/fake-ads.css" rel="stylesheet" type="text/css" />
-    <link href="~/favicon.ico" rel="shortcut icon" />
 
-    <!-- 反正 Internet Explorer 也不支持WOFF2字体，不如不加载 -->
+    <link href="~/css/theme/light.css" rel="stylesheet" type="text/css" id="theme-css" />
+    <link href="~/css/layout/left.css" rel="stylesheet" type="text/css" id="layout-css" />
+
+    <link href="~/favicon.ico" rel="shortcut icon" />
+    <script src="~/js/cookies.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <!-- 反正 Internet Explorer 也不支持 WOFF2 字体，不如不加载 -->
     <!--[if !IE]> -->
     <link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" />
     <!-- <![endif]-->
 </head>
 <body>
     <header>
-        <nav>
-            <div style="margin:auto;width:400px;text-align:center">
+        <nav class="navbar-center">
+            <div>
                 <div style="vertical-align:middle">
-                    <img src="~/images/logo.jpg" alt="TCA" width="35%" style="margin-right:5px" />
+                    <img src="~/images/logo.jpg" alt="TCA" class="navbar-image" />
                     <span>回归线简易版</span>
                 </div>
                 <a asp-controller="home" asp-action="Index" style="margin-right:5px">主页</a>
                 <a href="~/posts/" style="margin-right:5px">期刊列表</a>
                 <a href="~/intro/" style="margin-right:5px">关于</a>
                 <a href="~/bulletin/" style="margin-right:5px">公告栏</a>
+                <a href="~/settings/" style="margin-right:5px">设置</a>
+                <br />
                 <a href="https://aneot.terrach.net">前往《回归线》原网站</a>
             </div>
         </nav>
