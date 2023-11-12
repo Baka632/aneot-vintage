@@ -2,6 +2,7 @@
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AnEoT.Vintage.Tool
 {
@@ -46,7 +47,7 @@ namespace AnEoT.Vintage.Tool
 
             using IHtmlDocument document = parser.ParseDocument(html);
             IEnumerable<IElement> navBarLinks = document.All
-                .Where(element => element.TagName.ToUpperInvariant() is "A" or "IMG" or "LINK");
+                .Where(element => element.TagName.ToUpperInvariant() is "A" or "IMG" or "LINK" or "SCRIPT");
 
             bool isModified = false;
 
@@ -81,6 +82,16 @@ namespace AnEoT.Vintage.Tool
                             if (originalLink is not null && originalLink.StartsWith('/') && originalLink.Contains("/aneot-vintage") is not true)
                             {
                                 link.SetAttribute("href", $"/aneot-vintage{originalLink}");
+                                isModified = true;
+                            }
+                        }
+                        break;
+                    case IHtmlScriptElement script:
+                        {
+                            string? originalSrc = script.GetAttribute("src");
+                            if (originalSrc is not null && originalSrc.StartsWith('/') && originalSrc.Contains("/aneot-vintage") is not true)
+                            {
+                                script.SetAttribute("src", $"/aneot-vintage{originalSrc}");
                                 isModified = true;
                             }
                         }
