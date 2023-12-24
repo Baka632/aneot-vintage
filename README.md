@@ -65,7 +65,7 @@
 
 请参阅[原仓库的 README](https://github.com/TCA-Arknights/aneot?tab=readme-ov-file#about-copyright)。
 
-**以下内容翻译自原仓库，仅供参考，请以原仓库的 README 为准**。
+**以下内容翻译自原仓库，仅供参考，请以原仓库的 README 为准。**
 
 ---
 
