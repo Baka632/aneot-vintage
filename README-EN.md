@@ -2,9 +2,9 @@
 
 # Another End of Terra (AnEoT) for Vintage Devices
 
-A fanmade literary journal based on mobile game *Arknights*, redesigned for vintage devices.
+A fanmade literary journal based on mobile game *Arknights*, redesigned for vintage devices now.
 
-Notice: This is a unofficial project.
+Notice: This is an unofficial project.
 
 ## Build Instructions
 
@@ -59,9 +59,7 @@ This configuration will affect static web site generation.
 
 ## About Us
 
-If there are any errors in the website or you have any comments,
-
-You can open a new issue.
+If there are any errors in the website or you have any suggestions, you can open a new issue.
 
 ## About copyright
 

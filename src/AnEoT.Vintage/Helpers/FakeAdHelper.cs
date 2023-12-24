@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using AnEoT.Vintage.Models;
 
 namespace AnEoT.Vintage.Helpers;
@@ -50,13 +51,13 @@ public static class FakeAdHelper
         Random random = new();
         foreach (KeyValuePair<string, FakeAdConfiguration> item in fakeAdConfigurations)
         {
-            cumulativeProbability += item.Value.probability;
+            cumulativeProbability += item.Value.Probability;
 
             if (random.NextSingle()  < cumulativeProbability)
             {
                 FakeAdConfiguration selectedAd = item.Value;
-                int index = (int)Math.Floor(random.NextDouble() * selectedAd.files!.Length);
-                string fileName = selectedAd.files[index];
+                int index = (int)Math.Floor(random.NextDouble() * selectedAd.Files!.Length);
+                string fileName = selectedAd.Files[index];
                 FileInfo adInfoFile = new(Path.Combine(webRootPath, "fake-ads", $"{fileName}.txt"));
 
                 fakeAdInfo = fakeAdInfo with
@@ -91,7 +92,9 @@ public static class FakeAdHelper
 
     internal struct FakeAdConfiguration
     {
-        public float probability { get; set; }
-        public string[]? files { get; set; }
+        [JsonPropertyName("probability")]
+        public float Probability { get; set; }
+        [JsonPropertyName("files")]
+        public string[]? Files { get; set; }
     }
 }
