@@ -56,7 +56,7 @@ namespace AnEoT.Vintage.Helpers
             //获取posts文件夹的信息
             DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
 
-            List<SyndicationItem> items = new();
+            List<SyndicationItem> items = [];
 
             //反向读取文件夹，以获取到最新的期刊
             List<DirectoryInfo> volDirInfos = new(postsDirectoryInfo.EnumerateDirectories());

@@ -136,7 +136,7 @@ namespace AnEoT.Vintage.Tool
                 }
             }
 
-            if (linesToBeRemoved.Any())
+            if (linesToBeRemoved.Count != 0)
             {
                 foreach (int lineIndex in linesToBeRemoved)
                 {

@@ -19,6 +19,8 @@ namespace AnEoT.Vintage;
 /// </summary>
 public class Program
 {
+    private static readonly string[] defaultFileNames = ["README.md", "index.html", "index.htm"];
+
     /// <summary>
     /// 入口点方法
     /// </summary>
@@ -187,7 +189,7 @@ public class Program
         //让Markdown中间件能够自动获取到期刊页面的README.md文件
         app.UseDefaultFiles(new DefaultFilesOptions()
         {
-            DefaultFileNames = new string[] { "README.md", "index.html", "index.htm" }
+            DefaultFileNames = defaultFileNames
         });
        
         app.UseAuthorization();
@@ -200,7 +202,7 @@ public class Program
             {
                 OnPrepareResponse = async context =>
                 {
-                    string acceptHeader = context.Context.Request.Headers["Accept"].ToString();
+                    string acceptHeader = context.Context.Request.Headers.Accept.ToString();
 
                     if (!acceptHeader.Contains("image/webp", StringComparison.OrdinalIgnoreCase)
                         && context.File.Name.EndsWith(".webp", StringComparison.OrdinalIgnoreCase)
