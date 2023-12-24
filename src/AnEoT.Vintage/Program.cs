@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Westwind.AspNetCore.Markdown;
+using SixLabors.ImageSharp;
 
 namespace AnEoT.Vintage;
 
