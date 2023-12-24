@@ -1,4 +1,7 @@
-﻿namespace AnEoT.Vintage.Helpers;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+
+namespace AnEoT.Vintage.Helpers;
 
 /// <summary>
 /// 为"wwwroot"文件夹内文件的相关操作提供帮助方法

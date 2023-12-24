@@ -5,29 +5,22 @@ namespace AnEoT.Vintage.Common.Models;
 /// <summary>
 /// 表示期刊信息的结构
 /// </summary>
-public readonly struct VolumeInfo : IEquatable<VolumeInfo>
+/// <remarks>
+/// 使用指定的参数构造 <see cref="VolumeInfo"/> 的新实例
+/// </remarks>
+/// <param name="name">期刊名称</param>
+/// <param name="articles">Key 为文章标题，Value 为文章 Uri 的期刊文章信息字典</param>
+public readonly struct VolumeInfo(string name, IReadOnlyDictionary<string, string> articles) : IEquatable<VolumeInfo>
 {
     /// <summary>
     /// 当前期刊的名称
     /// </summary>
-    public string Name { get; }
+    public string Name { get; } = name ?? throw new ArgumentNullException(nameof(name));
 
     /// <summary>
     /// Key为文章标题，Value为文章Uri，包含期刊文章信息的字典
     /// </summary>
-    public IReadOnlyDictionary<string, string> Articles { get; }
-
-    /// <summary>
-    /// 使用指定的参数构造<see cref="VolumeInfo"/>的新实例
-    /// </summary>
-    /// <param name="name">期刊名称</param>
-    /// <param name="articles">Key为文章标题，Value为文章Uri的期刊文章信息字典</param>
-    /// <exception cref="ArgumentNullException"></exception>
-    public VolumeInfo(string name, IReadOnlyDictionary<string, string> articles)
-    {
-        Name = name ?? throw new ArgumentNullException(nameof(name));
-        Articles = articles ?? throw new ArgumentNullException(nameof(articles));
-    }
+    public IReadOnlyDictionary<string, string> Articles { get; } = articles ?? throw new ArgumentNullException(nameof(articles));
 
     public override readonly bool Equals(object? obj)
     {

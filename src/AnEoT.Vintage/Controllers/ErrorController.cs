@@ -7,24 +7,17 @@ namespace AnEoT.Vintage.Controllers
     /// <summary>
     /// 错误处理控制器
     /// </summary>
+    /// <param name="logger">日志记录器</param>
     [ApiExplorerSettings(IgnoreApi = true)]
-    public partial class ErrorController : Controller
+    public partial class ErrorController(ILogger<HomeController> logger) : Controller
     {
         /// <summary>
-        /// 日志记录器
+        /// 日志记录器字段，由源代码生成器生成的 <see cref="LogRequestError(string?)"/> 依赖于此字段
         /// </summary>
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> _logger = logger;
 
         /// <summary>
-        /// 构造<see cref="ErrorController"/>控制器的新实例，通常此构造器仅由依赖注入容器调用
-        /// </summary>
-        public ErrorController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
-        /// <summary>
-        /// 显示HTTP 错误状态码处理页
+        /// 显示 HTTP 错误状态码处理页
         /// </summary>
         /// <param name="code">HTTP 状态码</param>
         [Route("[controller]/{code}")]

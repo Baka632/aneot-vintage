@@ -7,25 +7,15 @@ using SystemIOFile = System.IO.File;
 namespace AnEoT.Vintage.Controllers.Api;
 
 /// <summary>
-/// 文章相关资源获取API的控制器
+/// 文章相关资源获取 API 的控制器
 /// </summary>
+/// <param name="env">
+/// 程序执行环境的信息提供者
+/// </param>
 [ApiController]
 [Route("api/[controller]")]
-public class PostsController : ControllerBase
+public class PostsController(IWebHostEnvironment env) : ControllerBase
 {
-    /// <summary>
-    /// 程序执行环境的信息提供者
-    /// </summary>
-    private readonly IWebHostEnvironment environment;
-
-    /// <summary>
-    /// 构造<see cref="PostsController"/>控制器的新实例，通常此构造器仅由依赖注入容器调用
-    /// </summary>
-    public PostsController(IWebHostEnvironment env)
-    {
-        environment = env;
-    }
-
     /// <summary>
     /// 获取指定期刊的信息
     /// </summary>
@@ -38,7 +28,7 @@ public class PostsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult GetVolumeInfo(string post)
     {
-        string contentPath = Path.Combine(environment.WebRootPath, "posts", post, "README.md");
+        string contentPath = Path.Combine(env.WebRootPath, "posts", post, "README.md");
 
         if (!SystemIOFile.Exists(contentPath))
         {
@@ -78,8 +68,8 @@ public class PostsController : ControllerBase
     /// 获取指定的文章
     /// </summary>
     /// <param name="post">刊物期数</param>
-    /// <param name="article">文章名称（不带.md扩展名）</param>
-    /// <returns>指定文章的Markdown文件</returns>
+    /// <param name="article">文章名称（不带 .md 扩展名）</param>
+    /// <returns>指定文章的 Markdown 文件</returns>
     /// <response code="200">成功找到指定的文章</response>
     /// <response code="404">找不到指定的文章</response>
     [HttpGet("{post}/{article}")]
@@ -93,7 +83,7 @@ public class PostsController : ControllerBase
             article += ".md";
         }
 
-        string contentPath = Path.Combine(environment.WebRootPath, "posts", post, article);
+        string contentPath = Path.Combine(env.WebRootPath, "posts", post, article);
 
         if (!SystemIOFile.Exists(contentPath))
         {

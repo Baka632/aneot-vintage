@@ -16,7 +16,7 @@ public static class CategoryAndTagHelper
     /// <returns>包含文章分类的<see cref="IEnumerable{String}"/></returns>
     public static IEnumerable<string> GetAllCategories(string webRootPath)
     {
-        if (_categories.Any())
+        if (_categories.Count != 0)
         {
             return _categories;
         }
@@ -52,7 +52,7 @@ public static class CategoryAndTagHelper
     /// <returns>包含文章标签的<see cref="IEnumerable{String}"/></returns>
     public static IEnumerable<string> GetAllTags(string webRootPath)
     {
-        if (_tags.Any())
+        if (_tags.Count != 0)
         {
             return _tags;
         }
@@ -89,7 +89,7 @@ public static class CategoryAndTagHelper
     /// <returns>一个包含映射的字典</returns>
     public static IDictionary<string, List<string>> GetCategoryToArticleMapping(string webRootPath)
     {
-        if (_categoryArticleMapping.Any())
+        if (_categoryArticleMapping.Count != 0)
         {
             return _categoryArticleMapping;
         }
@@ -137,7 +137,7 @@ public static class CategoryAndTagHelper
     /// <returns>一个包含映射的字典</returns>
     public static IDictionary<string, List<string>> GetTagToArticleMapping(string webRootPath)
     {
-        if (_tagArticleMapping.Any())
+        if (_tagArticleMapping.Count != 0)
         {
             return _tagArticleMapping;
         }
