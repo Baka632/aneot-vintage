@@ -1,4 +1,5 @@
 body {
     color: white;
+    --text-color: white;
     background-color: black
 }
