@@ -134,8 +134,8 @@ public class Program
         if (generateStaticWebSite)
         {
             //添加静态网站生成服务
-            StaticPagesInfoProvider provider = StaticWebSiteHelper.GetStaticPagesInfoProvider(builder.Environment.WebRootPath);
-            builder.Services.AddSingleton<IStaticPagesInfoProvider>(provider);
+            StaticResourcesInfoProvider provider = StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath);
+            builder.Services.AddSingleton<IStaticResourcesInfoProvider>(provider);
         }
 
         WebApplication app = builder.Build();
@@ -241,7 +241,7 @@ public class Program
             //复制必需的静态文件
             WebRootFileHelper.CopyFilesToStaticWebSiteOutputPath(app.Environment.WebRootPath, staticWebSiteOutputPath, convertWebP);
             //生成静态网页文件
-            app.GenerateStaticPages(staticWebSiteOutputPath, exitWhenDone: generateStaticWebSite, dontOptimizeContent: false);
+            app.GenerateStaticContent(staticWebSiteOutputPath, exitWhenDone: true);
         }
 
         app.Run();

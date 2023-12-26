@@ -1,4 +1,9 @@
-﻿using AngleSharp.Dom;
+﻿using System.Text;
+using AngleSharp;
+using AngleSharp.Css;
+using AngleSharp.Css.Dom;
+using AngleSharp.Css.Values;
+using AngleSharp.Dom;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
@@ -31,49 +36,81 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
     {
         StringLine[] slices = obj.Lines.Lines;
 
-        if (slices is not null)
+        StringBuilder builder = new(slices.Length);
+        foreach (var item in slices)
         {
-            for (int i = 0; i < slices.Length; i++)
+             builder.AppendLine(item.Slice.ToString());
+        }
+        string elementHtml = builder.ToString();
+
+        AngleSharp.IConfiguration config = Configuration.Default.WithCss();
+        IBrowsingContext context = BrowsingContext.New(config);
+
+        HtmlParser parser = new(default, context);
+        using IHtmlDocument document = parser.ParseDocument(elementHtml);
+
+        IElement? fakeAd = document.All
+                .FirstOrDefault(element => element.TagName.ToUpperInvariant() is "FAKEADS");
+
+        if (convertWebP)
+        {
+            IElement? element = document.All
+                .Where(element => element.TagName.ToUpperInvariant() is "IMG" or "STYLE").FirstOrDefault();
+
+            if (element is IHtmlImageElement image)
             {
-                ref StringSlice slice = ref slices[i].Slice;
-                if (slice.Text is null)
+                string? originalSrc = image.GetAttribute("src");
+                if (originalSrc is not null)
                 {
-                    break;
+                    image.SetAttribute("src", originalSrc.Replace(".webp", ".jpg"));
+
+                    using StringWriter writer = new();
+                    PrettyMarkupFormatter formatter = new();
+                    image.ToHtml(writer, formatter);
+
+                    string text = writer.ToString().Trim();
+                    obj.Lines = new StringLineGroup(text);
                 }
-
-                string html = slice.ToString();
-                HtmlParser parser = new();
-                using IHtmlDocument document = parser.ParseDocument(html);
-
-                IElement? fakeAd = document.All
-                        .FirstOrDefault(element => element.TagName.ToUpperInvariant() is "FAKEADS");
-
-                if (convertWebP)
+            }
+            else if (element is IHtmlStyleElement styleElement)
+            {
+                ICssStyleSheet? sheet = (ICssStyleSheet?)styleElement.Sheet;
+                if (sheet != null)
                 {
-                    IElement? element = document.All
-                        .Where(element => element.TagName.ToUpperInvariant() is "IMG").FirstOrDefault();
-
-                    if (element is IHtmlImageElement image)
+                    foreach (ICssStyleRule rule in sheet.Rules.Cast<ICssStyleRule>())
                     {
-                        string? originalSrc = image.GetAttribute("src");
-                        if (originalSrc is not null)
+                        ICssValue cssValue = rule.GetValueOf("background-image");
+                        if (cssValue is CssListValue<ICssValue> cssListValue)
                         {
-                            image.SetAttribute("src", originalSrc.Replace(".webp", ".jpg"));
-
-                            using StringWriter writer = new();
-                            PrettyMarkupFormatter formatter = new();
-                            image.ToHtml(writer, formatter);
-
-                            string text = writer.ToString().Trim();
-                            slice = new StringSlice(text);
+                            for (int i = 0; i < cssListValue.Items.Length; i++)
+                            {
+                                ICssValue item = cssListValue.Items[i];
+                                if (item is CssUrlValue urlValue && urlValue.Path.EndsWith(".webp", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    cssListValue.Items[i] = new CssUrlValue(urlValue.Path.Replace(".webp", ".jpg"));
+                                }
+                            }
                         }
                     }
-                }
 
-                if (fakeAd is not null && noAd is not true)
-                {
-                    Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
-                    string fakeAdHtml = $"""
+                    using StringWriter cssWriter = new();
+                    sheet.ToCss(cssWriter, new CssStyleFormatter());
+                    styleElement.InnerHtml = cssWriter.ToString();
+
+                    using StringWriter writer = new();
+                    PrettyMarkupFormatter formatter = new();
+                    styleElement.ToHtml(writer, formatter);
+
+                    string text = writer.ToString().Trim();
+                    obj.Lines = new StringLineGroup(text);
+                }
+            }
+        }
+
+        if (fakeAd is not null && noAd is not true)
+        {
+            Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
+            string fakeAdHtml = $"""
                 <div class="ads-container no-print">
                     <p class="ads-hint">{ad.AdText}<a href="{ad.AboutLink}">{ad.AdAbout}</a></p>
                     <div class="image-container">
@@ -82,11 +119,11 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                       </a>
                     </div>
                 </div>
-                """;
+            
+                """
+            ;
 
-                    slice = new StringSlice(fakeAdHtml);
-                }
-            }
+            obj.Lines = new StringLineGroup(fakeAdHtml);
         }
 
         base.Write(renderer, obj);

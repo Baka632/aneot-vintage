@@ -9,87 +9,104 @@ namespace AnEoT.Vintage.Helpers;
 public static class StaticWebSiteHelper
 {
     /// <summary>
-    /// 获取用于描述网站内容的<see cref="StaticPagesInfoProvider"/>
+    /// 获取用于描述网站内容的<see cref="StaticResourcesInfoProvider"/>
     /// </summary>
-    /// <returns>描述网站内容的<see cref="StaticPagesInfoProvider"/></returns>
-    public static StaticPagesInfoProvider GetStaticPagesInfoProvider(string webRootPath)
+    /// <returns>描述网站内容的<see cref="StaticResourcesInfoProvider"/></returns>
+    public static StaticResourcesInfoProvider GetStaticResourcesInfo(string webRootPath)
     {
-        //TODO: 让页面信息能自动加入到静态网页生成器中
+        string[] excludedFiles = ["Homepage.md"];
+        string[] excludedFolders= [];
 
-        List<PageInfo> pages = new(2000)
+        List<ResourceInfoBase> pages = new(2000)
         {
-            new PageInfo("/"),
-            new PageInfo("/category") { OutFile = Path.Combine("category","index.html") },
-            new PageInfo("/tag") { OutFile = Path.Combine("tag","index.html") },
-            new PageInfo("/posts") { OutFile = Path.Combine("posts","index.html") },
-            new PageInfo("/bulletin") { OutFile = Path.Combine("bulletin","index.html") },
-            new PageInfo("/settings")
+            new PageResource("/"),
+            new PageResource("/settings")
         };
 
         DirectoryInfo wwwRootDirectory = new(webRootPath);
 
-        #region 第一步：根据wwwroot下的Markdown文件来生成网页内容信息
-        foreach (FileInfo item in wwwRootDirectory.EnumerateFiles("*.md"))
-        {
-            //去掉Homepage.md，因为前面已经间接添加过了
-            if (item.Name.Contains("Homepage.md"))
-            {
-                continue;
-            }
-
-            string nameRemovedExtension = item.Name.Replace(".md", string.Empty);
-            pages.Add(new($"/{nameRemovedExtension}"));
-        }
+        #region 第一步：根据wwwroot下的文件与文件夹来生成网页内容信息
+        List<ResourceInfoBase> wwwRootPages = GetPageInfoFromDirectory(wwwRootDirectory, "/", excludedFolders, excludedFiles);
+        pages.AddRange(wwwRootPages);
         #endregion
+        #region 第二步：生成分类页与标签页的网页内容信息
+        pages.Add(new PageResource("/category")
+        {
+            OutFile = Path.Combine("category", "index.html")
+        });
+        pages.Add(new PageResource("/tag")
+        {
+            OutFile = Path.Combine("tag", "index.html")
+        });
 
-        #region 第二步：根据wwwroot\posts下的文件与文件夹来生成网页内容信息
         foreach (string category in CategoryAndTagHelper.GetAllCategories(webRootPath))
         {
-            pages.Add(new PageInfo($"/category/{WebUtility.UrlEncode(category)}") { OutFile = Path.Combine("category", category, "index.html") });
+            pages.Add(new PageResource($"/category/{WebUtility.UrlEncode(category)}")
+            {
+                OutFile = Path.Combine("category", category, "index.html")
+            });
         }
-        
+
         foreach (string tag in CategoryAndTagHelper.GetAllTags(webRootPath))
         {
-            pages.Add(new PageInfo($"/tag/{WebUtility.UrlEncode(tag)}") { OutFile = Path.Combine("tag", tag, "index.html") });
-        }
-
-        //获取posts文件夹的信息
-        DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
-        //获取bulletin文件夹的信息
-        DirectoryInfo bulletinDirectoryInfo = new(Path.Combine(webRootPath, "bulletin"));
-
-        foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories())
-        {
-            //添加各期刊页面的信息
-            PageInfo info = new($"/posts/{volDirInfo.Name}")
+            pages.Add(new PageResource($"/tag/{WebUtility.UrlEncode(tag)}")
             {
-                OutFile = Path.Combine("posts", volDirInfo.Name, "index.html")
-            };
-
-            pages.Add(info);
-
-            //添加特定期刊下的文章的信息
-            foreach (FileInfo article in volDirInfo.EnumerateFiles("*.md"))
-            {
-                //去掉README.md，因为前面已经间接添加过了
-                if (article.Name.Contains("README.md"))
-                {
-                    continue;
-                }
-
-                string nameRemovedExtension = article.Name.Replace(".md", string.Empty);
-                pages.Add(new($"/posts/{volDirInfo.Name}/{nameRemovedExtension}"));
-            }
-        }
-
-        foreach (FileInfo bulletinFile in bulletinDirectoryInfo.EnumerateFiles("*.md"))
-        {
-            string nameRemovedExtension = bulletinFile.Name.Replace(".md", string.Empty);
-            pages.Add(new($"/bulletin/{nameRemovedExtension}"));
+                OutFile = Path.Combine("tag", tag, "index.html")
+            });
         }
         #endregion
 
-        StaticPagesInfoProvider provider = new(pages);
+        StaticResourcesInfoProvider provider = new(pages);
         return provider;
+    }
+
+    private static List<ResourceInfoBase> GetPageInfoFromDirectory(DirectoryInfo baseDirectory, string baseUri, IEnumerable<string>? excludedFolderName, IEnumerable<string>? excludedFileName)
+    {
+        excludedFolderName ??= Enumerable.Empty<string>();
+        excludedFileName ??= Enumerable.Empty<string>();
+
+        List<ResourceInfoBase> pages = new(100);
+
+        foreach (FileInfo file in baseDirectory.EnumerateFiles().Where(fileInfo => !excludedFileName.Contains(fileInfo.Name)))
+        {
+            string name = file.Name;
+            if (name.Equals("README.md", StringComparison.OrdinalIgnoreCase))
+            {
+                pages.Add(new PageResource(baseUri)
+                {
+                    OutFile = Path.Combine(baseUri, "index.html")
+                });
+            }
+            else if (name.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                string nameRemovedExtension = name.Replace(".md", string.Empty);
+                pages.Add(new PageResource(Path.Combine(baseUri, nameRemovedExtension).Replace('\\', '/')));
+            }
+
+            //TODO: When AspNetStatic can intervene resource copying process...
+            //else if (name.EndsWith(".js", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    pages.Add(new JsResource(Path.Combine(baseUri, name).Replace('\\', '/')));
+            //}
+            //else if (name.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+            //{
+            //    pages.Add(new CssResource(Path.Combine(baseUri, name).Replace('\\', '/')));
+            //}
+            //else
+            //{
+            //    pages.Add(new BinResource(Path.Combine(baseUri, WebUtility.UrlEncode(name)).Replace('\\', '/'))
+            //    {
+            //        OutFile = Path.Combine(baseUri, name)
+            //    });
+            //}
+        }
+
+        foreach (DirectoryInfo directory in baseDirectory.EnumerateDirectories().Where(dirInfo => !excludedFolderName.Contains(dirInfo.Name)))
+        {
+            List<ResourceInfoBase> infos = GetPageInfoFromDirectory(directory, Path.Combine(baseUri, directory.Name).Replace('\\', '/'), null, null);
+            pages.AddRange(infos);
+        }
+
+        return pages;
     }
 }

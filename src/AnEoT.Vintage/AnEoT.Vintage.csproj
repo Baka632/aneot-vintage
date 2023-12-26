@@ -15,8 +15,9 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.0.7" />
+    <PackageReference Include="AngleSharp.Css" Version="1.0.0-alpha-100" />
     <PackageReference Include="AspNetCore.SassCompiler" Version="1.69.5" />
-    <PackageReference Include="AspNetStatic" Version="0.18.4" />
+    <PackageReference Include="AspNetStatic" Version="0.19.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
