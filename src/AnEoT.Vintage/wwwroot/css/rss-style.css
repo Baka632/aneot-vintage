@@ -1,0 +1,9 @@
+﻿body {
+    --text-color: black;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        --text-color: white;
+    }
+}

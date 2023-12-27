@@ -51,6 +51,23 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
 
         IElement? fakeAd = document.All
                 .FirstOrDefault(element => element.TagName.ToUpperInvariant() is "FAKEADS");
+        if (fakeAd is not null && noAd is not true)
+        {
+            Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
+            string fakeAdHtml = $"""
+                <div class="ads-container no-print">
+                    <p class="ads-hint">{ad.AdText}<a href="{ad.AboutLink}">{ad.AdAbout}</a></p>
+                    <div class="image-container">
+                      <a href="{ad.AdLink}" target="/" rel="noopener noreferrer">
+                        <img src="/fake-ads/{ad.AdImageLink}" alt="Advertisement" />
+                      </a>
+                    </div>
+                </div>
+            
+                """;
+
+            obj.Lines = new StringLineGroup(fakeAdHtml);
+        }
 
         if (convertWebP)
         {
@@ -63,12 +80,7 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                 if (originalSrc is not null)
                 {
                     image.SetAttribute("src", originalSrc.Replace(".webp", ".jpg"));
-
-                    using StringWriter writer = new();
-                    PrettyMarkupFormatter formatter = new();
-                    image.ToHtml(writer, formatter);
-
-                    string text = writer.ToString().Trim();
+                    string text = document.Body?.InnerHtml ?? string.Empty;
                     obj.Lines = new StringLineGroup(text);
                 }
             }
@@ -105,25 +117,6 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                     obj.Lines = new StringLineGroup(text);
                 }
             }
-        }
-
-        if (fakeAd is not null && noAd is not true)
-        {
-            Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
-            string fakeAdHtml = $"""
-                <div class="ads-container no-print">
-                    <p class="ads-hint">{ad.AdText}<a href="{ad.AboutLink}">{ad.AdAbout}</a></p>
-                    <div class="image-container">
-                      <a href="{ad.AdLink}" target="/" rel="noopener noreferrer">
-                        <img src="/fake-ads/{ad.AdImageLink}" alt="Advertisement" />
-                      </a>
-                    </div>
-                </div>
-            
-                """
-            ;
-
-            obj.Lines = new StringLineGroup(fakeAdHtml);
         }
 
         base.Write(renderer, obj);

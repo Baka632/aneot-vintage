@@ -91,7 +91,18 @@ namespace AnEoT.Vintage.Helpers
 
                     if (addCssStyle)
                     {
-                        html = $"""<head><link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" /><link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" /><link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" /><link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" /></head><body>{html}</body>""";
+                        html =$"""
+                          <head>
+                              <link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" />
+                              <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
+                              <link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" />
+                              <link href="{rssBaseUri}/css/rss-style.css" rel="stylesheet" type="text/css" />
+                              <link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" />
+                          </head>
+                          <body>
+                              {html}
+                          </body>
+                          """;
                     }
 
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
