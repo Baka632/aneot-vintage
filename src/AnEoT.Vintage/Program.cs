@@ -134,8 +134,13 @@ public class Program
         if (generateStaticWebSite)
         {
             //添加静态网站生成服务
-            StaticResourcesInfoProvider provider = StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath);
+            StaticResourcesInfoProvider provider = StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath, convertWebP);
             builder.Services.AddSingleton<IStaticResourcesInfoProvider>(provider);
+
+            if (convertWebP)
+            {
+                builder.Services.AddSingleton<IBinOptimizer, WebPContentConverter>();
+            }
         }
 
         WebApplication app = builder.Build();
@@ -205,7 +210,8 @@ public class Program
                 {
                     string acceptHeader = context.Context.Request.Headers.Accept.ToString();
 
-                    if (!acceptHeader.Contains("image/webp", StringComparison.OrdinalIgnoreCase)
+                    if (generateStaticWebSite != true
+                        && !acceptHeader.Contains("image/webp", StringComparison.OrdinalIgnoreCase)
                         && context.File.Name.EndsWith(".webp", StringComparison.OrdinalIgnoreCase)
                         && context.Context.Response.StatusCode != StatusCodes.Status304NotModified
                         && context.File.PhysicalPath is not null)
@@ -238,8 +244,6 @@ public class Program
 
         if (generateStaticWebSite)
         {
-            //复制必需的静态文件
-            WebRootFileHelper.CopyFilesToStaticWebSiteOutputPath(app.Environment.WebRootPath, staticWebSiteOutputPath, convertWebP);
             //生成静态网页文件
             app.GenerateStaticContent(staticWebSiteOutputPath, exitWhenDone: true);
         }
