@@ -91,7 +91,7 @@ namespace AnEoT.Vintage.Helpers
 
                     if (addCssStyle)
                     {
-                        html =$"""
+                        html = $"""
                           <head>
                               <link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" />
                               <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
