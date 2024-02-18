@@ -41,7 +41,7 @@ namespace AnEoT.Vintage.Helpers
                "AnEoT-Vintage",
                DateTimeOffset.Now)
             {
-                Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2023 TCA. All rights reserved."),
+                Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2024 TCA. All rights reserved."),
                 Language = "zh-CN",
                 Generator = "System.ServiceModel.Syndication.SyndicationFeed, used in AnEoT.Vintage",
                 ImageUrl = new Uri($"{rssBaseUri}/images/logo.jpg"),
@@ -117,7 +117,7 @@ namespace AnEoT.Vintage.Helpers
 
                     item.Authors.Add(new SyndicationPerson() { Name = articleInfo.Author });
 
-                    foreach (string category in articleInfo.Category ?? Array.Empty<string>())
+                    foreach (string category in articleInfo.Category ?? [])
                     {
                         item.Categories.Add(new SyndicationCategory(category));
                     }
