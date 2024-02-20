@@ -57,12 +57,12 @@ public struct ArticleInfo : IEquatable<ArticleInfo>
     public IDictionary<string, int>? Dir { get; set; }
 
     /// <summary>
-    /// <!--???-->
+    /// <!-- 摸鱼~摸鱼~我就是不写文档注释~咕噜咕噜~和缪缪一起摸鱼~ -->
     /// </summary>
     public bool Star { get; set; }
 
     /// <summary>
-    /// <!--???-->
+    /// 指示是否索引此文章的值
     /// </summary>
     public bool Index { get; set; }
 
@@ -71,11 +71,13 @@ public struct ArticleInfo : IEquatable<ArticleInfo>
     /// </summary>
     public string Description { get; set; } = string.Empty;
 
+    /// <inheritdoc/>
     public readonly override bool Equals(object? obj)
     {
         return obj is ArticleInfo info && Equals(info);
     }
 
+    /// <inheritdoc/>
     public readonly bool Equals(ArticleInfo other)
     {
         bool isCategoryEqual = Category is not null && other.Category is not null
@@ -105,6 +107,7 @@ public struct ArticleInfo : IEquatable<ArticleInfo>
                Description == other.Description;
     }
 
+    /// <inheritdoc/>
     public override readonly int GetHashCode()
     {
         HashCode hash = new();
@@ -124,11 +127,23 @@ public struct ArticleInfo : IEquatable<ArticleInfo>
         return hash.ToHashCode();
     }
 
+    /// <summary>
+    /// 确定两个 <see cref="ArticleInfo"/> 实例是否相等
+    /// </summary>
+    /// <param name="left">第一个 <see cref="ArticleInfo"/> 实例</param>
+    /// <param name="right">第二个 <see cref="ArticleInfo"/> 实例</param>
+    /// <returns>指示二者是否相等的值</returns>
     public static bool operator ==(ArticleInfo left, ArticleInfo right)
     {
         return left.Equals(right);
     }
 
+    /// <summary>
+    /// 确定两个 <see cref="ArticleInfo"/> 实例是否不同
+    /// </summary>
+    /// <param name="left">第一个 <see cref="ArticleInfo"/> 实例</param>
+    /// <param name="right">第二个 <see cref="ArticleInfo"/> 实例</param>
+    /// <returns>指示二者是否不同的值</returns>
     public static bool operator !=(ArticleInfo left, ArticleInfo right)
     {
         return !(left == right);

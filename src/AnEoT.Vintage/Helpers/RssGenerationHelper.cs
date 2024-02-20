@@ -108,12 +108,14 @@ namespace AnEoT.Vintage.Helpers
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
                     bool hasDate = DateTimeOffset.TryParse(articleInfo.Date, out DateTimeOffset publishDate);
+                    DateTimeOffset timeNow = DateTimeOffset.Now;
+
                     SyndicationItem item = new(
                         articleInfo.Title,
                         content,
                         new Uri(articleLink, UriKind.Absolute),
                         articleLink,
-                        hasDate ? publishDate : DateTimeOffset.Now);
+                        hasDate ? publishDate : timeNow);
 
                     item.Authors.Add(new SyndicationPerson() { Name = articleInfo.Author });
 
@@ -128,7 +130,7 @@ namespace AnEoT.Vintage.Helpers
                     }
                     else
                     {
-                        item.PublishDate = DateTimeOffset.Now;
+                        item.PublishDate = timeNow;
                     }
 
                     items.Add(item);

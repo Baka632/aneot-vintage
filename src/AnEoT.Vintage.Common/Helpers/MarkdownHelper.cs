@@ -3,6 +3,7 @@ using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace AnEoT.Vintage.Common.Helpers;
 
@@ -115,5 +116,34 @@ public static class MarkdownHelper
         }
 
         return quote ?? string.Empty;
+    }
+
+    /// <summary>
+    /// 获取 Markdown 文章的字数
+    /// </summary>
+    /// <param name="markdown">Markdown 文档的字符串</param>
+    /// <returns>文章字数</returns>
+    public static int GetWordCount(string markdown)
+    {
+        StringBuilder stringBuilder = new(markdown);
+
+        MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
+
+        foreach (MarkdownObject item in doc.Descendants())
+        {
+            if (item is YamlFrontMatterBlock or HtmlBlock)
+            {
+                IEnumerable<char> padding = Enumerable.Repeat('\a', item.Span.Length);
+                string paddingString = new(padding.ToArray());
+
+                stringBuilder.Remove(item.Span.Start, item.Span.Length);
+                stringBuilder.Insert(item.Span.Start, paddingString);
+            }
+        }
+
+        stringBuilder.Replace("\a", string.Empty);
+        string plainText = Markdown.ToPlainText(stringBuilder.ToString(), pipeline: pipeline);
+        int count = WordCountHelper.GetWordCountFromString(plainText);
+        return count;
     }
 }
