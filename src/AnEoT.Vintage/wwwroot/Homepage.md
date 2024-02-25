@@ -5,8 +5,8 @@ icon: home
 title: 主页
 heroText: 回归线
 heroFullScreen: false
-tagline: © ZMG 2023·12
-heroAlt: '#f6f7f8'
+tagline: © 阷軼 2024·01
+heroAlt: '#31509d'
 projects:
 - icon: read
   name: 期刊一览
@@ -14,8 +14,8 @@ projects:
   link: posts/
 - icon: article
   name: 最新一期
-  desc: Vol.18 2023-12
-  link: posts/2023-12
+  desc: Vol.19 2024-02
+  link: posts/2024-02/
 - icon: cache
   name: 下载 PDF
   desc: Download
