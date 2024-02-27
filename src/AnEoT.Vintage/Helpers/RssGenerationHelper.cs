@@ -175,7 +175,6 @@ namespace AnEoT.Vintage.Helpers
 
             Console.WriteLine("RSS 源生成完成！");
             Console.WriteLine($"已在以下路径生成\nRSS：{rssFilePath}\nAtom：{atomFilePath}");
-            Console.WriteLine($"路径指向的文件是否存在\nRSS：{File.Exists(rssFilePath)}\nAtom：{File.Exists(atomFilePath)}");
         }
     }
 

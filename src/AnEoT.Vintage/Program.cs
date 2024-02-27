@@ -133,9 +133,11 @@ public class Program
 
         if (generateStaticWebSite)
         {
-            //添加静态网站生成服务
-            StaticResourcesInfoProvider provider = StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath, convertWebP);
-            builder.Services.AddSingleton<IStaticResourcesInfoProvider>(provider);
+            // 添加静态网站生成服务
+            builder.Services.AddSingleton<IStaticResourcesInfoProvider>(provider =>
+            {
+                return StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath, convertWebP);
+            });
 
             if (convertWebP)
             {
@@ -244,7 +246,7 @@ public class Program
 
         if (generateStaticWebSite)
         {
-            //生成静态网页文件
+            // 生成静态网页文件
             app.GenerateStaticContent(staticWebSiteOutputPath, exitWhenDone: true);
         }
 
