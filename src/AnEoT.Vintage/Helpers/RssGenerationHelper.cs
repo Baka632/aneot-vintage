@@ -41,7 +41,7 @@ namespace AnEoT.Vintage.Helpers
                "AnEoT-Vintage",
                DateTimeOffset.Now)
             {
-                Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2023 TCA. All rights reserved."),
+                Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2024 TCA. All rights reserved."),
                 Language = "zh-CN",
                 Generator = "System.ServiceModel.Syndication.SyndicationFeed, used in AnEoT.Vintage",
                 ImageUrl = new Uri($"{rssBaseUri}/images/logo.jpg"),
@@ -91,7 +91,7 @@ namespace AnEoT.Vintage.Helpers
 
                     if (addCssStyle)
                     {
-                        html =$"""
+                        html = $"""
                           <head>
                               <link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" />
                               <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
@@ -108,16 +108,18 @@ namespace AnEoT.Vintage.Helpers
                     TextSyndicationContent content = SyndicationContent.CreateHtmlContent(html);
 
                     bool hasDate = DateTimeOffset.TryParse(articleInfo.Date, out DateTimeOffset publishDate);
+                    DateTimeOffset timeNow = DateTimeOffset.Now;
+
                     SyndicationItem item = new(
                         articleInfo.Title,
                         content,
                         new Uri(articleLink, UriKind.Absolute),
                         articleLink,
-                        hasDate ? publishDate : DateTimeOffset.Now);
+                        hasDate ? publishDate : timeNow);
 
                     item.Authors.Add(new SyndicationPerson() { Name = articleInfo.Author });
 
-                    foreach (string category in articleInfo.Category ?? Array.Empty<string>())
+                    foreach (string category in articleInfo.Category ?? [])
                     {
                         item.Categories.Add(new SyndicationCategory(category));
                     }
@@ -128,7 +130,7 @@ namespace AnEoT.Vintage.Helpers
                     }
                     else
                     {
-                        item.PublishDate = DateTimeOffset.Now;
+                        item.PublishDate = timeNow;
                     }
 
                     items.Add(item);

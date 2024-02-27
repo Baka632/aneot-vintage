@@ -22,11 +22,13 @@ public struct HomePageProjectsItem : IEquatable<HomePageProjectsItem>
     /// </summary>
     public string Link { get; set; }
 
+    /// <inheritdoc/>
     public override readonly bool Equals(object? obj)
     {
         return obj is HomePageProjectsItem item && Equals(item);
     }
 
+    /// <inheritdoc/>
     public readonly bool Equals(HomePageProjectsItem other)
     {
         return Icon == other.Icon &&
@@ -35,16 +37,29 @@ public struct HomePageProjectsItem : IEquatable<HomePageProjectsItem>
                Link == other.Link;
     }
 
+    /// <inheritdoc/>
     public override readonly int GetHashCode()
     {
         return HashCode.Combine(Icon, Name, Desc, Link);
     }
 
+    /// <summary>
+    /// 确定两个 <see cref="HomePageProjectsItem"/> 实例是否相等
+    /// </summary>
+    /// <param name="left">第一个 <see cref="HomePageProjectsItem"/> 实例</param>
+    /// <param name="right">第二个 <see cref="HomePageProjectsItem"/> 实例</param>
+    /// <returns>指示二者是否相等的值</returns>
     public static bool operator ==(HomePageProjectsItem left, HomePageProjectsItem right)
     {
         return left.Equals(right);
     }
 
+    /// <summary>
+    /// 确定两个 <see cref="HomePageProjectsItem"/> 实例是否不同
+    /// </summary>
+    /// <param name="left">第一个 <see cref="HomePageProjectsItem"/> 实例</param>
+    /// <param name="right">第二个 <see cref="HomePageProjectsItem"/> 实例</param>
+    /// <returns>指示二者是否不同的值</returns>
     public static bool operator !=(HomePageProjectsItem left, HomePageProjectsItem right)
     {
         return !(left == right);

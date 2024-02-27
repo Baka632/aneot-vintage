@@ -62,8 +62,8 @@ public static class StaticWebSiteHelper
 
     private static List<ResourceInfoBase> GetPageInfoFromDirectory(DirectoryInfo baseDirectory, string baseUri, IEnumerable<string>? excludedFolderName, IEnumerable<string>? excludedFileName, bool convertWebp)
     {
-        excludedFolderName ??= Enumerable.Empty<string>();
-        excludedFileName ??= Enumerable.Empty<string>();
+        excludedFolderName ??= [];
+        excludedFileName ??= [];
 
         List<ResourceInfoBase> pages = new(100);
 
