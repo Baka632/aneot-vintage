@@ -4,6 +4,9 @@ using Markdig.Syntax;
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
+using AngleSharp.Dom;
 
 namespace AnEoT.Vintage.Common.Helpers;
 
@@ -145,5 +148,22 @@ public static class MarkdownHelper
         string plainText = Markdown.ToPlainText(stringBuilder.ToString(), pipeline: pipeline);
         int count = WordCountHelper.GetWordCountFromString(plainText);
         return count;
+    }
+
+    /// <summary>
+    /// 检查指定的 Markdown 文档是否包含指定的 CSS 类名
+    /// </summary>
+    /// <param name="markdown">Markdown 文档的字符串</param>
+    /// <param name="className">类名</param>
+    /// <returns>若有指定的类名，则返回 <see langword="true"/>，否则返回 <see langword="false"/></returns>
+    public static bool IsContainHtmlClass(string markdown, string className)
+    {
+        string html = Markdown.ToHtml(markdown, pipeline);
+
+        HtmlParser parser = new();
+        using IHtmlDocument document = parser.ParseDocument(html);
+        IHtmlCollection<IElement> target = document.QuerySelectorAll($".{className}");
+
+        return target.Length != 0;
     }
 }
