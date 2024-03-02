@@ -1,12 +1,22 @@
-﻿.navbar-center {
+﻿.navbar-layout {
     margin: auto;
     width: 400px;
+    text-align: center
+}
+
+.footer-layout {
+    margin: auto;
+    width: 80%;
     text-align: center
 }
 
 .content-margin {
     margin-left: 10%;
     margin-right: 10%
+}
+
+.para-indent p {
+    text-indent: 2em;
 }
 
 .navbar-image {

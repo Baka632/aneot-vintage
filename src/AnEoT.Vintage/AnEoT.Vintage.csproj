@@ -9,15 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="1.1.0" />
-    <PackageReference Include="AngleSharp.Css" Version="1.0.0-alpha-100" />
-    <PackageReference Include="AspNetCore.SassCompiler" Version="1.71.0" />
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.71.1.1" />
     <PackageReference Include="AspNetStatic" Version="0.21.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="8.0.0" />
-    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.15.0" />
+    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.16.0" />
   </ItemGroup>
 
   <ItemGroup>

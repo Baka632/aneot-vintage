@@ -24,6 +24,14 @@
     int wordCount = MarkdownHelper.GetWordCount(Model.RawMarkdown);
 }
 
+@if (MarkdownHelper.IsContainHtmlClass(Model.RawMarkdown, "textkai"))
+{
+    <!-- 反正 Internet Explorer 也不支持 WOFF2 字体，不如不加载 -->
+    <!--[if !IE]> -->
+    <link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" />
+    <!-- <![endif]-->
+}
+
 <div class="content-margin">
     @if (uriParts.Any() && uriParts.Length > 1)
     {
@@ -108,6 +116,6 @@
     }
 </div>
 
-<div class="content-margin">
+<div class="content-margin para-indent">
     @Model.RenderedMarkdown
 </div>
