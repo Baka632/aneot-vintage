@@ -67,6 +67,16 @@ public struct ArticleInfo : IEquatable<ArticleInfo>
     public bool Index { get; set; }
 
     /// <summary>
+    /// 指示是否在导航栏中呈现此文章的值
+    /// </summary>
+    public bool Narbar { get; set; }
+
+    /// <summary>
+    /// 指示是否在侧边栏中呈现此文章的值
+    /// </summary>
+    public bool Sidebar { get; set; }
+
+    /// <summary>
     /// 页面描述
     /// </summary>
     public string Description { get; set; } = string.Empty;
