@@ -5,8 +5,8 @@ icon: home
 title: 主页
 heroText: 回归线
 heroFullScreen: false
-tagline: © 阷軼 2024·01
-heroAlt: '#31509d'
+tagline: © 織霧安轉 2024·03
+heroAlt: '#8fb728'
 projects:
 - icon: read
   name: 期刊一览
@@ -14,12 +14,12 @@ projects:
   link: posts/
 - icon: article
   name: 最新一期
-  desc: Vol.19 2024-02
-  link: posts/2024-02/
+  desc: Vol.20 2024-03
+  link: posts/2024-03/
 - icon: cache
   name: 下载 PDF
   desc: Download
-  link: download
+  link: https://aneotpan.wuyilingwei.com
 - icon: proposal
   name: 征稿启事
   desc: 欢迎投稿！
