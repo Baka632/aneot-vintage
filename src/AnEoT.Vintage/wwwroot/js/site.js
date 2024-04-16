@@ -53,13 +53,25 @@ function switchThemeByThemeName(theme) {
     var eodImage = document.getElementById("eod-image-element");
 
     if (supportSvg && eodImage != null) {
+        var isInGitHubPages = window.location.href.match("https://baka632.github.io/aneot-vintage") != null;
+
         eodImage.height = 14;
         eodImage.width = 14;
         if (theme == "dark") {
-            eodImage.src = "/eod_white.svg";
+            if (isInGitHubPages) {
+                eodImage.src = "/aneot-vintage/eod_white.svg";
+            }
+            else {
+                eodImage.src = "/eod_white.svg";
+            }
         }
         else {
-            eodImage.src = "/eod_black.svg";
+            if (isInGitHubPages) {
+                eodImage.src = "/aneot-vintage/eod_black.svg";
+            }
+            else {
+                eodImage.src = "/eod_black.svg";
+            }
         }
     }
 }

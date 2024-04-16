@@ -51,19 +51,19 @@ internal sealed class Program
             Console.WriteLine("操作成功完成。");
         }, webRootPathOption);
         
-        Command fixNavBarCommand = new("fix-navbar", "修复静态网页在 GitHub Pages 中的导航栏问题。");
-        fixNavBarCommand.AddOption(staticWebSiteOutputPathOption);
-        fixNavBarCommand.SetHandler(staticWebSitePath =>
+        Command fixGitHubPagesCommand = new("fix-github-pages", "修复静态网页在 GitHub Pages 中的问题。");
+        fixGitHubPagesCommand.AddOption(staticWebSiteOutputPathOption);
+        fixGitHubPagesCommand.SetHandler(staticWebSitePath =>
         {
             Console.WriteLine($"工作目录：{staticWebSitePath}");
             Console.WriteLine("======");
-            NavBarFix.FixNavBar(staticWebSitePath);
+            GitHubPagesFix.FixFileForGitHubPages(staticWebSitePath);
             Console.WriteLine();
             Console.WriteLine("操作成功完成。");
         }, staticWebSiteOutputPathOption);
 
         rootCommand.AddCommand(removeUnnecessaryComponentCommand);
-        rootCommand.AddCommand(fixNavBarCommand);
+        rootCommand.AddCommand(fixGitHubPagesCommand);
 
         return rootCommand.InvokeAsync(args).Result;
     }
