@@ -14,9 +14,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="1.1.1" />
+    <PackageReference Include="AngleSharp" Version="1.1.2" />
     <PackageReference Include="AngleSharp.Css" Version="1.0.0-alpha-100" />
-    <PackageReference Include="Markdig" Version="0.35.0" />
+    <PackageReference Include="Markdig" Version="0.37.0" />
     <PackageReference Include="YamlDotNet" Version="15.1.2" />
   </ItemGroup>
 
