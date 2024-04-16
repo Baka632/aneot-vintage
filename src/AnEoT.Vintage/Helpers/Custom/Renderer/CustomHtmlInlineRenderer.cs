@@ -26,7 +26,13 @@ public class CustomHtmlInlineRenderer : HtmlInlineRenderer
         if (obj.Tag.Equals("<eod />", StringComparison.OrdinalIgnoreCase) && noEod is not true)
         {
             obj.Tag = """
-                <span><img src="/eod.jpg" /></span>
+                <span>
+                    <picture>
+                        <source srcset="/eod_white.svg" width="14" height="14" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+                        <source srcset="/eod_black.svg" width="14" height="14" type="image/svg+xml" />
+                        <img src="/eod.jpg" srcset="/eod_auto.svg" />
+                    </picture>
+                </span>
                 """;
         }
 
