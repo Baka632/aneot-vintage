@@ -246,6 +246,11 @@ public class Program
 
         if (generateStaticWebSite)
         {
+            if (Directory.Exists(staticWebSiteOutputPath) != true)
+            {
+                Directory.CreateDirectory(staticWebSiteOutputPath);
+            }
+
             // 生成静态网页文件
             app.GenerateStaticContent(staticWebSiteOutputPath, exitWhenDone: true);
         }
