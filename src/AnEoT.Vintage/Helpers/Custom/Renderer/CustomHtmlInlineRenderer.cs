@@ -1,5 +1,4 @@
-﻿using System;
-using Markdig.Renderers;
+﻿using Markdig.Renderers;
 using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax.Inlines;
 
@@ -13,7 +12,7 @@ public class CustomHtmlInlineRenderer : HtmlInlineRenderer
     private readonly bool noEod;
 
     /// <summary>
-    /// 使用指定的参数构造<seealso cref="CustomHtmlInlineRenderer"/>的新实例
+    /// 使用指定的参数构造 <seealso cref="CustomHtmlInlineRenderer"/> 的新实例
     /// </summary>
     public CustomHtmlInlineRenderer(bool noEod)
     {
@@ -23,17 +22,10 @@ public class CustomHtmlInlineRenderer : HtmlInlineRenderer
     /// <inheritdoc/>
     protected override void Write(HtmlRenderer renderer, HtmlInline obj)
     {
-        if (obj.Tag.Equals("<eod />", StringComparison.OrdinalIgnoreCase) && noEod is not true)
+        string tag = obj.Tag.Replace(" ", string.Empty);
+        if (tag.Equals("<eod/>", StringComparison.OrdinalIgnoreCase) && noEod is not true)
         {
-            obj.Tag = """
-                <span>
-                    <picture>
-                        <source srcset="/eod_white.svg" width="14" height="14" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
-                        <source srcset="/eod_black.svg" width="14" height="14" type="image/svg+xml" />
-                        <img src="/eod.jpg" srcset="/eod_auto.svg" />
-                    </picture>
-                </span>
-                """;
+            obj.Tag = """<span><img id="eod-image-element" src="/eod.jpg" /></span>""";
         }
 
         base.Write(renderer, obj);
