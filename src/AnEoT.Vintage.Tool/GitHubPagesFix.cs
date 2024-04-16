@@ -97,16 +97,16 @@ internal static partial class GitHubPagesFix
                 default:
                     break;
             }
+        }
 
-            if (isModified)
-            {
-                using StreamWriter writer = File.CreateText(file.FullName);
+        if (isModified)
+        {
+            using StreamWriter writer = File.CreateText(file.FullName);
 
-                PrettyMarkupFormatter formatter = new();
-                document.ToHtml(writer, formatter);
+            PrettyMarkupFormatter formatter = new();
+            document.ToHtml(writer, formatter);
 
-                Console.WriteLine($"已修改文件 {file.FullName}");
-            }
+            Console.WriteLine($"已修改文件 {file.FullName}");
         }
     }
 }
