@@ -1,5 +1,6 @@
 html {
     font-size: 14px;
+    font-family: sans-serif;
 }
 
 @media (min-width: 768px) {
