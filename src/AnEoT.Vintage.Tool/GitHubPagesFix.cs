@@ -8,6 +8,7 @@ namespace AnEoT.Vintage.Tool;
 /// <summary>
 /// 为使文件适配 GitHub Pages 而提供帮助的类
 /// </summary>
+[Obsolete("现在不再使用此类。")]
 internal static partial class GitHubPagesFix
 {
     public static void FixFileForGitHubPages(string staticContentPath)

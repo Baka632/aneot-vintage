@@ -27,9 +27,7 @@ jobs:
     - name: 预处理-移除不需要的组件
       run: dotnet run --configuration Release --project ./src/AnEoT.Vintage.Tool/AnEoT.Vintage.Tool.csproj remove-unnecessary-component --webroot-path ${{ github.workspace }}/src/AnEoT.Vintage/wwwroot
     - name: 构建主项目及生成静态网页
-      run: dotnet run --configuration Release --project ./src/AnEoT.Vintage/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048" --RssBaseUri "https://baka632.github.io/aneot-vintage" --RssIncludeAllArticles true --RssAddCssStyle true
-    - name: 后期处理-修复 GitHub Pages 环境下的静态网页链接
-      run: dotnet run --configuration Release --project ./src/AnEoT.Vintage.Tool/AnEoT.Vintage.Tool.csproj fix-github-pages --static-content-path ${{ github.workspace }}/src/AnEoT.Vintage/StaticWebSite
+      run: dotnet run --configuration Release --project ./src/AnEoT.Vintage/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048" --RssBaseUri "https://aneot-vintage.baka632.com/" --RssIncludeAllArticles true --RssAddCssStyle true
     - name: 配置 GitHub Pages
       uses: actions/configure-pages@v4
     - name: 上传生成的静态网页
