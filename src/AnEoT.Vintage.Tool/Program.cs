@@ -43,15 +43,16 @@ internal sealed class Program
         removeUnnecessaryComponentCommand.SetHandler(wwwrootPath =>
         {
             Console.WriteLine($"工作目录：{wwwrootPath}");
-            Console.WriteLine("======");
-            ComponentRemoval.Remove("forceflash", wwwrootPath);
+            // Console.WriteLine("======");
+            // 现在网页上已经没有 forceflash 组件了
+            // ComponentRemoval.Remove("forceflash", wwwrootPath);
             Console.WriteLine("======");
             ComponentRemoval.Remove("installpwa", wwwrootPath);
             Console.WriteLine();
             Console.WriteLine("操作成功完成。");
         }, webRootPathOption);
         
-        Command fixGitHubPagesCommand = new("fix-github-pages", "修复静态网页在 GitHub Pages 中的问题。");
+        /*Command fixGitHubPagesCommand = new("fix-github-pages", "修复静态网页在 GitHub Pages 中的问题。");
         fixGitHubPagesCommand.AddOption(staticWebSiteOutputPathOption);
         fixGitHubPagesCommand.SetHandler(staticWebSitePath =>
         {
@@ -60,10 +61,10 @@ internal sealed class Program
             GitHubPagesFix.FixFileForGitHubPages(staticWebSitePath);
             Console.WriteLine();
             Console.WriteLine("操作成功完成。");
-        }, staticWebSiteOutputPathOption);
+        }, staticWebSiteOutputPathOption);*/
 
         rootCommand.AddCommand(removeUnnecessaryComponentCommand);
-        rootCommand.AddCommand(fixGitHubPagesCommand);
+        //rootCommand.AddCommand(fixGitHubPagesCommand);
 
         return rootCommand.InvokeAsync(args).Result;
     }
