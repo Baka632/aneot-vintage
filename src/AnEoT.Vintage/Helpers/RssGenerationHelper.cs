@@ -33,18 +33,24 @@ namespace AnEoT.Vintage.Helpers
 
             Console.WriteLine("正在生成 RSS 源...");
 
+            if (rssBaseUri.EndsWith('/'))
+            {
+                rssBaseUri = rssBaseUri[..^1];
+            }
+
+            Uri baseUri = new(rssBaseUri);
             #region 第一步：生成RSS源信息
             SyndicationFeed feed = new(
                "回归线简易版",
                "Another End of Terra",
-               new Uri(rssBaseUri),
+               baseUri,
                "AnEoT-Vintage",
                DateTimeOffset.Now)
             {
                 Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2024 TCA. All rights reserved."),
                 Language = "zh-CN",
                 Generator = "System.ServiceModel.Syndication.SyndicationFeed, used in AnEoT.Vintage",
-                ImageUrl = new Uri($"{rssBaseUri}/images/logo.jpg"),
+                ImageUrl = new Uri(baseUri, "images/logo.jpg"),
             };
 
             IEnumerable<string> categories = CategoryAndTagHelper.GetAllCategories(webRootPath);
