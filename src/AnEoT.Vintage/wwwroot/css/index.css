@@ -140,4 +140,8 @@
   line-height: 0;
 }
 
+.theme-hope-content table img {
+  max-width: 100% !important;
+}
+
 /*# sourceMappingURL=index.css.map */

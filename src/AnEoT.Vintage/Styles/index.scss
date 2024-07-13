@@ -3,8 +3,8 @@
     // 表格；横线元素隐藏
     // 表格用作隐藏的排版工具
     hr, tr, td, th {
-        border: none!important;
-        }
+        border: none !important;
+    }
 }
 
 
@@ -41,6 +41,7 @@
     text-align: left !important;
     text-indent: 0 !important;
 }
+
 .aright {
     text-align: right !important;
     text-indent: 0 !important;
@@ -102,6 +103,7 @@
     max-height: 200px;
     position: relative;
     opacity: 0.5;
+
     &::after {
         position: absolute;
         content: '';
@@ -109,7 +111,7 @@
         height: 100%;
         top: 0;
         left: 0;
-        box-shadow:0 0 30px 30px var(--bg-color) inset;
+        box-shadow: 0 0 30px 30px var(--bg-color) inset;
     }
 }
 
@@ -129,9 +131,9 @@
 // 禁止打印指定元素
 @media print {
     .no-print {
-      display: none !important;
+        display: none !important;
     }
-  }  
+}
 
 // 禁止交互
 .no-interact {
@@ -148,4 +150,10 @@
     color: transparent;
     font-size: 0;
     line-height: 0;
+}
+
+// 修复因以下更改而导致期刊列表不能正常显示的问题：
+// https://github.com/vuepress-theme-hope/vuepress-theme-hope/commit/6d853e6ec7cb45c054adab9da060d64d2b8a4bd1
+.theme-hope-content table img {
+    max-width: 100% !important;
 }
