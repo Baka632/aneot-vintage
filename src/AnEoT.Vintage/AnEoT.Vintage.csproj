@@ -9,13 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.SassCompiler" Version="1.75.0" />
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.77.8" />
     <PackageReference Include="AspNetStatic" Version="0.21.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.3" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="8.0.0" />
-    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.16.0" />
+    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.17.0" />
   </ItemGroup>
 
   <ItemGroup>
