@@ -5,7 +5,7 @@ icon: home
 title: 主页
 heroText: 回归线
 heroFullScreen: false
-tagline: © 没有一半 2024·04
+tagline: © relvr 2024·07
 heroAlt: '#fcb5c3'
 projects:
 - icon: read
@@ -14,10 +14,10 @@ projects:
   link: posts/
 - icon: article
   name: 最新一期
-  desc: Vol.21 2024-04
-  link: posts/2024-04/
+  desc: Vol.22 2024-07
+  link: posts/2024-07/
 - icon: cache
-  name: 下载 PDF
+  name: 下载
   desc: Download
   link: https://pan.arktca.com
 - icon: proposal
