@@ -91,5 +91,5 @@ var docCookies = {
             aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]);
         }
         return aKeys;
-    },
+    }
 };
