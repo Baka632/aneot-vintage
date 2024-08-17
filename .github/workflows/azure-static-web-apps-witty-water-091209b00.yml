@@ -23,6 +23,8 @@ jobs:
         run: dotnet run --configuration Release --project ./src/AnEoT.Vintage.Tool/AnEoT.Vintage.Tool.csproj remove-unnecessary-component --webroot-path ${{ github.workspace }}/src/AnEoT.Vintage/wwwroot
       - name: 构建主项目及生成静态网页
         run: dotnet run --configuration Release --project ./src/AnEoT.Vintage/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048" --RssBaseUri "https://aneot-vintage.baka632.com/" --RssIncludeAllArticles true --RssAddCssStyle true
+      - name: 复制 Azure Statice Web Apps 配置文件
+        run: cp -v staticwebapp.config.json src/AnEoT.Vintage/StaticWebSite
       - name: 部署生成的静态网页
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
