@@ -1,39 +1,30 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: Deploy to production site
+name: 部署到生产站点
 
 on:
   push:
     branches: [ "master" ]
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: 克隆存储库
+      uses: actions/checkout@v4
+    - uses: azure/login@v1
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: 预处理-移除不需要的组件
       run: dotnet run --configuration Release --project ./src/AnEoT.Vintage.Tool/AnEoT.Vintage.Tool.csproj remove-unnecessary-component --webroot-path ${{ github.workspace }}/src/AnEoT.Vintage/wwwroot
     - name: 构建主项目及生成静态网页
       run: dotnet run --configuration Release --project ./src/AnEoT.Vintage/AnEoT.Vintage.csproj -- static-only --ConvertWebP true --urls "http://localhost:5048" --RssBaseUri "https://aneot-vintage.baka632.com/" --RssIncludeAllArticles true --RssAddCssStyle true
-    - name: 配置 GitHub Pages
-      uses: actions/configure-pages@v4
     - name: 上传生成的静态网页
-      uses: actions/upload-pages-artifact@v3
+      uses: azure/CLI@v1
       with:
-        path: './src/AnEoT.Vintage/StaticWebSite'
-    - name: 将静态网页部署到 GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+        inlineScript: |
+            az storage blob upload-batch --account-name aneotvintage  --auth-mode key -d '$web' -s ./src/AnEoT.Vintage/StaticWebSite
+    - run: |
+            az logout
+      if: always()
