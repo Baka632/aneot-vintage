@@ -13,7 +13,8 @@ jobs:
     steps:
     - name: 克隆存储库
       uses: actions/checkout@v4
-    - uses: azure/login@v1
+    - name: 登陆到 Azure
+      uses: azure/login@v1
       with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: 预处理-移除不需要的组件
@@ -24,7 +25,8 @@ jobs:
       uses: azure/CLI@v1
       with:
         inlineScript: |
-            az storage blob upload-batch --account-name aneotvintage  --auth-mode key -d '$web' -s ./src/AnEoT.Vintage/StaticWebSite
-    - run: |
+            az storage blob upload-batch --account-name aneotvintage --auth-mode key --overwrite -d '$web' -s ./src/AnEoT.Vintage/StaticWebSite
+    - name: 登出 Azure
+      run: |
             az logout
       if: always()
