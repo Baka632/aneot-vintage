@@ -1,3 +1,5 @@
+var supportSvg = !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
+
 if (window.addEventListener) {
     window.addEventListener("DOMContentLoaded", onPageLoad)
 }
@@ -49,19 +51,28 @@ function switchThemeByThemeName(theme) {
     var str = link.href.replace(/(light|dark)\.css/i, theme + ".css");
     link.href = str;
 
-    var supportSvg = !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
     var eodImage = document.getElementById("eod-image-element");
+    var navbarLogo = document.getElementById("aneot-vintage-navbar-logo");
 
-    if (supportSvg && eodImage != null) {
-        //var isInGitHubPages = window.location.href.match("https://baka632.github.io/aneot-vintage") != null;
-
-        eodImage.height = 14;
-        eodImage.width = 14;
-        if (theme == "dark") {
-            eodImage.src = "/eod_white.svg";
+    if (supportSvg) {
+        if (eodImage != null) {
+            eodImage.height = 14;
+            eodImage.width = 14;
+            if (theme == "dark") {
+                eodImage.src = "/eod_white.svg";
+            }
+            else {
+                eodImage.src = "/eod_black.svg";
+            }
         }
-        else {
-            eodImage.src = "/eod_black.svg";
+
+        if (navbarLogo != null) {
+            if (theme == "dark") {
+                navbarLogo.src = "/images/logo_white.svg";
+            }
+            else {
+                navbarLogo.src = "/images/logo_grey.svg";
+            }
         }
     }
 }
