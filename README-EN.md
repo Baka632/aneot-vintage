@@ -4,8 +4,6 @@
 
 A fanmade literary journal based on mobile game *Arknights*, redesigned for vintage devices now.
 
-Notice: This is an unofficial project.
-
 ## Build Instructions
 
 - Clone the repository locally
@@ -37,9 +35,10 @@ If you want to change it, use the following method to do that (ordered by the pr
 ```
 
 ## About WebP image support for vintage devices...
+
 Most vintage devices don't support WebP image, so WebP image can't be displayed on these devices.
 
-To solve this problem, we can dynamically convert WebP image to JPEG image, but due to performance <!-- and copyright [I don't know whether AnEoT's offical members allow me to do this, even dynamically] -->  reason, this function is disabled by default.
+To solve this problem, we can dynamically convert WebP image to JPEG image, but due to performance reason, this function is disabled by default.
 
 To enable it, use the following method to do that (ordered by the priority)
 - Use *command line argument*:
@@ -56,6 +55,10 @@ To enable it, use the following method to do that (ordered by the priority)
 ```
 
 This configuration will affect static web site generation.
+
+## Browsers that supported by this project
+
+The minimum supported browser version for this project is Internet Explorer 5.5 (Released in 2000), and older browsers than it are not supported.
 
 ## About Us
 
