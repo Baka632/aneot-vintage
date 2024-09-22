@@ -372,5 +372,8 @@ src/AnEoT.Vintage/wwwroot/rss.xml
 src/AnEoT.Vintage/wwwroot/atom_full.xml
 src/AnEoT.Vintage/wwwroot/rss_full.xml
 
+# Auto-generated tile file
+src/AnEoT.Vintage/wwwroot/tiles
+
 # Visual Studio Code cache/options directory
 /.vscode
