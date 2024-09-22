@@ -76,6 +76,8 @@ public static class TileHelper
 
         IEnumerable<DirectoryInfo> targetDirectories = volDirInfos.Take(volumeTakeCount);
 
+        Uri baseUriInstance = new(baseUri);
+
         foreach (DirectoryInfo volDirInfo in targetDirectories)
         {
             string fileName = fileNames.Pop();
@@ -87,7 +89,7 @@ public static class TileHelper
 
             string volumeTypeIndicator = fileName == firstItem ? "最新一期" : "先前期刊";
             string title = articleInfo.Title;
-            string coverImage = $"{baseUri}/images/tile/{Path.ChangeExtension(fileName, ".jpg")}";
+            string coverImage = new Uri(baseUriInstance, $"images/tile/{Path.ChangeExtension(fileName, ".jpg")})").ToString();
 
             string xml = string.Format(CultureInfo.InvariantCulture, tileTemplate, coverImage, volumeTypeIndicator, title);
 
