@@ -1,9 +1,22 @@
-﻿<!DOCTYPE html>
+﻿@using AnEoT.Vintage.Helpers;
+@inject IWebHostEnvironment env
+
+<!DOCTYPE html>
 <html lang="zh-cn">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <meta name="application-name" content="回归线简易版" />
+    <meta name="msapplication-tooltip" content="在线阅读《回归线》期刊" />
+    <meta name="msapplication-starturl" content="/" />
+    <meta name="msapplication-navbutton-color" content="@HomePageHelper.GetHomePageInfo(env.WebRootPath).HeroAlt" />
+    <meta name="msapplication-task" content="name=打开期刊列表;action-uri=./posts/;icon-uri=./favicon.ico" />
+    <meta name="msapplication-task" content="name=阅读最新一期;action-uri=./posts/@HomePageHelper.GetLatestVolume(env.WebRootPath)/;icon-uri=./favicon.ico" />
+    <meta name="msapplication-task" content="name=订阅回归线 Feed 流;action-uri=./atom.xml;icon-uri=./favicon.ico" />
+    <meta name="msapplication-config" content="browserconfig.xml" />
+
     <title>@ViewData["Title"] | 回归线简易版</title>
     <link href="~/css/site.css" rel="stylesheet" type="text/css" />
     <link href="~/css/index.css" rel="stylesheet" type="text/css" />

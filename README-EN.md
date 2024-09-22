@@ -10,7 +10,7 @@ A fanmade literary journal based on mobile game *Arknights*, redesigned for vint
 
 - Make sure .NET 8 SDK is available on your computer
 
-- Run `dotnet run` command in `src` folder
+- Run `dotnet run` command in `src/AnEoT.Vintage` folder
 
 Enjoy reading~
 
@@ -18,7 +18,7 @@ Enjoy reading~
 
 If you want to generate static files, add command line argument ```-- static-only```
 
-By default, static web site will be generated in `src/StaticWebSite` folder
+By default, static web site will be generated in `src/AnEoT.Vintage/StaticWebSite` folder
 
 If you want to change it, use the following method to do that (ordered by the priority)
 - Use *command line argument*:

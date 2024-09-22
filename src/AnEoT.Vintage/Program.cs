@@ -244,6 +244,8 @@ public class Program
         }
         RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath, addCssStyle: rssAddCssStyle);
 
+        TileHelper.GenerateTileXml(rssBaseUri, app.Environment.WebRootPath);
+
         if (generateStaticWebSite)
         {
             if (Directory.Exists(staticWebSiteOutputPath) != true)

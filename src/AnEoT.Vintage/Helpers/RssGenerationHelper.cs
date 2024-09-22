@@ -231,7 +231,7 @@ namespace AnEoT.Vintage.Helpers
         }
     }
 
-    file sealed class VolumeOrderComparer : IComparer<DirectoryInfo>
+    internal sealed class VolumeOrderComparer : IComparer<DirectoryInfo>
     {
         public int Compare(DirectoryInfo? x, DirectoryInfo? y)
         {

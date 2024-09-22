@@ -10,7 +10,7 @@
 
 - 确保 .NET 8 SDK 安装在您的电脑上
 
-- 在 `src` 文件夹中运行 `dotnet run` 命令
+- 在 `src/AnEoT.Vintage` 文件夹中运行 `dotnet run` 命令
 
 请尽情地阅读吧。
 
@@ -18,7 +18,7 @@
 
 如果您想生成静态网站所需的文件，请在运行 `dotnet run` 命令时添加 ```-- static-only``` 参数。
 
-默认情况下，静态网站所需的文件将在 `src/StaticWebSite` 文件夹中生成。
+默认情况下，静态网站所需的文件将在 `src/AnEoT.Vintage/StaticWebSite` 文件夹中生成。
 
 若要改变生成位置，请使用下面的方法（按优先级排序）
 - 使用 *命令行参数*：
