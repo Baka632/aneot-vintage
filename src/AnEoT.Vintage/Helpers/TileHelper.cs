@@ -89,7 +89,7 @@ public static class TileHelper
 
             string volumeTypeIndicator = fileName == firstItem ? "最新一期" : "先前期刊";
             string title = articleInfo.Title;
-            string coverImage = new Uri(baseUriInstance, $"images/tile/{Path.ChangeExtension(fileName, ".jpg")})").ToString();
+            string coverImage = new Uri(baseUriInstance, $"images/tile/{Path.ChangeExtension(fileName, ".jpg")}").ToString();
 
             string xml = string.Format(CultureInfo.InvariantCulture, tileTemplate, coverImage, volumeTypeIndicator, title);
 
