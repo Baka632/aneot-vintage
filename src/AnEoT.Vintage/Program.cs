@@ -240,9 +240,12 @@ public class Program
 
         if (rssIncludeAllArticles)
         {
-            RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath, includeAllArticles: true, addCssStyle: rssAddCssStyle, rss20FileName: "rss_full.xml", atomFileName: "atom_full.xml");
+            FeedGenerationHelper.GenerateFeed(rssBaseUri, app.Environment.WebRootPath, includeAllArticles: true, addCssStyle: rssAddCssStyle, rss20FileName: "rss_full.xml", atomFileName: "atom_full.xml");
+            FeedGenerationHelper.GenerateFeed(rssBaseUri, app.Environment.WebRootPath, includeAllArticles: true, generateDigest: true, rss20FileName: "rss_full_digest.xml", atomFileName: "atom_full_digest.xml");
         }
-        RssGenerationHelper.GenerateRssFeed(rssBaseUri, app.Environment.WebRootPath, addCssStyle: rssAddCssStyle);
+        FeedGenerationHelper.GenerateFeed(rssBaseUri, app.Environment.WebRootPath, addCssStyle: rssAddCssStyle);
+
+        FeedGenerationHelper.GenerateFeed(rssBaseUri, app.Environment.WebRootPath, generateDigest: true, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml");
 
         TileHelper.GenerateTileXml(rssBaseUri, app.Environment.WebRootPath);
 

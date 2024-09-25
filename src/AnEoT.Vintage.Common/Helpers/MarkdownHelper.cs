@@ -86,8 +86,9 @@ public static class MarkdownHelper
     /// 获取 Markdown 的文章引言
     /// </summary>
     /// <param name="markdown">Markdown 文件内容</param>
+    /// <param name="isHtml">指示是否返回 HTM 格式的值</param>
     /// <returns>文章引言，若不存在，则返回空字符串</returns>
-    public static string GetArticleQuote(string markdown)
+    public static string GetArticleQuote(string markdown, bool isHtml = false)
     {
         if (markdown.Contains("<!-- more -->") != true)
         {
@@ -116,6 +117,11 @@ public static class MarkdownHelper
                     break;
                 }
             }
+        }
+
+        if (isHtml)
+        {
+            quote = Markdown.ToHtml(quote ?? string.Empty, pipeline: pipeline);
         }
 
         return quote ?? string.Empty;
