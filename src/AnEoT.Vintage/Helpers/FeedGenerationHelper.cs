@@ -102,18 +102,34 @@ public static class FeedGenerationHelper
                 string articleLink = $"{rssBaseUri}/posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}";
 
                 TextSyndicationContent content;
+                CustomMarkdownParser parser = new(false, false, true, $"{rssBaseUri}/posts/{volDirInfo.Name}", true, true);
 
                 if (generateDigest)
                 {
-                    string quote = MarkdownHelper.GetArticleQuote(markdown, true);
+                    string quote = MarkdownHelper.GetArticleQuote(markdown);
+                    string bodyContent = parser.Parse(quote);
 
-                    content = string.IsNullOrWhiteSpace(quote)
-                        ? SyndicationContent.CreateHtmlContent($"""<a href="{articleLink}" target="_blank">请单击这里阅读全文......</a>""")
-                        : SyndicationContent.CreateHtmlContent(quote);
+                    string htmlContentString = string.IsNullOrWhiteSpace(bodyContent)
+                        ? $"""<a href="{articleLink}" target="_blank">请单击这里阅读全文......</a>"""
+                        : $"""
+                        <head>
+                            <link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" />
+                            <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
+                            <link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" />
+                            <link href="{rssBaseUri}/css/rss-style.css" rel="stylesheet" type="text/css" />
+                            <link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" />
+                      </head>
+                      <body>
+                            {bodyContent}
+                            <br />
+                            <a href="{articleLink}" target="_blank">请单击这里阅读全文......</a>
+                      </body>
+                      """;
+
+                    content = SyndicationContent.CreateHtmlContent(htmlContentString);
                 }
                 else
                 {
-                    CustomMarkdownParser parser = new(false, false, true, $"{rssBaseUri}/posts/{volDirInfo.Name}", true, true);
                     string html = parser.Parse(markdown);
 
                     if (addCssStyle)

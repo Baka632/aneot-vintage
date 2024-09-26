@@ -86,16 +86,15 @@ public static class MarkdownHelper
     /// 获取 Markdown 的文章引言
     /// </summary>
     /// <param name="markdown">Markdown 文件内容</param>
-    /// <param name="isHtml">指示是否返回 HTM 格式的值</param>
     /// <returns>文章引言，若不存在，则返回空字符串</returns>
-    public static string GetArticleQuote(string markdown, bool isHtml = false)
+    public static string GetArticleQuote(string markdown)
     {
         if (markdown.Contains("<!-- more -->") != true)
         {
             return string.Empty;
         }
 
-        string? quote = null;
+        string quote = string.Empty;
         MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
         YamlFrontMatterBlock? yamlBlock = doc.Descendants<YamlFrontMatterBlock>().FirstOrDefault();
 
@@ -119,12 +118,7 @@ public static class MarkdownHelper
             }
         }
 
-        if (isHtml)
-        {
-            quote = Markdown.ToHtml(quote ?? string.Empty, pipeline: pipeline);
-        }
-
-        return quote ?? string.Empty;
+        return quote;
     }
 
     /// <summary>
