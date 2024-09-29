@@ -38,18 +38,17 @@ If you want to change it, use the following method to do that (ordered by the pr
 
 Most vintage devices don't support WebP image, so WebP image can't be displayed on these devices.
 
-To solve this problem, we can dynamically convert WebP image to JPEG image, but due to performance reason, this function is disabled by default.
+To solve this problem, we enabled the feature that converts WebP image to JPEG image.
 
-To enable it, use the following method to do that (ordered by the priority)
+If you want to disable it, use the following method to do that (ordered by the priority)
 - Use *command line argument*:
-```dotnet run --ConvertWebP true```
-- Set *environment variables* named ```ConvertWebP```: set it in ```launchSettings.json``` or in your command line interface
-
-- Add ```ConvertWebP``` in *appsettings.json*
+```dotnet run --ConvertWebP false```
+- Set *environment variables* named ```ConvertWebP```: set it in ```launchSettings.json``` or in your command line interface.
+- Add ```ConvertWebP``` in *appsettings.json*.
 ```
 {
    ......
-   "ConvertWebP": true
+   "ConvertWebP": false
    ......
 }
 ```

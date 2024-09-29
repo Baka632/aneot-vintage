@@ -24,8 +24,7 @@
 - 使用 *命令行参数*：
 ```dotnet run --StaticWebSiteOutputPath "YOUR PATH" -- static-only```
 - 设置名为 ```StaticWebSiteOutputPath``` 的 *环境变量* ：既可在 ```launchSettings.json``` 中设置，也可在命令行界面中配置。
-
-- 在 *appsettings.json* 中添加名为 ```StaticWebSiteOutputPath``` 的键值对
+- 在 *appsettings.json* 中添加名为 ```StaticWebSiteOutputPath``` 的键值对。
 ```
 {
    ......
@@ -38,18 +37,18 @@
 
 大多数旧式设备不支持 WebP 图像，因此在这些设备中无法显示它们。
 
-为了解决这个问题，我们可以将 WebP 图像动态转换为 JPEG 图像，但由于性能原因，我们默认禁用此功能。
+为了解决这个问题，我们启用了将 WebP 图像转换为 JPEG 图像的功能。
 
-要启用此功能，请使用下面的方法（按优先级排序）
+如果希望禁用此功能，请使用下面的方法（按优先级排序）
+
 - 使用 *命令行参数*：
-```dotnet run --ConvertWebP true```
+```dotnet run --ConvertWebP false```
 - 设置名为 ```ConvertWebP``` 的*环境变量*： 既可在 ```launchSettings.json``` 中设置，也可在命令行界面中配置。
-
-- 在 *appsettings.json* 中添加名为 ```ConvertWebP``` 的键值对
+- 在 *appsettings.json* 中添加名为 ```ConvertWebP``` 的键值对。
 ```
 {
    ......
-   "ConvertWebP": true
+   "ConvertWebP": false
    ......
 }
 ```

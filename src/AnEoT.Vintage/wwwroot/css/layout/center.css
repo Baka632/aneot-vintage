@@ -1,11 +1,11 @@
 ﻿.navbar-layout {
-    margin: auto;
+    margin: 0 auto;
     width: 400px;
     text-align: center
 }
 
 .footer-layout {
-    margin: auto;
+    margin: 0 auto;
     width: 80%;
     text-align: center
 }
