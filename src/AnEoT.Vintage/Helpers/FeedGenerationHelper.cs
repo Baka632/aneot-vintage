@@ -109,22 +109,39 @@ public static class FeedGenerationHelper
                     string quote = MarkdownHelper.GetArticleQuote(markdown);
                     string bodyContent = parser.Parse(quote);
 
-                    string htmlContentString = string.IsNullOrWhiteSpace(bodyContent)
-                        ? $"""<a href="{articleLink}" target="_blank">请单击这里阅读全文......</a>"""
-                        : $"""
+                    string htmlContentString;
+                    if (string.IsNullOrWhiteSpace(bodyContent))
+                    {
+                        htmlContentString = $"""<a href="{articleLink}" target="_blank">请单击这里阅读全文......</a>""";
+                    }
+                    else
+                    {
+                        bodyContent = $"""
+                            {bodyContent}
+                            <br />
+                            <a href="{articleLink}" target="_blank">请单击这里阅读全文......</a>
+                            """;
+
+                        if (addCssStyle)
+                        {
+                            htmlContentString = $"""
                         <head>
                             <link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" />
                             <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
                             <link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" />
                             <link href="{rssBaseUri}/css/rss-style.css" rel="stylesheet" type="text/css" />
                             <link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" />
-                      </head>
-                      <body>
+                        </head>
+                        <body>
                             {bodyContent}
-                            <br />
-                            <a href="{articleLink}" target="_blank">请单击这里阅读全文......</a>
-                      </body>
-                      """;
+                        </body>
+                        """;
+                        }
+                        else
+                        {
+                            htmlContentString = bodyContent;
+                        }
+                    }
 
                     content = SyndicationContent.CreateHtmlContent(htmlContentString);
                 }

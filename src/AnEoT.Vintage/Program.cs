@@ -1,13 +1,13 @@
+using Markdig;
+using AspNetStatic;
 using AnEoT.Vintage.Helpers;
 using AnEoT.Vintage.Helpers.Custom;
-using AspNetStatic;
-using Markdig;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.WebEncoders;
-using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using System.Text.Encodings.Web;
+using Microsoft.Extensions.WebEncoders;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Westwind.AspNetCore.Markdown;
 
 namespace AnEoT.Vintage;
@@ -29,7 +29,29 @@ public class Program
 
         #region 第一步：读取应用程序配置
         // 确定是否启用 WebP 图像转换功能
-        _ = bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP);
+        if (!bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP))
+        {
+            convertWebP = true;
+        }
+
+        // 设置网站基 Uri
+        string baseUri;
+
+        {
+            string[]? hostUrls = builder.Configuration["urls"]?.Split(';');
+            string? rssBaseUriInConfig = builder.Configuration["BaseUri"];
+
+            if (string.IsNullOrWhiteSpace(rssBaseUriInConfig))
+            {
+                baseUri = hostUrls?.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+                        ?? hostUrls?.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+                        ?? throw new InvalidOperationException("现在无法获取到基 Uri");
+            }
+            else
+            {
+                baseUri = rssBaseUriInConfig;
+            }
+        }
 
         #region 静态页面
         // 设置静态页面的导出位置
@@ -53,31 +75,18 @@ public class Program
         bool generateStaticWebSite = args.HasExitWhenDoneArg();
         #endregion
 
-        #region RSS
-        // 设置 RSS 源的基 Uri
-        string rssBaseUri;
-
+        #region Feed
+        // 确定是否生成完整源 （包含全部文章）
+        if (!bool.TryParse(builder.Configuration["FeedIncludeAllArticles"], out bool feedIncludeAllArticles))
         {
-            string[]? hostUrls = builder.Configuration["urls"]?.Split(';');
-            string? rssBaseUriInConfig = builder.Configuration["RssBaseUri"];
-
-            if (string.IsNullOrWhiteSpace(rssBaseUriInConfig))
-            {
-                rssBaseUri = hostUrls?.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
-                        ?? hostUrls?.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
-                        ?? throw new InvalidOperationException("现在无法获取到基 Uri");
-            }
-            else
-            {
-                rssBaseUri = rssBaseUriInConfig;
-            }
+            feedIncludeAllArticles = true;
         }
 
-        // 确定是否生成完整的 RSS 源 （包含全部文章）
-        _ = bool.TryParse(builder.Configuration["RssIncludeAllArticles"], out bool rssIncludeAllArticles);
-        
-        // 确定生成的 RSS 源是否包含样式
-        _ = bool.TryParse(builder.Configuration["RssAddCssStyle"], out bool rssAddCssStyle);
+        // 确定生成的源是否包含样式
+        if (!bool.TryParse(builder.Configuration["FeedAddCssStyle"], out bool feedAddCssStyle))
+        {
+            feedAddCssStyle = true;
+        }
         #endregion
         #endregion
 
@@ -191,16 +200,16 @@ public class Program
 
         FakeAdHelper.PrepareData(app.Environment.WebRootPath);
 
-        if (rssIncludeAllArticles)
+        if (feedIncludeAllArticles)
         {
-            FeedGenerationHelper.GenerateFeed(rssBaseUri, app.Environment.WebRootPath, includeAllArticles: true, addCssStyle: rssAddCssStyle, rss20FileName: "rss_full.xml", atomFileName: "atom_full.xml");
-            FeedGenerationHelper.GenerateFeed(rssBaseUri, app.Environment.WebRootPath, includeAllArticles: true, generateDigest: true, rss20FileName: "rss_full_digest.xml", atomFileName: "atom_full_digest.xml");
+            FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, includeAllArticles: true, addCssStyle: feedAddCssStyle, rss20FileName: "rss_full.xml", atomFileName: "atom_full.xml");
+            FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, includeAllArticles: true, addCssStyle: feedAddCssStyle, generateDigest: true, rss20FileName: "rss_full_digest.xml", atomFileName: "atom_full_digest.xml");
         }
-        FeedGenerationHelper.GenerateFeed(rssBaseUri, app.Environment.WebRootPath, addCssStyle: rssAddCssStyle);
+        FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, addCssStyle: feedAddCssStyle);
 
-        FeedGenerationHelper.GenerateFeed(rssBaseUri, app.Environment.WebRootPath, generateDigest: true, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml");
+        FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, generateDigest: true, addCssStyle: feedAddCssStyle, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml");
 
-        TileHelper.GenerateTileXml(rssBaseUri, app.Environment.WebRootPath);
+        TileHelper.GenerateTileXml(baseUri, app.Environment.WebRootPath);
 
         if (generateStaticWebSite)
         {
