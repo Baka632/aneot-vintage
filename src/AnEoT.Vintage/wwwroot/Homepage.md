@@ -5,8 +5,8 @@ icon: home
 title: 主页
 heroText: 回归线
 heroFullScreen: false
-tagline: © relvr 2024·07
-heroAlt: '#fcb5c3'
+tagline: © 猫柱儿 2024·09
+heroAlt: '#771b15'
 projects:
 - icon: read
   name: 期刊一览
@@ -14,8 +14,8 @@ projects:
   link: posts/
 - icon: article
   name: 最新一期
-  desc: Vol.22 2024-07
-  link: posts/2024-07/
+  desc: Vol.23 2024-09
+  link: posts/2024-09/
 - icon: cache
   name: 下载
   desc: Download
