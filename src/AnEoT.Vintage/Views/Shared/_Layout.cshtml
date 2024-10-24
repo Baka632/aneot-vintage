@@ -18,7 +18,6 @@
     string description = string.Empty;
     string keywords = string.Empty;
     string pageUri = string.Empty;
-    string? imageUri = null;
 
     List<string> keywordList = new(12)
     {
@@ -66,15 +65,6 @@
     IHttpRequestFeature? httpRequestFeature = Context.Features.Get<IHttpRequestFeature>();
     Uri pageUriObj = new Uri(Program.CurrentBaseUri, httpRequestFeature?.RawTarget);
     pageUri = pageUriObj.ToString();
-
-    if (hasRawMarkdown)
-    {
-        string? firstImageUri = MarkdownHelper.GetFirstImageUri(rawMarkdown);
-        if (!string.IsNullOrWhiteSpace(firstImageUri))
-        {
-            imageUri = new Uri(pageUriObj, firstImageUri).ToString();
-        }
-    }
 }
 
 <!DOCTYPE html>
@@ -98,11 +88,6 @@
     <meta property="og:site_name" content="回归线简易版" />
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:url" content="@pageUri" />
-
-    @if (!string.IsNullOrWhiteSpace(imageUri))
-    {
-        <meta property="og:image" content="@imageUri" />
-    }
 
     @if (articleInfo.Article)
     {
