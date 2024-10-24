@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Westwind.AspNetCore.Markdown;
-using System.Diagnostics.CodeAnalysis;
 
 namespace AnEoT.Vintage;
 
@@ -22,6 +21,7 @@ public class Program
 #pragma warning disable CS8618
     internal static Uri CurrentBaseUri;
 #pragma warning restore CS8618
+    internal static bool ConvertWebP;
 
     /// <summary>
     /// 入口点方法
@@ -37,6 +37,7 @@ public class Program
         {
             convertWebP = true;
         }
+        ConvertWebP = convertWebP;
 
         // 设置网站基 Uri
         string baseUri;

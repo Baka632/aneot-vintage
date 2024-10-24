@@ -92,7 +92,14 @@
 
     @if (!string.IsNullOrWhiteSpace(imageUri))
     {
-        <meta property="og:image" content="@imageUri" />
+        @if (Program.ConvertWebP)
+        {
+            <meta property="og:image" content="@imageUri.Replace(".webp", ".jpg")" />
+        }
+        else
+        {
+            <meta property="og:image" content="@imageUri" />
+        }
     }
 
     @if (articleInfo.Article)
