@@ -18,6 +18,7 @@
     string description = string.Empty;
     string keywords = string.Empty;
     string pageUri = string.Empty;
+    string? imageUri = null;
 
     List<string> keywordList = new(12)
     {
@@ -65,6 +66,15 @@
     IHttpRequestFeature? httpRequestFeature = Context.Features.Get<IHttpRequestFeature>();
     Uri pageUriObj = new Uri(Program.CurrentBaseUri, httpRequestFeature?.RawTarget);
     pageUri = pageUriObj.ToString();
+
+    if (hasRawMarkdown)
+    {
+        string? firstImageUri = MarkdownHelper.GetFirstImageUri(rawMarkdown);
+        if (!string.IsNullOrWhiteSpace(firstImageUri))
+        {
+            imageUri = new Uri(pageUriObj, firstImageUri).ToString();
+        }
+    }
 }
 
 <!DOCTYPE html>
@@ -74,20 +84,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <meta name="application-name" content="回归线简易版" />
-    <meta name="msapplication-tooltip" content="在线阅读《回归线》期刊" />
-    <meta name="msapplication-starturl" content="/" />
-    <meta name="msapplication-navbutton-color" content="@HomePageHelper.GetHomePageInfo(env.WebRootPath).HeroAlt" />
-    <meta name="msapplication-task" content="name=打开期刊列表;action-uri=./posts/;icon-uri=./favicon_multisize.ico" />
-    <meta name="msapplication-task" content="name=阅读最新一期;action-uri=./posts/@HomePageHelper.GetLatestVolume(env.WebRootPath)/;icon-uri=./favicon_multisize.ico" />
-    <meta name="msapplication-task" content="name=订阅回归线 Feed 流;action-uri=./subscription.html;icon-uri=./favicon_multisize.ico" />
-    <meta name="msapplication-config" content="browserconfig.xml" />
-
     <title>@title | 回归线简易版</title>
     <meta property="og:title" content="@title" />
     <meta property="og:site_name" content="回归线简易版" />
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:url" content="@pageUri" />
+
+    @if (!string.IsNullOrWhiteSpace(imageUri))
+    {
+        <meta property="og:image" content="@imageUri" />
+    }
 
     @if (articleInfo.Article)
     {
@@ -121,6 +127,15 @@
     }
 
     <meta name="keywords" content="@keywords" />
+
+    <meta name="application-name" content="回归线简易版" />
+    <meta name="msapplication-tooltip" content="在线阅读《回归线》期刊" />
+    <meta name="msapplication-starturl" content="/" />
+    <meta name="msapplication-navbutton-color" content="@HomePageHelper.GetHomePageInfo(env.WebRootPath).HeroAlt" />
+    <meta name="msapplication-task" content="name=打开期刊列表;action-uri=./posts/;icon-uri=./favicon_multisize.ico" />
+    <meta name="msapplication-task" content="name=阅读最新一期;action-uri=./posts/@HomePageHelper.GetLatestVolume(env.WebRootPath)/;icon-uri=./favicon_multisize.ico" />
+    <meta name="msapplication-task" content="name=订阅回归线 Feed 流;action-uri=./subscription.html;icon-uri=./favicon_multisize.ico" />
+    <meta name="msapplication-config" content="browserconfig.xml" />
 
     <link rel="alternate" type="application/atom+xml" href="atom.xml" title="回归线简易版 - Atom 源">
     <link rel="alternate" type="application/rss+xml" href="rss.xml" title="回归线简易版 - RSS 源">
