@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.SassCompiler" Version="1.79.3" />
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.80.4" />
     <PackageReference Include="AspNetStatic" Version="0.24.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />

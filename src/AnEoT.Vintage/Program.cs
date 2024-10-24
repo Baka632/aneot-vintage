@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Westwind.AspNetCore.Markdown;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AnEoT.Vintage;
 
@@ -18,6 +19,9 @@ namespace AnEoT.Vintage;
 public class Program
 {
     private static readonly string[] defaultFileNames = ["README.md", "index.html", "index.htm"];
+#pragma warning disable CS8618
+    internal static Uri CurrentBaseUri;
+#pragma warning restore CS8618
 
     /// <summary>
     /// 入口点方法
@@ -52,6 +56,7 @@ public class Program
                 baseUri = rssBaseUriInConfig;
             }
         }
+        CurrentBaseUri = new Uri(baseUri, UriKind.Absolute);
 
         #region 静态页面
         // 设置静态页面的导出位置
@@ -116,7 +121,7 @@ public class Program
             .AddScoped(provider =>
             {
                 return provider.GetRequiredService<IUrlHelperFactory>()
-                .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
+                    .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
             });
         builder.Services.Configure<WebEncoderOptions>(options =>
         {

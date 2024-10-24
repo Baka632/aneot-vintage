@@ -22,6 +22,9 @@
     }
 
     int wordCount = MarkdownHelper.GetWordCount(Model.RawMarkdown);
+
+    ViewBag.RawMarkdown = Model.RawMarkdown;
+    ViewBag.ArticleInfo = articleInfo;
 }
 
 @if (MarkdownHelper.IsContainHtmlClass(Model.RawMarkdown, "textkai"))

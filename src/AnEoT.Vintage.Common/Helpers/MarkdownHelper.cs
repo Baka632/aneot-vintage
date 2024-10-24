@@ -7,6 +7,7 @@ using System.Text;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using AngleSharp.Dom;
+using Markdig.Syntax.Inlines;
 
 namespace AnEoT.Vintage.Common.Helpers;
 
@@ -165,5 +166,35 @@ public static class MarkdownHelper
         IHtmlCollection<IElement> target = document.QuerySelectorAll($".{className}");
 
         return target.Length != 0;
+    }
+
+    /// <summary>
+    /// 将指定的 Markdown 文档转换为纯文本
+    /// </summary>
+    /// <param name="markdown">Markdown 文档的字符串</param>
+    /// <returns>由 Markdown 文档转换成的纯文本</returns>
+    public static string ToPlainText(string markdown)
+    {
+        return Markdown.ToPlainText(markdown, pipeline);
+    }
+
+    /// <summary>
+    /// 获取 Markdown 文档中第一张图片的 Uri
+    /// </summary>
+    /// <param name="markdown">Markdown 文档的字符串</param>
+    /// <returns>Markdown 文档中第一张图片的 Uri，若不存在则返回 <see langword="null"/></returns>
+    public static string? GetFirstImageUri(string markdown)
+    {
+        MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
+
+        foreach (MarkdownObject item in doc.Descendants())
+        {
+            if (item is LinkInline linkInline && linkInline.IsImage)
+            {
+                return linkInline.Url;
+            }
+        }
+
+        return null;
     }
 }
