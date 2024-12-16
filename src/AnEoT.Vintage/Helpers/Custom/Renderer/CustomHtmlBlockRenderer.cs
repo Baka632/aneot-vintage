@@ -11,6 +11,7 @@ using Markdig.Helpers;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
+using AnEoT.Vintage.Models.VueComponentAbstractions;
 
 namespace AnEoT.Vintage.Helpers.Custom.Renderer;
 
@@ -21,14 +22,16 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
 {
     private readonly bool convertWebP;
     private readonly bool noAd;
+    private readonly bool noEod;
 
     /// <summary>
     /// 使用指定的参数构造<seealso cref="CustomHtmlBlockRenderer"/>的新实例
     /// </summary>
-    public CustomHtmlBlockRenderer(bool convertWebP, bool noAd)
+    public CustomHtmlBlockRenderer(bool convertWebP, bool noAd, bool noEod)
     {
         this.convertWebP = convertWebP;
         this.noAd = noAd;
+        this.noEod = noEod;
     }
 
     /// <inheritdoc/>
@@ -49,24 +52,27 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
         HtmlParser parser = new(default, context);
         using IHtmlDocument document = parser.ParseDocument(elementHtml);
 
-        IElement? fakeAd = document.All
-                .FirstOrDefault(element => element.TagName.ToUpperInvariant() is "FAKEADS");
-        if (fakeAd is not null && noAd is not true)
-        {
-            Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
-            string fakeAdHtml = $"""
-                <div class="ads-container no-print">
-                    <p class="ads-hint">{ad.AdText}<a href="{ad.AboutLink}">{ad.AdAbout}</a></p>
-                    <div class="image-container">
-                      <a href="{ad.AdLink}" target="/" rel="noopener noreferrer">
-                        <img src="/fake-ads/{ad.AdImageLink}" alt="Advertisement" />
-                      </a>
-                    </div>
-                </div>
-            
-                """;
+        IElement? currentElement = document.Body?.FirstElementChild;
 
-            obj.Lines = new StringLineGroup(fakeAdHtml);
+        if (currentElement is not null)
+        {
+            string classNames = currentElement.ClassList is not null && currentElement.ClassList.Length != 0
+                ? string.Join(' ', currentElement.ClassList)
+                : string.Empty;
+
+            if (!noAd && currentElement.TagName == FakeAds.TagName)
+            {
+                Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
+                string fakeAdHtml = FakeAds.GetHtml(ad, classNames);
+
+                obj.Lines = new StringLineGroup(fakeAdHtml);
+            }
+            else if (!noEod && currentElement.TagName == Eod.TagName)
+            {
+                string eodHtml = Eod.GetHtml(classNames);
+
+                obj.Lines = new StringLineGroup(eodHtml);
+            }
         }
 
         if (convertWebP)

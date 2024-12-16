@@ -1,6 +1,10 @@
-﻿using Markdig.Renderers;
+﻿using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
+using Markdig.Renderers;
 using Markdig.Renderers.Html.Inlines;
 using Markdig.Syntax.Inlines;
+using AnEoT.Vintage.Models.VueComponentAbstractions;
 
 namespace AnEoT.Vintage.Helpers.Custom.Renderer;
 
@@ -22,10 +26,19 @@ public class CustomHtmlInlineRenderer : HtmlInlineRenderer
     /// <inheritdoc/>
     protected override void Write(HtmlRenderer renderer, HtmlInline obj)
     {
-        string tag = obj.Tag.Replace(" ", string.Empty);
-        if (tag.Equals("<eod/>", StringComparison.OrdinalIgnoreCase) && noEod is not true)
+        if (noEod is not true)
         {
-            obj.Tag = """<span><img id="eod-image-element" src="/eod.jpg" /></span>""";
+            HtmlParser parser = new();
+            using IHtmlDocument document = parser.ParseDocument(obj.Tag);
+            IElement? element = document.Body?.FirstElementChild;
+
+            if (element != null)
+            {
+                if (element.TagName == Eod.TagName)
+                {
+                    obj.Tag = Eod.GetHtml();
+                }
+            }
         }
 
         base.Write(renderer, obj);

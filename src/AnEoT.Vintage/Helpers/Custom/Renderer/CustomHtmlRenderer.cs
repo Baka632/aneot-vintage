@@ -25,7 +25,7 @@ namespace AnEoT.Vintage.Helpers.Custom.Renderer
             {
                 IMarkdownObjectRenderer htmlBlockRenderer = ObjectRenderers.First(obj => obj is HtmlBlockRenderer);
                 int htmlBlockRendererIndex = ObjectRenderers.IndexOf(htmlBlockRenderer);
-                ObjectRenderers.Insert(htmlBlockRendererIndex, new CustomHtmlBlockRenderer(convertWebP, noAd));
+                ObjectRenderers.Insert(htmlBlockRendererIndex, new CustomHtmlBlockRenderer(convertWebP, noAd, noEod));
                 ObjectRenderers.Remove(htmlBlockRenderer);
             }
             

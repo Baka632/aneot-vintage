@@ -17,7 +17,7 @@ public static class StaticWebSiteHelper
         string[] excludedFiles = ["Homepage.md"];
         string[] excludedFolders= [];
 
-        List<ResourceInfoBase> pages = new(2000)
+        List<ResourceInfoBase> pages = new(2500)
         {
             new PageResource("/"),
             new PageResource("/settings")
@@ -96,7 +96,7 @@ public static class StaticWebSiteHelper
             {
                 bool isWebpFile = extensions.Equals(".webp", StringComparison.OrdinalIgnoreCase);
 
-                BinResource binRes = new(Path.Combine(baseUri, WebUtility.UrlEncode(name)).Replace('\\', '/'))
+                BinResource binRes = new(Path.Combine(baseUri, name).Replace('\\', '/'))
                 {
                     OutFile = convertWebp && isWebpFile
                         ? Path.ChangeExtension(Path.Combine(baseUri, name), ".jpg")
