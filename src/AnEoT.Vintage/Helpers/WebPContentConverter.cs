@@ -1,5 +1,5 @@
-﻿using System.Buffers;
 using AspNetStatic;
+using AspNetStatic.Optimizer;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
