@@ -5,8 +5,8 @@ icon: home
 title: 主页
 heroText: 回归线
 heroFullScreen: false
-tagline: © 精分S君 2024·12
-heroAlt: '#f7b5c0'
+tagline: © 失序偏移 2025·03
+heroAlt: '#bb3040'
 projects:
 - icon: read
   name: 期刊一览
@@ -14,8 +14,8 @@ projects:
   link: posts/
 - icon: article
   name: 最新一期
-  desc: Vol.24 2024-12
-  link: posts/2024-12/
+  desc: Vol.25 2025-03
+  link: posts/2025-03/
 - icon: cache
   name: 下载
   desc: Download

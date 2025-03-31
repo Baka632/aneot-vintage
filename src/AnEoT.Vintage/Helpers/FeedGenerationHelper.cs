@@ -1,4 +1,4 @@
-﻿using System.ServiceModel.Syndication;
+using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Text;
 using AnEoT.Vintage.Helpers.Custom;
@@ -56,10 +56,10 @@ public static class FeedGenerationHelper
            "AnEoT-Vintage",
            DateTimeOffset.Now)
         {
-            Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2024 TCA. All rights reserved."),
+            Copyright = new TextSyndicationContent("泰拉创作者联合会保留所有权利 | Copyright © 2022-2025 TCA. All rights reserved."),
             Language = "zh-CN",
             Generator = "System.ServiceModel.Syndication.SyndicationFeed, used in AnEoT.Vintage",
-            ImageUrl = new Uri(baseUri, "images/logo.jpg"),
+            ImageUrl = new Uri(baseUri, "favicon.ico"),
         };
 
         IEnumerable<string> categories = CategoryAndTagHelper.GetAllCategories(webRootPath);
@@ -74,7 +74,7 @@ public static class FeedGenerationHelper
         List<SyndicationItem> items = [];
 
         //反向读取文件夹，以获取到最新的期刊
-        List<DirectoryInfo> volDirInfos = new(postsDirectoryInfo.EnumerateDirectories());
+        List<DirectoryInfo> volDirInfos = [.. postsDirectoryInfo.EnumerateDirectories()];
         volDirInfos.Sort(new VolumeOrderComparer());
         volDirInfos.Reverse();
 

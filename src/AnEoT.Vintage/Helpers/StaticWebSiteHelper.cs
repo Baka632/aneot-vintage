@@ -1,5 +1,6 @@
-﻿using System.Net;
+using System.Net;
 using AspNetStatic;
+using AspNetStatic.Optimizer;
 
 namespace AnEoT.Vintage.Helpers;
 
@@ -101,9 +102,9 @@ public static class StaticWebSiteHelper
                     OutFile = convertWebp && isWebpFile
                         ? Path.ChangeExtension(Path.Combine(baseUri, name), ".jpg")
                         : Path.Combine(baseUri, name),
-                    OptimizerType = isWebpFile
-                        ? OptimizerType.Bin
-                        : OptimizerType.None
+                    OptimizationType = isWebpFile
+                        ? OptimizationType.Bin
+                        : OptimizationType.None
                 };
 
                 pages.Add(binRes);

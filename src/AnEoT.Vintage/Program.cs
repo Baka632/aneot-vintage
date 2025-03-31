@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Westwind.AspNetCore.Markdown;
+using AspNetStatic.Optimizer;
 
 namespace AnEoT.Vintage;
 

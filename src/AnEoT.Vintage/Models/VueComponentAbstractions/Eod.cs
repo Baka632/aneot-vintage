@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
 
 namespace AnEoT.Vintage.Models.VueComponentAbstractions;
@@ -16,7 +16,7 @@ public static class Eod
     /// <summary>
     /// 元素 HTML 模板
     /// </summary>
-    private const string Template = """<span class="no-interact{0}"><img id="eod-image-element" src="/eod.jpg" /></span>""";
+    private const string Template = """<span class="no-interact{0}"><img id="eod-image-element" src="/eod.jpg" alt="" /></span>""";
 
     private readonly static CompositeFormat TemplateFormat = CompositeFormat.Parse(Template);
 
