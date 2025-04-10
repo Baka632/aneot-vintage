@@ -13,8 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
 		src\README.md = src\README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnEoT.Vintage.StaticServer", "src\AnEoT.Vintage.StaticServer\AnEoT.Vintage.StaticServer.csproj", "{B145129D-B128-35BD-082C-7A1E67FEA5F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +37,10 @@ Global
 		{AD2E61F7-8248-43BB-B004-A5B2DA3C6BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD2E61F7-8248-43BB-B004-A5B2DA3C6BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD2E61F7-8248-43BB-B004-A5B2DA3C6BF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B145129D-B128-35BD-082C-7A1E67FEA5F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B145129D-B128-35BD-082C-7A1E67FEA5F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B145129D-B128-35BD-082C-7A1E67FEA5F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B145129D-B128-35BD-082C-7A1E67FEA5F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

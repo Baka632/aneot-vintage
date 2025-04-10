@@ -10,6 +10,8 @@ namespace AnEoT.Vintage.Helpers;
 /// </summary>
 public static class FeedGenerationHelper
 {
+    private const string LxgwFontUri = "https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css";
+
     /// <summary>
     /// 生成 RSS 与 Atom 源
     /// </summary>
@@ -130,7 +132,7 @@ public static class FeedGenerationHelper
                             <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
                             <link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" />
                             <link href="{rssBaseUri}/css/rss-style.css" rel="stylesheet" type="text/css" />
-                            <link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" />
+                            <link href="{LxgwFontUri}" rel="stylesheet" type="text/css" />
                         </head>
                         <body>
                             {bodyContent}
@@ -157,7 +159,7 @@ public static class FeedGenerationHelper
                           <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
                           <link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" />
                           <link href="{rssBaseUri}/css/rss-style.css" rel="stylesheet" type="text/css" />
-                          <link href="https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css" rel="stylesheet" type="text/css" />
+                          <link href="{LxgwFontUri}" rel="stylesheet" type="text/css" />
                       </head>
                       <body>
                           {html}

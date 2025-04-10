@@ -363,10 +363,9 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Auto-generated static file
-# Run 'dotnet run -- static-only' to generate
 src/AnEoT.Vintage/StaticWebSite
 
-# Auto-generated feed file
+# Auto-generated feed files
 src/AnEoT.Vintage/wwwroot/atom.xml
 src/AnEoT.Vintage/wwwroot/rss.xml
 src/AnEoT.Vintage/wwwroot/atom_full.xml
@@ -376,8 +375,14 @@ src/AnEoT.Vintage/wwwroot/rss_digest.xml
 src/AnEoT.Vintage/wwwroot/atom_full_digest.xml
 src/AnEoT.Vintage/wwwroot/rss_full_digest.xml
 
-# Auto-generated tile file
+# Auto-generated tile files
 src/AnEoT.Vintage/wwwroot/tiles
+
+# Static server web root files, copied from main project
+src/AnEoT.Vintage.StaticServer/wwwroot/*
+
+# dotnet tools config
+src/*/.config
 
 # Visual Studio Code cache/options directory
 /.vscode
