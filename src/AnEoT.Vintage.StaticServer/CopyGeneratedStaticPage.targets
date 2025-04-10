@@ -1,0 +1,15 @@
+<Project>
+    <Target Name="CopyGeneratedStaticPage" BeforeTargets="PrepareForBuild">
+        <ItemGroup>
+            <_StaticWebPagePath Include="$(MSBuildThisFileDirectory)../AnEoT.Vintage/StaticWebSite"/>
+            <_StaticWebPageFiles Include="$(MSBuildThisFileDirectory)../AnEoT.Vintage/StaticWebSite/**/*.*"/>
+        </ItemGroup>
+
+        <Error Code="ANEOT0001"
+                Condition="!Exists( '@(_StaticWebPagePath)' )"
+                Text="尚未生成静态网页文件夹，请先生成静态网页。" />
+        <Copy SourceFiles="@(_StaticWebPageFiles)"
+                DestinationFolder="wwwroot/%(RecursiveDir)"
+                SkipUnchangedFiles="True" />
+    </Target>
+</Project>
