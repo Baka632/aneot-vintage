@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "AnEoT.Vintage.StaticServer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:53815;http://localhost:53816"
+    }
+  }
+}
