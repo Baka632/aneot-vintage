@@ -80,6 +80,7 @@ public class TryHttpsUpgradeMiddleware
 
             context.Response.StatusCode = _statusCode;
             context.Response.Headers.Location = redirectUrl;
+            context.Response.Headers.Vary = "Upgrade-Insecure-Requests";
 
             _logger.LogDebug("正在重定向到：{redirectUrl}", redirectUrl);
         }
