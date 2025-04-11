@@ -386,3 +386,4 @@ src/*/.config
 
 # Visual Studio Code cache/options directory
 /.vscode
+/src/AnEoT.Vintage.ReverseProxy/aneot-vintage-reverse-proxy-config.json

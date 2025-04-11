@@ -1,13 +1,27 @@
 using Microsoft.AspNetCore.Http.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-builder.Services.AddHsts(options =>
+builder.Configuration.AddJsonFile("aneot-vintage-reverse-proxy-config.json", false);
+
+if (!builder.Environment.IsDevelopment())
 {
-    options.Preload = true;
-    options.IncludeSubDomains = true;
-    options.MaxAge = TimeSpan.FromMinutes(10);
-});
+    builder.Services.AddLettuceEncrypt();
+    builder.Services.AddHsts(options =>
+    {
+        options.Preload = true;
+        options.IncludeSubDomains = true;
+        options.MaxAge = TimeSpan.FromMinutes(10);
+    });
+    builder.WebHost.ConfigureKestrel(kestrelOptions =>
+    {
+        kestrelOptions.ConfigureHttpsDefaults(httpsOptions =>
+        {
+            httpsOptions.UseLettuceEncrypt(kestrelOptions.ApplicationServices);
+        });
+    });
+}
+
+builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 WebApplication app = builder.Build();
 
