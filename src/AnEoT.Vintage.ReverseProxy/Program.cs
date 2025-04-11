@@ -1,6 +1,4 @@
-using AnEoT.Vintage.ReverseProxy;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddReverseProxy().LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
