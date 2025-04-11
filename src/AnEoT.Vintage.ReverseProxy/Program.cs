@@ -8,9 +8,7 @@ if (!builder.Environment.IsDevelopment())
     builder.Services.AddLettuceEncrypt();
     builder.Services.AddHsts(options =>
     {
-        options.Preload = true;
-        options.IncludeSubDomains = true;
-        options.MaxAge = TimeSpan.FromMinutes(10);
+        options.MaxAge = TimeSpan.FromDays(365 * 2);
     });
     builder.WebHost.ConfigureKestrel(kestrelOptions =>
     {
@@ -42,7 +40,7 @@ app.Use(async (context, next) =>
             request.Path,
             request.QueryString);
 
-        context.Response.StatusCode = StatusCodes.Status307TemporaryRedirect;
+        context.Response.StatusCode = StatusCodes.Status308PermanentRedirect;
         context.Response.Headers.Location = redirectUrl;
         context.Response.Headers.Vary = "Upgrade-Insecure-Requests";
         return;
