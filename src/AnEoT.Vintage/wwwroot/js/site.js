@@ -1,4 +1,5 @@
 var supportSvg = !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
+var httpsTestImage = null;
 
 if (window.addEventListener) {
     window.addEventListener("DOMContentLoaded", onPageLoad)
@@ -10,6 +11,35 @@ else if (window.attachEvent) {
 function onPageLoad() {
     autoSwitchTheme();
     autoSwitchLayout();
+    autoDetectHttpsSupport();
+}
+
+function autoDetectHttpsSupport() {
+    if (location.href.indexOf('https://') == -1) {
+        var ImgObj = new Image();
+        httpsTestImage = ImgObj;
+
+        if (ImgObj.addEventListener) {
+            ImgObj.addEventListener("load", onHttpsTestImageLoad)
+        }
+        else if (ImgObj.attachEvent) {
+            ImgObj.attachEvent('onload', onHttpsTestImageLoad);
+        }
+        else {
+            // 回家吧，孩子！
+            return;
+        }
+
+        ImgObj.src = "https://" + location.host + "/images/https-test.gif";
+    }
+}
+
+function onHttpsTestImageLoad() {
+    if (httpsTestImage.complete == "true" || (httpsTestImage.width > 0 && httpsTestImage.height > 0)) {
+        if (confirm("本网站支持安全的 HTTPS 连接，我们更推荐您使用此方式。要立刻使用安全的 HTTPS 连接吗？")) {
+            location.href = location.href.replace('http://', 'https://');
+        }
+    }
 }
 
 function switchTheme(theme) {
