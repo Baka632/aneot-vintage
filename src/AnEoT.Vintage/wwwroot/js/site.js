@@ -9,9 +9,9 @@ else if (window.attachEvent) {
 }
 
 function onPageLoad() {
+    autoDetectHttpsSupport();
     autoSwitchTheme();
     autoSwitchLayout();
-    autoDetectHttpsSupport();
 }
 
 function autoDetectHttpsSupport() {
