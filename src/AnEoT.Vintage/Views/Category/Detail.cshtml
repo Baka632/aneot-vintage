@@ -1,4 +1,4 @@
-﻿@using AnEoT.Vintage.ViewModels.Category;
+@using AnEoT.Vintage.ViewModels.Category;
 @using Microsoft.AspNetCore.Html;
 @using System.Globalization;
 @using Westwind.AspNetCore.Markdown;
@@ -14,7 +14,7 @@
     <h1 style="margin-bottom:10px">@ViewData["Title"]</h1>
 
     <div style="margin-bottom:10px">
-        <a href="~/category/">返回到分类页</a>
+        <a href="/category/">返回到分类页</a>
         <br>
     </div>
 
@@ -57,7 +57,7 @@
                     }
                 </div>
 
-                <a href="~/@uri.Replace(".md", ".html")">查看文章</a>
+                <a href="/@uri.Replace(".md", ".html")">查看文章</a>
             </li>
         }
     </ul>

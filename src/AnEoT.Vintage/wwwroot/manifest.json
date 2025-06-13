@@ -1,0 +1,13 @@
+{
+  "name": "回归线简易版",
+  "id": "Baka632.AnEoT.Vintage",
+  "start_url": "/",
+  "display": "standalone",
+  "description": "《明日方舟》同人文学期刊《回归线》，现在为旧式设备重新设计。",
+  "icons": [
+    {
+      "src": "/images/eod512.png",
+      "sizes": "512x512"
+    }
+  ]
+}
