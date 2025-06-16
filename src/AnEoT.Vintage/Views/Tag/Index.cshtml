@@ -1,4 +1,4 @@
-﻿@using AnEoT.Vintage.ViewModels.Tag
+@using AnEoT.Vintage.ViewModels.Tag
 @model IndexViewModel
 
 @{
@@ -11,7 +11,7 @@
         @foreach (var item in Model.TagToArticleRelativePathMapping)
         {
             <li>
-                <a href="~/tag/@item.Key">
+                <a href="/tag/@item.Key">
                     @item.Key
                 </a>
                 <br/>
