@@ -165,7 +165,11 @@ public class Program
 
                 if (request.Path.HasValue)
                 {
-                    if (request.Path.Value.Contains("index.html", StringComparison.OrdinalIgnoreCase))
+                    if (request.Path.Value == "/")
+                    {
+                        request.Path = "/Home/Index";
+                    }
+                    else if (request.Path.Value.Contains("index.html", StringComparison.OrdinalIgnoreCase))
                     {
                         request.Path = request.Path.Value.Replace("index.html", "README.md");
                     }

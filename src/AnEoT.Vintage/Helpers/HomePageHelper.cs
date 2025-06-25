@@ -1,4 +1,4 @@
-﻿namespace AnEoT.Vintage.Helpers;
+namespace AnEoT.Vintage.Helpers;
 
 /// <summary>
 /// 为获取主页信息提供帮助的类
@@ -14,7 +14,7 @@ public static class HomePageHelper
     /// <returns>表示主页信息的 <see cref="HomePageInfo"/></returns>
     public static HomePageInfo GetHomePageInfo(string webRootPath)
     {
-        FileInfo fileInfo = new(Path.Combine(webRootPath, "Homepage.md"));
+        FileInfo fileInfo = new(Path.Combine(webRootPath, "README.md"));
 
         if (!fileInfo.Exists)
         {
@@ -36,7 +36,7 @@ public static class HomePageHelper
     public static string GetLatestVolume(string webRootPath)
     {
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
-        List<DirectoryInfo> volDirInfos = new(postsDirectoryInfo.EnumerateDirectories());
+        List<DirectoryInfo> volDirInfos = [.. postsDirectoryInfo.EnumerateDirectories()];
         volDirInfos.Sort(volumeOrderComparer);
         volDirInfos.Reverse();
         return volDirInfos.First().Name;
