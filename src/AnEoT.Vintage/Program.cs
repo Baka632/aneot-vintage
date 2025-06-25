@@ -169,6 +169,11 @@ public class Program
                     {
                         request.Path = request.Path.Value.Replace("index.html", "README.md");
                     }
+                    else if (request.Path.Value.Equals("/installpwa", StringComparison.OrdinalIgnoreCase) && generateStaticWebSite)
+                    {
+                        // TODO: not working
+                        request.Path = $"{request.Path.Value}.html";
+                    }
                     else
                     {
                         request.Path = request.Path.Value.Replace(".html", ".md");
