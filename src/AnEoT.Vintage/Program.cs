@@ -1,15 +1,15 @@
-using Markdig;
-using AspNetStatic;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using AnEoT.Vintage.Helpers;
 using AnEoT.Vintage.Helpers.Custom;
-using System.Text.Unicode;
-using System.Text.Encodings.Web;
-using Microsoft.Extensions.WebEncoders;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Westwind.AspNetCore.Markdown;
+using AspNetStatic;
 using AspNetStatic.Optimizer;
+using Markdig;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.WebEncoders;
+using Westwind.AspNetCore.Markdown;
 
 namespace AnEoT.Vintage;
 
@@ -169,11 +169,6 @@ public class Program
                     {
                         request.Path = request.Path.Value.Replace("index.html", "README.md");
                     }
-                    else if (request.Path.Value.Equals("/installpwa", StringComparison.OrdinalIgnoreCase) && generateStaticWebSite)
-                    {
-                        // TODO: not working
-                        request.Path = $"{request.Path.Value}.html";
-                    }
                     else
                     {
                         request.Path = request.Path.Value.Replace(".html", ".md");
@@ -181,7 +176,7 @@ public class Program
                     context.Result = RuleResult.SkipRemainingRules;
                 }
             });
-        
+
         // 启用 Uri 重写
         app.UseRewriter(rewriteOptions);
 

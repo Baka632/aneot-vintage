@@ -1,7 +1,8 @@
-﻿using System.CommandLine;
+using System.CommandLine;
 
 namespace AnEoT.Vintage.Tool;
 
+[Obsolete("现在不再使用此程序。")]
 internal sealed class Program
 {
     static int Main(string[] args)
@@ -42,14 +43,17 @@ internal sealed class Program
         removeUnnecessaryComponentCommand.AddOption(webRootPathOption);
         removeUnnecessaryComponentCommand.SetHandler(wwwrootPath =>
         {
-            Console.WriteLine($"工作目录：{wwwrootPath}");
+            Console.WriteLine("*** 现在不再使用此命令 ***");
+            //Console.WriteLine($"工作目录：{wwwrootPath}");
             // Console.WriteLine("======");
             // 现在网页上已经没有 forceflash 组件了
             // ComponentRemoval.Remove("forceflash", wwwrootPath);
-            Console.WriteLine("======");
-            ComponentRemoval.Remove("installpwa", wwwrootPath);
-            Console.WriteLine();
-            Console.WriteLine("操作成功完成。");
+            
+            // PWA 现在也是需要的东西了（）
+            //Console.WriteLine("======");
+            //ComponentRemoval.Remove("installpwa", wwwrootPath);
+            //Console.WriteLine();
+            //Console.WriteLine("操作成功完成。");
         }, webRootPathOption);
         
         /*Command fixGitHubPagesCommand = new("fix-github-pages", "修复静态网页在 GitHub Pages 中的问题。");

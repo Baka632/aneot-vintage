@@ -1,5 +1,6 @@
 {
   "name": "回归线简易版（调试）",
+  "short_name": "回归线简易版",
   "id": "Baka632.AnEoT.Vintage.Debug",
   "start_url": "/",
   "display": "standalone",

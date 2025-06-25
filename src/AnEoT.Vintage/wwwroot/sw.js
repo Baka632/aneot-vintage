@@ -57,6 +57,7 @@ workbox.routing.registerRoute(
 );
 
 self.addEventListener('periodicsync', event => {
+    // TODO: change
     if (event.tag === 'fetch-aneot-latest-volume') {
         const title = "来自回归线简易版的问候！";
         const option = { body: "尤里卡~尤里卡~" };

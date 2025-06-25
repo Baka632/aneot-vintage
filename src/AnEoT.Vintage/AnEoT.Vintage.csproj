@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="9.0.6" />
-    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.23.0" />
+    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.24.0" />
   </ItemGroup>
 
   <ItemGroup>
