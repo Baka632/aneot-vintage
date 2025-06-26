@@ -56,11 +56,14 @@ workbox.routing.registerRoute(
     new workbox.strategies.StaleWhileRevalidate()
 );
 
-self.addEventListener('periodicsync', event => {
-    // TODO: change
+self.addEventListener('periodicsync', async event => {
     if (event.tag === 'fetch-aneot-latest-volume') {
-        const title = "来自回归线简易版的问候！";
-        const option = { body: "尤里卡~尤里卡~" };
+        const response = await fetch('/latest-volume.json');
+        const data = await response.json();
+        const volumeName = data.VolumeName;
+
+        const title = "新期刊已发布";
+        const option = { body: volumeName };
 
         try {
             const notification = new Notification(title, option);
