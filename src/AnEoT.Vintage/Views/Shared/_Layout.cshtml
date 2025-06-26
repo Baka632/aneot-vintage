@@ -4,6 +4,8 @@
 @using Microsoft.Extensions.Configuration
 @inject IWebHostEnvironment env
 @inject IConfiguration config
+@inject VolumeInfoHelper volumeInfoHelper
+
 @{
     if (ViewData["Title"] is not string title)
     {
@@ -153,7 +155,7 @@
     <meta name="msapplication-starturl" content="/" />
     <meta name="msapplication-navbutton-color" content="@HomePageHelper.GetHomePageInfo(env.WebRootPath).HeroAlt" />
     <meta name="msapplication-task" content="name=打开期刊列表;action-uri=/posts/;icon-uri=./favicon_multisize.ico" />
-    <meta name="msapplication-task" content="name=阅读最新一期;action-uri=/posts/@HomePageHelper.GetLatestVolume(env.WebRootPath)/;icon-uri=/favicon_multisize.ico" />
+    <meta name="msapplication-task" content="name=阅读最新一期;action-uri=/posts/@volumeInfoHelper.GetLatestVolumeInfo().VolumeFolderName/;icon-uri=/favicon_multisize.ico" />
     <meta name="msapplication-task" content="name=订阅回归线 Feed 流;action-uri=/subscription.html;icon-uri=./favicon_multisize.ico" />
     <meta name="msapplication-config" content="browserconfig.xml" />
 
@@ -175,6 +177,7 @@
 
     <link rel="manifest" href="@manifestFilePath" />
 
+    <link href="AnEoT.Vintage.styles.css" rel="stylesheet">
     <link href="/css/site.css" rel="stylesheet" type="text/css" />
     <link href="/css/index.css" rel="stylesheet" type="text/css" />
     <link href="/css/fake-ads.css" rel="stylesheet" type="text/css" />

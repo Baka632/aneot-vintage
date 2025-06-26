@@ -2,6 +2,7 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using AnEoT.Vintage.Helpers;
 using AnEoT.Vintage.Helpers.Custom;
+using AnEoT.Vintage.Models;
 using AspNetStatic;
 using AspNetStatic.Optimizer;
 using Markdig;
@@ -102,6 +103,10 @@ public class Program
 
         #region 第二步：向依赖注入容器添加服务
 
+        builder.Services.AddSingleton<VolumeDirectoryOrderComparer>();
+        builder.Services.AddSingleton<ArticleFileOrderComparer>();
+        builder.Services.AddSingleton<VolumeInfoHelper>();
+
         if (generateStaticWebSite)
         {
             // 添加静态网站生成服务
@@ -115,12 +120,12 @@ public class Program
                 builder.Services.AddSingleton<IBinOptimizer, WebPContentConverter>();
             }
         }
+#if DEBUG
         else
         {
-#if DEBUG
             ConvertWebP = false;
-#endif
         }
+#endif
 
         // 添加 Markdown 解析服务
         builder.Services.AddMarkdown(config =>
@@ -138,6 +143,7 @@ public class Program
 
             config.MarkdownParserFactory = new CustomMarkdownParserFactory(ConvertWebP);
         });
+
         builder.Services.AddControllersWithViews()
             .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
 
@@ -148,6 +154,7 @@ public class Program
                 return provider.GetRequiredService<IUrlHelperFactory>()
                     .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
             });
+
         builder.Services.Configure<WebEncoderOptions>(options =>
         {
             options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
@@ -221,6 +228,8 @@ public class Program
         FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, generateDigest: true, addCssStyle: feedAddCssStyle, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml");
 
         TileHelper.GenerateTileXml(baseUri, app.Environment.WebRootPath);
+
+        app.GenerateLatestVolumeInfoJson();
 
         if (generateStaticWebSite)
         {

@@ -2,6 +2,7 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Text;
 using AnEoT.Vintage.Helpers.Custom;
+using AnEoT.Vintage.Models;
 
 namespace AnEoT.Vintage.Helpers;
 
@@ -77,7 +78,7 @@ public static class FeedGenerationHelper
 
         //反向读取文件夹，以获取到最新的期刊
         List<DirectoryInfo> volDirInfos = [.. postsDirectoryInfo.EnumerateDirectories()];
-        volDirInfos.Sort(new VolumeOrderComparer());
+        volDirInfos.Sort(new VolumeDirectoryOrderComparer());
         volDirInfos.Reverse();
 
         IEnumerable<DirectoryInfo> targetDirectories;
@@ -96,7 +97,7 @@ public static class FeedGenerationHelper
             IOrderedEnumerable<FileInfo> articles = volDirInfo
                                 .EnumerateFiles("*.md")
                                 .Where(file => !file.Name.Contains("README.md"))
-                                .Order(new ArticleOrderComparer());
+                                .Order(new ArticleFileOrderComparer());
             foreach (FileInfo article in articles)
             {
                 string markdown = File.ReadAllText(article.FullName);
@@ -238,74 +239,5 @@ public static class FeedGenerationHelper
 
         Console.WriteLine("RSS 源生成完成！");
         Console.WriteLine($"已在以下路径生成\nRSS：{rssFilePath}\nAtom：{atomFilePath}");
-    }
-}
-
-/// <summary>
-/// 为表示文章的<see cref="FileInfo"/>提供比较方法，以用于排序
-/// </summary>
-file sealed class ArticleOrderComparer : Comparer<FileInfo>
-{
-    /// <inheritdoc/>
-    public override int Compare(FileInfo? x, FileInfo? y)
-    {
-        if (object.ReferenceEquals(x, y))
-        {
-            return 0;
-        }
-
-        if (x is null)
-        {
-            return -1;
-        }
-        else if (y is null)
-        {
-            return 1;
-        }
-
-        string markdownX = File.ReadAllText(x.FullName);
-        string markdownY = File.ReadAllText(y.FullName);
-
-        ArticleInfo articleInfoX = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdownX);
-        ArticleInfo articleInfoY = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdownY);
-
-        if (articleInfoX.Order > 0 && articleInfoY.Order > 0)
-        {
-            return Comparer<int>.Default.Compare(articleInfoX.Order, articleInfoY.Order);
-        }
-        else if (articleInfoX.Order > 0 && articleInfoY.Order < 0)
-        {
-            return -1;
-        }
-        else if (articleInfoX.Order < 0 && articleInfoY.Order > 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return Comparer<int>.Default.Compare(-articleInfoX.Order, -articleInfoY.Order);
-        }
-    }
-}
-
-internal sealed class VolumeOrderComparer : IComparer<DirectoryInfo>
-{
-    public int Compare(DirectoryInfo? x, DirectoryInfo? y)
-    {
-        if (object.ReferenceEquals(x, y))
-        {
-            return 0;
-        }
-
-        if (x is null)
-        {
-            return -1;
-        }
-        else if (y is null)
-        {
-            return 1;
-        }
-
-        return string.CompareOrdinal(x.Name, y.Name);
     }
 }
