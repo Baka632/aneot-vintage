@@ -60,25 +60,27 @@ workbox.routing.registerRoute(
 );
 
 self.addEventListener('periodicsync', async event => {
-    if (event.tag === 'fetch-aneot-latest-volume') {
+    if (event.tag === 'fetch-aneot-latest-volume' || event.tag === 'fetch-aneot-latest-volume-dbg') {
+        const skipChecking = event.tag === 'fetch-aneot-latest-volume-dbg';
+
         const response = await fetch('/latest-volume.json');
         const data = await response.json();
         const volumeName = data.VolumeName;
         const volumeFolderName = data.VolumeFolderName;
 
         const storedVolumeFolderName = await get("latest-volume");
-        if (storedVolumeFolderName == undefined) {
+        if (storedVolumeFolderName == undefined && !skipChecking) {
             set("latest-volume", volumeFolderName);
             return;
         }
-        else if (volumeFolderName === storedVolumeFolderName) {
+        else if (volumeFolderName === storedVolumeFolderName && !skipChecking) {
             return;
         }
 
         set("latest-volume", volumeFolderName);
 
         const title = "新期刊已发布";
-        const option = { body: volumeName };
+        const option: NotificationOptions = { body: volumeName, b };
 
         try {
             const notification = new Notification(title, option);
@@ -86,6 +88,5 @@ self.addEventListener('periodicsync', async event => {
         catch (err) {
             self.registration.showNotification(title, option);
         }
-   
     }
 });
