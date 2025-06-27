@@ -1,7 +1,10 @@
-importScripts("js/workbox-v7.3.0/workbox-sw.js");
+importScripts("/js/lib/workbox-v7.3.0/workbox-sw.js");
+importScripts("/js/lib/idb-keyval/umd.js");
+
+const { get, set } = idbKeyval;
 
 workbox.setConfig({
-    modulePathPrefix: '/js/workbox-v7.3.0/',
+    modulePathPrefix: '/js/lib/workbox-v7.3.0/',
 });
 
 const { strategies, expiration } = workbox;
@@ -61,6 +64,18 @@ self.addEventListener('periodicsync', async event => {
         const response = await fetch('/latest-volume.json');
         const data = await response.json();
         const volumeName = data.VolumeName;
+        const volumeFolderName = data.VolumeFolderName;
+
+        const storedVolumeFolderName = await get("latest-volume");
+        if (storedVolumeFolderName == undefined) {
+            set("latest-volume", volumeFolderName);
+            return;
+        }
+        else if (volumeFolderName === storedVolumeFolderName) {
+            return;
+        }
+
+        set("latest-volume", volumeFolderName);
 
         const title = "新期刊已发布";
         const option = { body: volumeName };
