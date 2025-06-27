@@ -80,13 +80,29 @@ self.addEventListener('periodicsync', async event => {
         set("latest-volume", volumeFolderName);
 
         const title = "新期刊已发布";
-        const option: NotificationOptions = { body: volumeName, b };
+        const option = {
+            body: volumeName,
+            actions: [
+                {
+                    action: "view-latest-volume",
+                    title: "查看"
+                }
+            ],
+            data: {
+                url: `/posts/${volumeFolderName}/`
+            }
+        };
 
-        try {
-            const notification = new Notification(title, option);
-        }
-        catch (err) {
-            self.registration.showNotification(title, option);
-        }
+        self.registration.showNotification(title, option);
     }
 });
+
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+
+    //if (event.action === 'view-latest-volume') {
+    //    event.waitUntil(clients.openWindow(event.notification.data.url))
+    //}
+
+    clients.openWindow(event.notification.data.url)
+}, false);
