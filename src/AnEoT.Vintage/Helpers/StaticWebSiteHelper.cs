@@ -23,6 +23,7 @@ public static class StaticWebSiteHelper
             new PageResource("/"),
             new PageResource("/settings"),
             new PageResource("/installpwa"),
+            new CssResource("AnEoT.Vintage.styles.css"),
         };
 
         DirectoryInfo wwwRootDirectory = new(webRootPath);
