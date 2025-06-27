@@ -1,7 +1,11 @@
 @using AnEoT.Vintage.Helpers;
 @using System.Globalization
 @using Microsoft.AspNetCore.Http.Features
+@using Microsoft.Extensions.Configuration
 @inject IWebHostEnvironment env
+@inject IConfiguration config
+@inject VolumeInfoHelper volumeInfoHelper
+
 @{
     if (ViewData["Title"] is not string title)
     {
@@ -19,6 +23,17 @@
     string keywords = string.Empty;
     string pageUri = string.Empty;
     string? imageUri = null;
+    string manifestFilePath;
+
+    #if DEBUG
+    manifestFilePath = "/manifest-debug.json";
+    #else
+    if (!bool.TryParse(config["ForceDebugManifest"], out bool forceDebugManifest))
+    {
+        forceDebugManifest = false;
+    }
+    manifestFilePath = forceDebugManifest ? "/manifest-debug.json" : "/manifest.json";
+    #endif
 
     List<string> keywordList = new(12)
     {
@@ -139,48 +154,55 @@
     <meta name="msapplication-tooltip" content="在线阅读《回归线》期刊" />
     <meta name="msapplication-starturl" content="/" />
     <meta name="msapplication-navbutton-color" content="@HomePageHelper.GetHomePageInfo(env.WebRootPath).HeroAlt" />
-    <meta name="msapplication-task" content="name=打开期刊列表;action-uri=./posts/;icon-uri=./favicon_multisize.ico" />
-    <meta name="msapplication-task" content="name=阅读最新一期;action-uri=./posts/@HomePageHelper.GetLatestVolume(env.WebRootPath)/;icon-uri=./favicon_multisize.ico" />
-    <meta name="msapplication-task" content="name=订阅回归线 Feed 流;action-uri=./subscription.html;icon-uri=./favicon_multisize.ico" />
+    <meta name="msapplication-task" content="name=打开期刊列表;action-uri=/posts/;icon-uri=./favicon_multisize.ico" />
+    <meta name="msapplication-task" content="name=阅读最新一期;action-uri=/posts/@volumeInfoHelper.GetLatestVolumeInfo().VolumeFolderName/;icon-uri=/favicon_multisize.ico" />
+    <meta name="msapplication-task" content="name=订阅回归线 Feed 流;action-uri=/subscription.html;icon-uri=./favicon_multisize.ico" />
     <meta name="msapplication-config" content="browserconfig.xml" />
 
-    <link rel="alternate" type="application/atom+xml" href="atom.xml" title="回归线简易版 - Atom 源">
-    <link rel="alternate" type="application/rss+xml" href="rss.xml" title="回归线简易版 - RSS 源">
+    @* For window-controls-overlay
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" /> *@
 
-    <link rel="alternate" type="application/atom+xml" href="atom_digest.xml" title="回归线简易版 - Atom 源摘要">
-    <link rel="alternate" type="application/rss+xml" href="rss_digest.xml" title="回归线简易版 - RSS 源摘要">
+    <link rel="alternate" type="application/atom+xml" href="/atom.xml" title="回归线简易版 - Atom 源">
+    <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="回归线简易版 - RSS 源">
 
-    <link rel="alternate" type="application/atom+xml" href="atom_full.xml" title="回归线简易版 - 完整 Atom 源">
-    <link rel="alternate" type="application/rss+xml" href="rss_full.xml" title="回归线简易版 - 完整 RSS 源">
+    <link rel="alternate" type="application/atom+xml" href="/atom_digest.xml" title="回归线简易版 - Atom 源摘要">
+    <link rel="alternate" type="application/rss+xml" href="/rss_digest.xml" title="回归线简易版 - RSS 源摘要">
 
-    <link rel="alternate" type="application/atom+xml" href="atom_full_digest.xml" title="回归线简易版 - 完整 Atom 源摘要">
-    <link rel="alternate" type="application/rss+xml" href="rss_full_digest.xml" title="回归线简易版 - 完整 RSS 源摘要">
+    <link rel="alternate" type="application/atom+xml" href="/atom_full.xml" title="回归线简易版 - 完整 Atom 源">
+    <link rel="alternate" type="application/rss+xml" href="/rss_full.xml" title="回归线简易版 - 完整 RSS 源">
 
-    <link href="~/css/site.css" rel="stylesheet" type="text/css" />
-    <link href="~/css/index.css" rel="stylesheet" type="text/css" />
-    <link href="~/css/fake-ads.css" rel="stylesheet" type="text/css" />
+    <link rel="alternate" type="application/atom+xml" href="/atom_full_digest.xml" title="回归线简易版 - 完整 Atom 源摘要">
+    <link rel="alternate" type="application/rss+xml" href="/rss_full_digest.xml" title="回归线简易版 - 完整 RSS 源摘要">
 
-    <link href="~/css/theme/light.css" rel="stylesheet" type="text/css" id="theme-css" />
-    <link href="~/css/layout/left.css" rel="stylesheet" type="text/css" id="layout-css" />
+    <link rel="manifest" href="@manifestFilePath" />
 
-    <link href="~/favicon.ico" rel="icon" />
-    <link href="~/favicon.svg" rel="icon" sizes="any" type="image/svg+xml" />
-    <script src="~/js/cookies.js"></script>
-    <script src="~/js/site.js"></script>
+    <link href="AnEoT.Vintage.styles.css" rel="stylesheet">
+    <link href="/css/site.css" rel="stylesheet" type="text/css" />
+    <link href="/css/index.css" rel="stylesheet" type="text/css" />
+    <link href="/css/fake-ads.css" rel="stylesheet" type="text/css" />
+
+    <link href="/css/theme/light.css" rel="stylesheet" type="text/css" id="theme-css" />
+    <link href="/css/layout/left.css" rel="stylesheet" type="text/css" id="layout-css" />
+
+    <link href="/favicon.ico" rel="icon" />
+    <link href="/favicon.svg" rel="icon" sizes="any" type="image/svg+xml" />
+    <script src="/js/cookies.js"></script>
+    <script src="/js/site.js"></script>
 </head>
 <body>
     <header>
         <nav>
             <div class="navbar-layout">
                 <div style="vertical-align:middle">
-                    <img src="~/images/logo.jpg" alt="TCA" class="navbar-image" id="aneot-vintage-navbar-logo" />
+                    <img src="/images/logo.jpg" alt="TCA" class="navbar-image" id="aneot-vintage-navbar-logo" />
                     <span>回归线简易版</span>
                 </div>
                 <a asp-controller="home" asp-action="Index" style="margin-right:5px">主页</a>
-                <a href="~/posts/" style="margin-right:5px">期刊列表</a>
-                <a href="~/intro/" style="margin-right:5px">关于</a>
-                <a href="~/bulletin/" style="margin-right:5px">公告栏</a>
-                <a href="~/settings/" style="margin-right:5px">设置</a>
+                <a href="/posts/" style="margin-right:5px">期刊列表</a>
+                <a href="/intro/" style="margin-right:5px">关于</a>
+                <a href="/bulletin/" style="margin-right:5px">公告栏</a>
+                <a href="/settings/" style="margin-right:5px">设置</a>
                 <br />
                 <a href="https://aneot.arktca.com">前往《回归线》原网站</a>
             </div>
@@ -206,12 +228,18 @@
                 <br />
                 本刊所有内容<b>不得</b>用于人工智能生成模型训练，<b>包括但不限于个人、科研、教学和商业化应用。</b>
                 <br />
-                完整协议请查看 <a href="~/statement"> 《回归线网站用户协议》</a>，使用本站即视为同意本协议。
+                完整协议请查看 <a href="/statement"> 《回归线网站用户协议》</a>，使用本站即视为同意本协议。
                 <br />
             </div>
             <br />
-            <div>泰拉创作者联合会保留所有权利 | Copyright © 2022-2024 TCA. All rights reserved.</div>
+            <div>泰拉创作者联合会保留所有权利 | Copyright © 2022-@DateTimeOffset.UtcNow.Year TCA. All rights reserved.</div>
         </div>
     </footer>
+
+    <script>
+        if('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' });
+        }
+    </script>
 </body>
 </html>

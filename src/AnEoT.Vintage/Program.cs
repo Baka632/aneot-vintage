@@ -1,15 +1,16 @@
-using Markdig;
-using AspNetStatic;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using AnEoT.Vintage.Helpers;
 using AnEoT.Vintage.Helpers.Custom;
-using System.Text.Unicode;
-using System.Text.Encodings.Web;
-using Microsoft.Extensions.WebEncoders;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Westwind.AspNetCore.Markdown;
+using AnEoT.Vintage.Models;
+using AspNetStatic;
 using AspNetStatic.Optimizer;
+using Markdig;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.WebEncoders;
+using Westwind.AspNetCore.Markdown;
 
 namespace AnEoT.Vintage;
 
@@ -33,12 +34,15 @@ public class Program
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
         #region 第一步：读取应用程序配置
+
         // 确定是否启用 WebP 图像转换功能
-        if (!bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP))
         {
-            convertWebP = true;
+            if (!bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP))
+            {
+                convertWebP = true;
+            }
+            ConvertWebP = convertWebP;
         }
-        ConvertWebP = convertWebP;
 
         // 设置网站基 Uri
         string baseUri;
@@ -99,6 +103,30 @@ public class Program
 
         #region 第二步：向依赖注入容器添加服务
 
+        builder.Services.AddSingleton<VolumeDirectoryOrderComparer>();
+        builder.Services.AddSingleton<ArticleFileOrderComparer>();
+        builder.Services.AddSingleton<VolumeInfoHelper>();
+
+        if (generateStaticWebSite)
+        {
+            // 添加静态网站生成服务
+            builder.Services.AddSingleton<IStaticResourcesInfoProvider>(provider =>
+            {
+                return StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath, ConvertWebP);
+            });
+
+            if (ConvertWebP)
+            {
+                builder.Services.AddSingleton<IBinOptimizer, WebPContentConverter>();
+            }
+        }
+#if DEBUG
+        else
+        {
+            ConvertWebP = false;
+        }
+#endif
+
         // 添加 Markdown 解析服务
         builder.Services.AddMarkdown(config =>
         {
@@ -113,8 +141,9 @@ public class Program
                     .UseYamlFrontMatter();
             };
 
-            config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
+            config.MarkdownParserFactory = new CustomMarkdownParserFactory(ConvertWebP);
         });
+
         builder.Services.AddControllersWithViews()
             .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
 
@@ -125,24 +154,11 @@ public class Program
                 return provider.GetRequiredService<IUrlHelperFactory>()
                     .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
             });
+
         builder.Services.Configure<WebEncoderOptions>(options =>
         {
             options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
         });
-
-        if (generateStaticWebSite)
-        {
-            // 添加静态网站生成服务
-            builder.Services.AddSingleton<IStaticResourcesInfoProvider>(provider =>
-            {
-                return StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath, convertWebP);
-            });
-
-            if (convertWebP)
-            {
-                builder.Services.AddSingleton<IBinOptimizer, WebPContentConverter>();
-            }
-        }
 
         WebApplication app = builder.Build();
         #endregion
@@ -154,29 +170,24 @@ public class Program
             {
                 HttpRequest request = context.HttpContext.Request;
 
-                context.Result = RuleResult.SkipRemainingRules;
-                if (request.Path.HasValue && !request.Path.Value.Contains("swagger", StringComparison.OrdinalIgnoreCase))
+                if (request.Path.HasValue)
                 {
-                    if (request.Path.Value.Contains("api", StringComparison.OrdinalIgnoreCase))
+                    if (request.Path.Value == "/")
                     {
-                        request.Path = request.Path.Value
-                            .Replace(".md", string.Empty)
-                            .Replace(".html", string.Empty);
+                        request.Path = "/Home/Index";
+                    }
+                    else if (request.Path.Value.Contains("index.html", StringComparison.OrdinalIgnoreCase))
+                    {
+                        request.Path = request.Path.Value.Replace("index.html", "README.md");
                     }
                     else
                     {
-                        if (request.Path.Value.Contains("index.html", StringComparison.OrdinalIgnoreCase))
-                        {
-                            request.Path = request.Path.Value.Replace("index.html", "README.md");
-                        }
-                        else
-                        {
-                            request.Path = request.Path.Value.Replace(".html", ".md");
-                        }
+                        request.Path = request.Path.Value.Replace(".html", ".md");
                     }
+                    context.Result = RuleResult.SkipRemainingRules;
                 }
             });
-        
+
         // 启用 Uri 重写
         app.UseRewriter(rewriteOptions);
 
@@ -217,6 +228,8 @@ public class Program
         FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, generateDigest: true, addCssStyle: feedAddCssStyle, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml");
 
         TileHelper.GenerateTileXml(baseUri, app.Environment.WebRootPath);
+
+        app.GenerateLatestVolumeInfoJson();
 
         if (generateStaticWebSite)
         {

@@ -366,14 +366,14 @@ FodyWeavers.xsd
 src/AnEoT.Vintage/StaticWebSite
 
 # Auto-generated feed files
-src/AnEoT.Vintage/wwwroot/atom.xml
-src/AnEoT.Vintage/wwwroot/rss.xml
-src/AnEoT.Vintage/wwwroot/atom_full.xml
-src/AnEoT.Vintage/wwwroot/rss_full.xml
-src/AnEoT.Vintage/wwwroot/atom_digest.xml
-src/AnEoT.Vintage/wwwroot/rss_digest.xml
-src/AnEoT.Vintage/wwwroot/atom_full_digest.xml
-src/AnEoT.Vintage/wwwroot/rss_full_digest.xml
+/src/AnEoT.Vintage/wwwroot/atom.xml
+/src/AnEoT.Vintage/wwwroot/rss.xml
+/src/AnEoT.Vintage/wwwroot/atom_full.xml
+/src/AnEoT.Vintage/wwwroot/rss_full.xml
+/src/AnEoT.Vintage/wwwroot/atom_digest.xml
+/src/AnEoT.Vintage/wwwroot/rss_digest.xml
+/src/AnEoT.Vintage/wwwroot/atom_full_digest.xml
+/src/AnEoT.Vintage/wwwroot/rss_full_digest.xml
 
 # Auto-generated tile files
 src/AnEoT.Vintage/wwwroot/tiles
@@ -387,3 +387,4 @@ src/*/.config
 # Visual Studio Code cache/options directory
 /.vscode
 /src/AnEoT.Vintage.ReverseProxy/aneot-vintage-reverse-proxy-config.json
+/src/AnEoT.Vintage/wwwroot/latest-volume.json

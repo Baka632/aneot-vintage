@@ -1,5 +1,6 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
+using AnEoT.Vintage.Models;
 
 namespace AnEoT.Vintage.Helpers;
 
@@ -57,8 +58,8 @@ public static class TileHelper
         }
 
         // 反向读取文件夹，以获取到最新的期刊
-        List<DirectoryInfo> volDirInfos = new(postsDirectoryInfo.EnumerateDirectories());
-        volDirInfos.Sort(new VolumeOrderComparer());
+        List<DirectoryInfo> volDirInfos = [.. postsDirectoryInfo.EnumerateDirectories()];
+        volDirInfos.Sort(new VolumeDirectoryOrderComparer());
         volDirInfos.Reverse();
 
         // 取前三期的期刊

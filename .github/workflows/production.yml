@@ -19,8 +19,6 @@ jobs:
     steps:
     - name: 克隆存储库 
       uses: actions/checkout@v4
-    - name: 预处理-移除不需要的组件
-      run: dotnet run --configuration Release --project ./src/AnEoT.Vintage.Tool/AnEoT.Vintage.Tool.csproj remove-unnecessary-component --webroot-path ${{ github.workspace }}/src/AnEoT.Vintage/wwwroot
     - name: 构建主项目及生成静态网页
       run: dotnet run --configuration Release --project ./src/AnEoT.Vintage/AnEoT.Vintage.csproj -- static-only --urls "http://localhost:5048" --BaseUri "http://aneot-vintage.arktca.com/"
     - name: 配置 GitHub Pages

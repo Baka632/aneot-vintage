@@ -21,7 +21,8 @@ public static class StaticWebSiteHelper
         List<ResourceInfoBase> pages = new(2500)
         {
             new PageResource("/"),
-            new PageResource("/settings")
+            new PageResource("/settings"),
+            new PageResource("/installpwa"),
         };
 
         DirectoryInfo wwwRootDirectory = new(webRootPath);
