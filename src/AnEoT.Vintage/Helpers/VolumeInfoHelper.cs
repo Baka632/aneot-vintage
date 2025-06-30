@@ -80,12 +80,22 @@ public class VolumeInfoHelper(IWebHostEnvironment environment, VolumeDirectoryOr
     }
 }
 
-internal static partial class VolumeInfoHelperExtensions
+/// <summary>
+/// 为 <see cref="VolumeInfoHelper"/> 提供扩展方法的类。
+/// </summary>
+public static partial class VolumeInfoHelperExtensions
 {
-    public static void GenerateLatestVolumeInfoJson(this IHost host)
+    private const string LoggerName = "AnEoT.Vintage.VolumeInfoGenerator";
+
+    /// <summary>
+    /// 生成最新期刊信息的 JSON 文件。
+    /// </summary>
+    /// <param name="host">.NET 通用主机。</param>
+    /// <returns>完成操作后的 <see cref="IHost"/>。</returns>
+    public static IHost GenerateLatestVolumeInfoJson(this IHost host)
     {
         ILoggerFactory loggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
-        ILogger logger = loggerFactory.CreateLogger("AnEoT.Vintage.VolumeInfoGenerator");
+        ILogger logger = loggerFactory.CreateLogger(LoggerName);
 
         IWebHostEnvironment environment = host.Services.GetRequiredService<IWebHostEnvironment>();
         VolumeInfoHelper helper = host.Services.GetRequiredService<VolumeInfoHelper>();
@@ -96,6 +106,8 @@ internal static partial class VolumeInfoHelperExtensions
 
         JsonSerializer.Serialize(jsonSaveStream, latestVolumeInfo);
         logger.LogJsonGenerated(jsonSavePath);
+
+        return host;
     }
 
     [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "已生成最新期刊的信息：{savePath}")]

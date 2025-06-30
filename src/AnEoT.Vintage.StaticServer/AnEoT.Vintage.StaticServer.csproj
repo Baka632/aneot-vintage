@@ -7,6 +7,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
     <PublishAot>true</PublishAot> 
+    <!-- 需要等待以后版本中 MapStaticAssets 没有问题时再启用 -->
+    <!-- 请参考：https://github.com/dotnet/aspnetcore/issues/59399 -->
+    <CompressionEnabled>false</CompressionEnabled>
   </PropertyGroup>
 
 </Project>

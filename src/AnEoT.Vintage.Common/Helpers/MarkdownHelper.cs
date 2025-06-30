@@ -1,4 +1,4 @@
-﻿using Markdig;
+using Markdig;
 using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using System.Linq;
@@ -12,7 +12,7 @@ using Markdig.Syntax.Inlines;
 namespace AnEoT.Vintage.Common.Helpers;
 
 /// <summary>
-/// 为 Markdown 处理提供通用操作
+/// 为 Markdown 处理提供通用操作。
 /// </summary>
 public static class MarkdownHelper
 {
@@ -25,12 +25,12 @@ public static class MarkdownHelper
             .Build();
 
     /// <summary>
-    /// 获取由Markdown中Front Matter转换而来的模型
+    /// 获取由 Markdown 中 Front Matter 转换而来的模型。
     /// </summary>
-    /// <param name="markdown">Markdown文件内容</param>
-    /// <typeparam name="T">模型类型</typeparam>
-    /// <returns>转换得到的模型</returns>
-    [RequiresDynamicCode("此方法调用了不支持 IL 裁剪的 AnEoT.Vintage.Tool.Helpers.YamlHelper.ReadYaml<T>(String)")]
+    /// <param name="markdown">Markdown 文件内容。</param>
+    /// <typeparam name="T">模型类型。</typeparam>
+    /// <returns>转换得到的模型。</returns>
+    [RequiresDynamicCode("此方法调用了不支持 IL 裁剪的 AnEoT.Vintage.Tool.Helpers.YamlHelper.ReadYaml<T>(String)。")]
     public static T GetFromFrontMatter<T>(string markdown)
     {
         MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
@@ -45,18 +45,18 @@ public static class MarkdownHelper
         }
         else
         {
-            throw new ArgumentException("无法通过指定的参数解析出模型，Markdown可能没有Front Matter信息");
+            throw new ArgumentException("无法通过指定的参数解析出模型，Markdown 文件中可能没有 Front Matter 信息。");
         }
     }
 
     /// <summary>
-    /// 尝试获取由 Markdown 中 Front Matter 转换而来的模型
+    /// 尝试获取由 Markdown 中 Front Matter 转换而来的模型。
     /// </summary>
-    /// <param name="markdown">Markdown 文件内容</param>
-    /// <param name="result">转换得到的模型</param>
-    /// <typeparam name="T">模型类型</typeparam>
-    /// <returns>指示操作是否成功的值</returns>
-    [RequiresDynamicCode("此方法调用了不支持 IL 裁剪的 AnEoT.Vintage.Tool.Helpers.YamlHelper.TryReadYaml<T>(String, out T)")]
+    /// <param name="markdown">Markdown 文件内容。</param>
+    /// <param name="result">转换得到的模型。</param>
+    /// <typeparam name="T">模型类型。</typeparam>
+    /// <returns>指示操作是否成功的值。</returns>
+    [RequiresDynamicCode("此方法调用了不支持 IL 裁剪的 AnEoT.Vintage.Tool.Helpers.YamlHelper.TryReadYaml<T>(String, out T)。")]
     public static bool TryGetFromFrontMatter<T>(string markdown, [MaybeNullWhen(false)] out T result)
     {
         MarkdownDocument doc = Markdown.Parse(markdown, pipeline);
@@ -84,10 +84,10 @@ public static class MarkdownHelper
     }
 
     /// <summary>
-    /// 获取 Markdown 的文章引言
+    /// 获取 Markdown 的文章引言。
     /// </summary>
-    /// <param name="markdown">Markdown 文件内容</param>
-    /// <returns>文章引言，若不存在，则返回空字符串</returns>
+    /// <param name="markdown">Markdown 文件内容。</param>
+    /// <returns>文章引言，若不存在，则返回空字符串。</returns>
     public static string GetArticleQuote(string markdown)
     {
         if (markdown.Contains("<!-- more -->") != true)
@@ -123,10 +123,10 @@ public static class MarkdownHelper
     }
 
     /// <summary>
-    /// 获取 Markdown 文章的字数
+    /// 获取 Markdown 文章的字数。
     /// </summary>
-    /// <param name="markdown">Markdown 文档的字符串</param>
-    /// <returns>文章字数</returns>
+    /// <param name="markdown">Markdown 文档的字符串。</param>
+    /// <returns>文章字数。</returns>
     public static int GetWordCount(string markdown)
     {
         StringBuilder stringBuilder = new(markdown);
@@ -152,11 +152,11 @@ public static class MarkdownHelper
     }
 
     /// <summary>
-    /// 检查指定的 Markdown 文档是否包含指定的 CSS 类名
+    /// 检查指定的 Markdown 文档是否包含指定的 CSS 类名。
     /// </summary>
-    /// <param name="markdown">Markdown 文档的字符串</param>
-    /// <param name="className">类名</param>
-    /// <returns>若有指定的类名，则返回 <see langword="true"/>，否则返回 <see langword="false"/></returns>
+    /// <param name="markdown">Markdown 文档的字符串。</param>
+    /// <param name="className">类名。</param>
+    /// <returns>若有指定的类名，则返回 <see langword="true"/>，否则返回 <see langword="false"/>。</returns>
     public static bool IsContainHtmlClass(string markdown, string className)
     {
         string html = Markdown.ToHtml(markdown, pipeline);
@@ -169,20 +169,20 @@ public static class MarkdownHelper
     }
 
     /// <summary>
-    /// 将指定的 Markdown 文档转换为纯文本
+    /// 将指定的 Markdown 文档转换为纯文本。
     /// </summary>
-    /// <param name="markdown">Markdown 文档的字符串</param>
-    /// <returns>由 Markdown 文档转换成的纯文本</returns>
+    /// <param name="markdown">Markdown 文档的字符串。</param>
+    /// <returns>由 Markdown 文档转换成的纯文本。</returns>
     public static string ToPlainText(string markdown)
     {
         return Markdown.ToPlainText(markdown, pipeline);
     }
 
     /// <summary>
-    /// 获取 Markdown 文档中第一张图片的 Uri
+    /// 获取 Markdown 文档中第一张图片的 Uri。
     /// </summary>
-    /// <param name="markdown">Markdown 文档的字符串</param>
-    /// <returns>Markdown 文档中第一张图片的 Uri，若不存在则返回 <see langword="null"/></returns>
+    /// <param name="markdown">Markdown 文档的字符串。</param>
+    /// <returns>Markdown 文档中第一张图片的 Uri，若不存在则返回 <see langword="null"/>。</returns>
     public static string? GetFirstImageUri(string markdown)
     {
         MarkdownDocument doc = Markdown.Parse(markdown, pipeline);

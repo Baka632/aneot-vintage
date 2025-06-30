@@ -1,13 +1,13 @@
-using System.Globalization;
 using System.Text;
+using System.Globalization;
 using AnEoT.Vintage.Models;
 
 namespace AnEoT.Vintage.Helpers;
 
 /// <summary>
-/// 生成磁贴信息的类
+/// 生成磁贴信息的类。
 /// </summary>
-public static class TileHelper
+public class TileGenerationHelper(CommonValuesHelper commonValues)
 {
     private static readonly CompositeFormat tileTemplate = CompositeFormat.Parse("""
         <tile>
@@ -34,18 +34,12 @@ public static class TileHelper
         """);
 
     /// <summary>
-    /// 生成磁贴的 XML
+    /// 生成包含磁贴信息的 XML 文件。
     /// </summary>
-    /// <param name="baseUri">基 Uri</param>
-    /// <param name="webRootPath">“wwwroot”文件夹所在路径</param>
-    public static void GenerateTileXml(string baseUri, string webRootPath)
+    /// <returns>生成磁贴 XML 文件的文件夹路径。</returns>
+    public string GenerateTileXml()
     {
-        if (string.IsNullOrWhiteSpace(webRootPath))
-        {
-            throw new ArgumentException($"“{nameof(webRootPath)}”不能为 null 或空白。", nameof(webRootPath));
-        }
-
-        Console.WriteLine("正在生成磁贴信息...");
+        string webRootPath = commonValues.WebRootPath;
 
         // 获取 posts 文件夹的信息
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
@@ -77,8 +71,6 @@ public static class TileHelper
 
         IEnumerable<DirectoryInfo> targetDirectories = volDirInfos.Take(volumeTakeCount);
 
-        Uri baseUriInstance = new(baseUri);
-
         foreach (DirectoryInfo volDirInfo in targetDirectories)
         {
             string fileName = fileNames.Pop();
@@ -90,7 +82,7 @@ public static class TileHelper
 
             string volumeTypeIndicator = fileName == firstItem ? "最新一期" : "先前期刊";
             string title = articleInfo.Title;
-            string coverImage = new Uri(baseUriInstance, $"images/tile/{Path.ChangeExtension(fileName, ".jpg")}").ToString();
+            string coverImage = new Uri(commonValues.BaseUri, $"images/tile/{Path.ChangeExtension(fileName, ".jpg")}").ToString();
 
             string xml = string.Format(CultureInfo.InvariantCulture, tileTemplate, coverImage, volumeTypeIndicator, title);
 
@@ -98,6 +90,35 @@ public static class TileHelper
             textWriter.Write(xml);
         }
 
-        Console.WriteLine("磁贴信息生成完成！");
+        return tilesDirectoryInfo.FullName;
     }
+}
+
+/// <summary>
+/// 为 <see cref="TileGenerationHelper"/> 提供扩展方法的类。
+/// </summary>
+public static partial class TileGenerationHelperExtensions
+{
+    private const string LoggerName = "AnEoT.Vintage.TileGenerator";
+
+    /// <summary>
+    /// 生成呈现期刊信息的磁贴信息。
+    /// </summary>
+    /// <param name="host">.NET 通用主机。</param>
+    /// <returns>完成操作后的 <see cref="IHost"/>。</returns>
+    public static IHost GenerateTileXml(this IHost host)
+    {
+        ILoggerFactory loggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
+        ILogger logger = loggerFactory.CreateLogger(LoggerName);
+
+        TileGenerationHelper helper = host.Services.GetRequiredService<TileGenerationHelper>();
+        string generateFolderPath = helper.GenerateTileXml();
+
+        logger.LogTileXmlGenerated(generateFolderPath);
+
+        return host;
+    }
+
+    [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "已在以下文件夹中生成磁贴信息：{tileFolderPath}")]
+    private static partial void LogTileXmlGenerated(this ILogger logger, string tileFolderPath);
 }

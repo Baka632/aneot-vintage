@@ -2,7 +2,8 @@
 @using Microsoft.AspNetCore.Http.Features;
 @using AnEoT.Vintage.Helpers;
 
-@inject IWebHostEnvironment env
+@inject PageTitleHelper pageTitleHelper
+@inject CategoryAndTagHelper categoryAndTagHelper
 @model Westwind.AspNetCore.Markdown.MarkdownModel
 
 @{
@@ -49,7 +50,7 @@
                 if (i != uriParts.Length - 1)
                 {
                     string target = string.Join('/', uriParts[..(i + 1)]);
-                    string displayTitle = @PageTitleHelper.GetPageTitle(env.WebRootPath, target);
+                    string displayTitle = @pageTitleHelper.GetPageTitle(target);
                     <a href="/@target">@displayTitle</a>
                 }
                 else
@@ -80,7 +81,7 @@
         <span>
             分类：@foreach (string item in articleInfo.Category)
             {
-                @if (CategoryAndTagHelper.GetAllCategories(env.WebRootPath).Contains(item))
+                @if (categoryAndTagHelper.GetAllCategories().Contains(item))
                 {
                     <a style="margin: 0 auto 0 0;" href="/category/@item/">@item</a>
                 }
@@ -98,7 +99,7 @@
         <span>
             标签：@foreach (string item in articleInfo.Tag)
             {
-                @if (CategoryAndTagHelper.GetAllTags(env.WebRootPath).Contains(item))
+                @if (categoryAndTagHelper.GetAllTags().Contains(item))
                 {
                     <a style="margin: 0 auto 0 0;" href="/tag/@item/">@item</a>
                 }

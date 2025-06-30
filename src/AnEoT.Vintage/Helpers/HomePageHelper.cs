@@ -3,15 +3,16 @@ namespace AnEoT.Vintage.Helpers;
 /// <summary>
 /// 为获取主页信息提供帮助的类。
 /// </summary>
-public static class HomePageHelper
+public class HomePageHelper(IWebHostEnvironment environment)
 {
     /// <summary>
-    /// 获取主页信息
+    /// 获取主页信息。
     /// </summary>
-    /// <param name="webRootPath">"wwwroot"文件夹的路径</param>
-    /// <returns>表示主页信息的 <see cref="HomePageInfo"/></returns>
-    public static HomePageInfo GetHomePageInfo(string webRootPath)
+    /// <returns>表示主页信息的 <see cref="HomePageInfo"/>。</returns>
+    public HomePageInfo GetHomePageInfo()
     {
+        string webRootPath = environment.WebRootPath;
+
         FileInfo fileInfo = new(Path.Combine(webRootPath, "README.md"));
 
         if (!fileInfo.Exists)

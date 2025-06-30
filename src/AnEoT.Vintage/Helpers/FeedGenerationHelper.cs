@@ -7,43 +7,35 @@ using AnEoT.Vintage.Models;
 namespace AnEoT.Vintage.Helpers;
 
 /// <summary>
-/// 协助生成源的类
+/// 协助生成订阅源的类。
 /// </summary>
-public static class FeedGenerationHelper
+public partial class FeedGenerationHelper(
+    CommonValuesHelper commonValues,
+    CategoryAndTagHelper categoryAndTagHelper,
+    IConfiguration configuration)
 {
     private const string LxgwFontUri = "https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css";
 
     /// <summary>
-    /// 生成 RSS 与 Atom 源
+    /// 生成订阅源。
     /// </summary>
-    /// <param name="rssBaseUri">RSS 源的基 Uri</param>
-    /// <param name="webRootPath">“wwwroot”文件夹所在路径</param>
-    /// <param name="includeAllArticles">确定 RSS 源是否包含全部文章信息的值</param>
-    /// <param name="generateDigest">指示生成模式是否为生成摘要的值</param>
-    /// <param name="rss20FileName">RSS 2.0 源的文件名</param>
-    /// <param name="atomFileName">ATOM 源的文件名</param>
-    /// <param name="addCssStyle">确定 RSS 源是否包含 CSS 样式的值</param>
-    public static void GenerateFeed(string rssBaseUri, string webRootPath, bool includeAllArticles = false, bool generateDigest = false, bool addCssStyle = false, string rss20FileName = "rss.xml", string atomFileName = "atom.xml")
+    /// <param name="includeAllArticles">确定订阅源是否包含全部文章信息的值。</param>
+    /// <param name="generateDigest">指示生成模式是否为生成摘要的值。</param>
+    /// <param name="rss20FileName">RSS 2.0 源的文件名。</param>
+    /// <param name="atomFileName">Atom 源的文件名。</param>
+    /// <returns>第一个元素为 RSS 文件路径，第二个元素为 Atom 源路径的二元组。</returns>
+    public (string RssPath, string AtomPath) GenerateFeed(bool includeAllArticles = false, bool generateDigest = false, string rss20FileName = "rss.xml", string atomFileName = "atom.xml")
     {
-        if (string.IsNullOrWhiteSpace(rssBaseUri))
+        if (!bool.TryParse(configuration["FeedAddCssStyle"], out bool addCssStyle))
         {
-            throw new ArgumentException($"“{nameof(rssBaseUri)}”不能为 null 或空白。", nameof(rssBaseUri));
+            addCssStyle = true;
         }
 
-        if (string.IsNullOrWhiteSpace(webRootPath))
-        {
-            throw new ArgumentException($"“{nameof(webRootPath)}”不能为 null 或空白。", nameof(webRootPath));
-        }
+        string webRootPath = commonValues.WebRootPath;
 
-        Console.WriteLine("正在生成 RSS 源...");
+        Uri baseUri = commonValues.BaseUri;
 
-        if (rssBaseUri.EndsWith('/'))
-        {
-            rssBaseUri = rssBaseUri[..^1];
-        }
-
-        Uri baseUri = new(rssBaseUri);
-        #region 第一步：生成RSS源信息
+        #region 第一步：生成订阅源信息
         string title = includeAllArticles switch
         {
             true when generateDigest => "回归线简易版 - 完整源摘要",
@@ -51,12 +43,19 @@ public static class FeedGenerationHelper
             false when generateDigest => "回归线简易版 - 摘要",
             false => "回归线简易版"
         };
+        string id = includeAllArticles switch
+        {
+            true when generateDigest => "AnEoT-Vintage-Full-Digest",
+            true => "AnEoT-Vintage-Full",
+            false when generateDigest => "AnEoT-Vintage-Digest",
+            false => "AnEoT-Vintage"
+        };
 
         SyndicationFeed feed = new(
            title,
            "Another End of Terra",
            baseUri,
-           "AnEoT-Vintage",
+           id,
            DateTimeOffset.Now)
         {
             Copyright = new TextSyndicationContent($"泰拉创作者联合会保留所有权利 | Copyright © 2022-{DateTimeOffset.UtcNow.Year} TCA. All rights reserved."),
@@ -65,18 +64,18 @@ public static class FeedGenerationHelper
             ImageUrl = new Uri(baseUri, "favicon.ico"),
         };
 
-        IEnumerable<string> categories = CategoryAndTagHelper.GetAllCategories(webRootPath);
+        IEnumerable<string> categories = categoryAndTagHelper.GetAllCategories();
         foreach (string item in categories)
         {
             feed.Categories.Add(new SyndicationCategory(item));
         }
 
-        //获取 posts 文件夹的信息
+        // 获取 posts 文件夹的信息
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
 
         List<SyndicationItem> items = [];
 
-        //反向读取文件夹，以获取到最新的期刊
+        // 反向读取文件夹，以获取到最新的期刊
         List<DirectoryInfo> volDirInfos = [.. postsDirectoryInfo.EnumerateDirectories()];
         volDirInfos.Sort(new VolumeDirectoryOrderComparer());
         volDirInfos.Reverse();
@@ -88,7 +87,7 @@ public static class FeedGenerationHelper
         }
         else
         {
-            //我们只获取前两个文件夹的信息，避免RSS源过长
+            // 我们只获取前两个文件夹的信息，避免订阅源过长
             targetDirectories = volDirInfos.Take(2);
         }
 
@@ -102,10 +101,11 @@ public static class FeedGenerationHelper
             {
                 string markdown = File.ReadAllText(article.FullName);
                 ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
-                string articleLink = $"{rssBaseUri}/posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}";
+
+                Uri articleLink = new(baseUri, $"posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}");
 
                 TextSyndicationContent content;
-                CustomMarkdownParser parser = new(false, false, true, $"{rssBaseUri}/posts/{volDirInfo.Name}", true, true);
+                CustomMarkdownParser parser = new(false, false, commonValues.ConvertWebP, new Uri(baseUri, $"posts/{volDirInfo.Name}").ToString(), true, true);
 
                 if (generateDigest)
                 {
@@ -129,10 +129,10 @@ public static class FeedGenerationHelper
                         {
                             htmlContentString = $"""
                         <head>
-                            <link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" />
-                            <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
-                            <link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" />
-                            <link href="{rssBaseUri}/css/rss-style.css" rel="stylesheet" type="text/css" />
+                            <link href="{new Uri(baseUri, "css/site.css")}" rel ="stylesheet" type="text/css" />
+                            <link href="{new Uri(baseUri, "css/index.css")} rel="stylesheet" type="text/css" />
+                            <link href="{new Uri(baseUri, "css/palette.css")}" rel="stylesheet" type="text/css" />
+                            <link href="{new Uri(baseUri, "css/rss-style.css")}" rel="stylesheet" type="text/css" />
                             <link href="{LxgwFontUri}" rel="stylesheet" type="text/css" />
                         </head>
                         <body>
@@ -156,10 +156,10 @@ public static class FeedGenerationHelper
                     {
                         html = $"""
                       <head>
-                          <link href="{rssBaseUri}/css/site.css" rel="stylesheet" type="text/css" />
-                          <link href="{rssBaseUri}/css/index.css" rel="stylesheet" type="text/css" />
-                          <link href="{rssBaseUri}/css/palette.css" rel="stylesheet" type="text/css" />
-                          <link href="{rssBaseUri}/css/rss-style.css" rel="stylesheet" type="text/css" />
+                          <link href="{new Uri(baseUri, "css/site.css")}" rel ="stylesheet" type="text/css" />
+                          <link href="{new Uri(baseUri, "css/index.css")} rel="stylesheet" type="text/css" />
+                          <link href="{new Uri(baseUri, "css/palette.css")}" rel="stylesheet" type="text/css" />
+                          <link href="{new Uri(baseUri, "css/rss-style.css")}" rel="stylesheet" type="text/css" />
                           <link href="{LxgwFontUri}" rel="stylesheet" type="text/css" />
                       </head>
                       <body>
@@ -177,8 +177,8 @@ public static class FeedGenerationHelper
                 SyndicationItem item = new(
                     articleInfo.Title,
                     content,
-                    new Uri(articleLink, UriKind.Absolute),
                     articleLink,
+                    articleLink.ToString(),
                     hasDate ? publishDate : timeNow);
 
                 item.Authors.Add(new SyndicationPerson() { Name = articleInfo.Author });
@@ -204,7 +204,7 @@ public static class FeedGenerationHelper
         feed.Items = items;
         #endregion
 
-        #region 第二步：将RSS源信息序列化为XML文件
+        #region 第二步：将订阅源信息序列化为 XML 文件
         XmlWriterSettings settings = new()
         {
             Encoding = Encoding.UTF8,
@@ -237,7 +237,67 @@ public static class FeedGenerationHelper
         rssWriter.Close();
         #endregion
 
-        Console.WriteLine("RSS 源生成完成！");
-        Console.WriteLine($"已在以下路径生成\nRSS：{rssFilePath}\nAtom：{atomFilePath}");
+        return (rssFilePath, atomFilePath);
     }
+}
+
+/// <summary>
+/// 为 <see cref="FeedGenerationHelper"/> 提供扩展方法的类。
+/// </summary>
+public static partial class FeedGenerationHelperExtensions
+{
+    private const string LoggerName = "AnEoT.Vintage.FeedGenerator";
+
+    /// <summary>
+    /// 生成全部类型的订阅源。
+    /// </summary>
+    /// <param name="host">.NET 通用主机。</param>
+    /// <returns>完成操作后的 <see cref="IHost"/>。</returns>
+    public static IHost GenerateAllFeed(this IHost host)
+    {
+        ILoggerFactory loggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
+        ILogger logger = loggerFactory.CreateLogger(LoggerName);
+        IConfiguration configuration = host.Services.GetRequiredService<IConfiguration>();
+
+        logger.LogFeedGenerating();
+
+        FeedGenerationHelper helper = host.Services.GetRequiredService<FeedGenerationHelper>();
+
+        if (!bool.TryParse(configuration["FeedIncludeAllArticles"], out bool feedIncludeAllArticles))
+        {
+            feedIncludeAllArticles = true;
+        }
+
+        List<string> feedPaths = new(8);
+
+        if (feedIncludeAllArticles)
+        {
+            helper.GenerateFeed(includeAllArticles: true, rss20FileName: "rss_full.xml", atomFileName: "atom_full.xml")
+                .AddToList(feedPaths);
+            helper.GenerateFeed(includeAllArticles: true, generateDigest: true, rss20FileName: "rss_full_digest.xml", atomFileName: "atom_full_digest.xml")
+                .AddToList(feedPaths);
+        }
+
+        helper.GenerateFeed()
+            .AddToList(feedPaths);
+        helper.GenerateFeed(generateDigest: true, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml")
+            .AddToList(feedPaths);
+
+        logger.LogFeedGenerated(string.Join("\n\t", feedPaths));
+
+        return host;
+    }
+
+    private static void AddToList(this ValueTuple<string, string> tuple, List<string> list)
+    {
+        list.Add(tuple.Item1);
+        list.Add(tuple.Item2);
+    }
+
+    [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "正在生成订阅源......")]
+    private static partial void LogFeedGenerating(this ILogger logger);
+
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "已在以下路径中生成订阅源：\n\t{path}")]
+
+    private static partial void LogFeedGenerated(this ILogger logger, string path);
 }

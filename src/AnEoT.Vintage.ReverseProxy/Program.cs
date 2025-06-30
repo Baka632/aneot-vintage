@@ -51,6 +51,8 @@ app.Use(async (context, next) =>
     }
 });
 
+app.UseStatusCodePages();
+
 app.MapReverseProxy();
 
 app.Run();

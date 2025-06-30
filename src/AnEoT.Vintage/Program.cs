@@ -1,16 +1,16 @@
-using System.Text.Encodings.Web;
+using Markdig;
 using System.Text.Unicode;
-using AnEoT.Vintage.Helpers;
-using AnEoT.Vintage.Helpers.Custom;
-using AnEoT.Vintage.Models;
+using System.Text.Encodings.Web;
 using AspNetStatic;
 using AspNetStatic.Optimizer;
-using Markdig;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.WebEncoders;
+using AnEoT.Vintage.Models;
+using AnEoT.Vintage.Helpers;
+using AnEoT.Vintage.Helpers.Custom;
 using Westwind.AspNetCore.Markdown;
+using Microsoft.Extensions.WebEncoders;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace AnEoT.Vintage;
 
@@ -20,10 +20,6 @@ namespace AnEoT.Vintage;
 public class Program
 {
     private static readonly string[] defaultFileNames = ["README.md", "index.html", "index.htm"];
-#pragma warning disable CS8618
-    internal static Uri CurrentBaseUri;
-#pragma warning restore CS8618
-    internal static bool ConvertWebP;
 
     /// <summary>
     /// 入口点方法
@@ -36,33 +32,10 @@ public class Program
         #region 第一步：读取应用程序配置
 
         // 确定是否启用 WebP 图像转换功能
+        if (!bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP))
         {
-            if (!bool.TryParse(builder.Configuration["ConvertWebP"], out bool convertWebP))
-            {
-                convertWebP = true;
-            }
-            ConvertWebP = convertWebP;
+            convertWebP = true;
         }
-
-        // 设置网站基 Uri
-        string baseUri;
-
-        {
-            string[]? hostUrls = builder.Configuration["urls"]?.Split(';');
-            string? rssBaseUriInConfig = builder.Configuration["BaseUri"];
-
-            if (string.IsNullOrWhiteSpace(rssBaseUriInConfig))
-            {
-                baseUri = hostUrls?.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
-                        ?? hostUrls?.FirstOrDefault(x => x.StartsWith(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
-                        ?? throw new InvalidOperationException("现在无法获取到基 Uri");
-            }
-            else
-            {
-                baseUri = rssBaseUriInConfig;
-            }
-        }
-        CurrentBaseUri = new Uri(baseUri, UriKind.Absolute);
 
         #region 静态页面
         // 设置静态页面的导出位置
@@ -86,36 +59,32 @@ public class Program
         bool generateStaticWebSite = args.HasExitWhenDoneArg();
         #endregion
 
-        #region Feed
-        // 确定是否生成完整源 （包含全部文章）
-        if (!bool.TryParse(builder.Configuration["FeedIncludeAllArticles"], out bool feedIncludeAllArticles))
-        {
-            feedIncludeAllArticles = true;
-        }
-
-        // 确定生成的源是否包含样式
-        if (!bool.TryParse(builder.Configuration["FeedAddCssStyle"], out bool feedAddCssStyle))
-        {
-            feedAddCssStyle = true;
-        }
-        #endregion
         #endregion
 
         #region 第二步：向依赖注入容器添加服务
 
-        builder.Services.AddSingleton<VolumeDirectoryOrderComparer>();
-        builder.Services.AddSingleton<ArticleFileOrderComparer>();
-        builder.Services.AddSingleton<VolumeInfoHelper>();
+        builder.Services.AddSingleton<VolumeDirectoryOrderComparer>()
+            .AddSingleton<ArticleFileOrderComparer>()
+            .AddSingleton<VolumeInfoHelper>()
+            .AddSingleton<CommonValuesHelper>()
+            .AddSingleton<HomePageHelper>()
+            .AddSingleton<CategoryAndTagHelper>()
+            .AddSingleton<PageTitleHelper>();
+
+        builder.Services.AddTransient<TileGenerationHelper>()
+            .AddTransient<FeedGenerationHelper>();
 
         if (generateStaticWebSite)
         {
+            builder.Services.AddTransient<StaticWebSiteHelper>();
             // 添加静态网站生成服务
             builder.Services.AddSingleton<IStaticResourcesInfoProvider>(provider =>
             {
-                return StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath, ConvertWebP);
+                StaticWebSiteHelper helper = provider.GetRequiredService<StaticWebSiteHelper>();
+                return helper.GetStaticResourcesInfo();
             });
 
-            if (ConvertWebP)
+            if (convertWebP)
             {
                 builder.Services.AddSingleton<IBinOptimizer, WebPContentConverter>();
             }
@@ -123,7 +92,7 @@ public class Program
 #if DEBUG
         else
         {
-            ConvertWebP = false;
+            convertWebP = false;
         }
 #endif
 
@@ -141,7 +110,7 @@ public class Program
                     .UseYamlFrontMatter();
             };
 
-            config.MarkdownParserFactory = new CustomMarkdownParserFactory(ConvertWebP);
+            config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
         });
 
         builder.Services.AddControllersWithViews()
@@ -218,18 +187,9 @@ public class Program
 
         FakeAdHelper.PrepareData(app.Environment.WebRootPath);
 
-        if (feedIncludeAllArticles)
-        {
-            FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, includeAllArticles: true, addCssStyle: feedAddCssStyle, rss20FileName: "rss_full.xml", atomFileName: "atom_full.xml");
-            FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, includeAllArticles: true, addCssStyle: feedAddCssStyle, generateDigest: true, rss20FileName: "rss_full_digest.xml", atomFileName: "atom_full_digest.xml");
-        }
-        FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, addCssStyle: feedAddCssStyle);
-
-        FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, generateDigest: true, addCssStyle: feedAddCssStyle, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml");
-
-        TileHelper.GenerateTileXml(baseUri, app.Environment.WebRootPath);
-
-        app.GenerateLatestVolumeInfoJson();
+        app.GenerateAllFeed()
+            .GenerateTileXml()
+            .GenerateLatestVolumeInfoJson();
 
         if (generateStaticWebSite)
         {

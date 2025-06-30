@@ -1,9 +1,9 @@
-﻿namespace AnEoT.Vintage.Helpers;
+namespace AnEoT.Vintage.Helpers;
 
 /// <summary>
-/// 为文章分类及标签的相关功能提供帮助的类
+/// 为文章分类及标签的相关功能提供帮助的类。
 /// </summary>
-public static class CategoryAndTagHelper
+public class CategoryAndTagHelper(CommonValuesHelper commonValues)
 {
     private static readonly List<string> _categories = new(10);
     private static readonly List<string> _tags = new(100);
@@ -11,16 +11,17 @@ public static class CategoryAndTagHelper
     private static readonly Dictionary<string, List<string>> _tagArticleMapping = new(500);
 
     /// <summary>
-    /// 获取全部文章分类
+    /// 获取全部文章分类。
     /// </summary>
-    /// <returns>包含文章分类的<see cref="IEnumerable{String}"/></returns>
-    public static IEnumerable<string> GetAllCategories(string webRootPath)
+    /// <returns>包含文章分类的 <see cref="IEnumerable{String}"/>。</returns>
+    public IEnumerable<string> GetAllCategories()
     {
         if (_categories.Count != 0)
         {
             return _categories;
         }
 
+        string webRootPath = commonValues.WebRootPath;
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
         foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories())
         {
@@ -47,16 +48,17 @@ public static class CategoryAndTagHelper
     }
     
     /// <summary>
-    /// 获取全部文章标签
+    /// 获取全部文章标签。
     /// </summary>
-    /// <returns>包含文章标签的<see cref="IEnumerable{String}"/></returns>
-    public static IEnumerable<string> GetAllTags(string webRootPath)
+    /// <returns>包含文章标签的 <see cref="IEnumerable{String}"/>。</returns>
+    public IEnumerable<string> GetAllTags()
     {
         if (_tags.Count != 0)
         {
             return _tags;
         }
 
+        string webRootPath = commonValues.WebRootPath;
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
         foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories())
         {
@@ -83,17 +85,17 @@ public static class CategoryAndTagHelper
     }
 
     /// <summary>
-    /// 获取文章分类与文章相对地址的映射
+    /// 获取文章分类与文章相对地址的映射。
     /// </summary>
-    /// <param name="webRootPath"></param>
-    /// <returns>一个包含映射的字典</returns>
-    public static IDictionary<string, List<string>> GetCategoryToArticleMapping(string webRootPath)
+    /// <returns>一个包含映射的字典。</returns>
+    public IDictionary<string, List<string>> GetCategoryToArticleMapping()
     {
         if (_categoryArticleMapping.Count != 0)
         {
             return _categoryArticleMapping;
         }
 
+        string webRootPath = commonValues.WebRootPath;
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
         foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories())
         {
@@ -131,17 +133,17 @@ public static class CategoryAndTagHelper
     }
     
     /// <summary>
-    /// 获取文章标签与文章相对地址的映射
+    /// 获取文章标签与文章相对地址的映射。
     /// </summary>
-    /// <param name="webRootPath"></param>
-    /// <returns>一个包含映射的字典</returns>
-    public static IDictionary<string, List<string>> GetTagToArticleMapping(string webRootPath)
+    /// <returns>一个包含映射的字典。</returns>
+    public IDictionary<string, List<string>> GetTagToArticleMapping()
     {
         if (_tagArticleMapping.Count != 0)
         {
             return _tagArticleMapping;
         }
 
+        string webRootPath = commonValues.WebRootPath;
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
         foreach (DirectoryInfo volDirInfo in postsDirectoryInfo.EnumerateDirectories())
         {
