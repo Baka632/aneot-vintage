@@ -8,7 +8,6 @@ namespace AnEoT.Vintage.Helpers;
 /// 为静态网站生成提供帮助方法。
 /// </summary>
 public class StaticWebSiteHelper(
-    IWebHostEnvironment environment,
     CommonValuesHelper commonValues,
     CategoryAndTagHelper categoryAndTagHelper)
 {
@@ -18,7 +17,7 @@ public class StaticWebSiteHelper(
     /// <returns>描述网站内容的 <see cref="StaticResourcesInfoProvider"/>。</returns>
     public StaticResourcesInfoProvider GetStaticResourcesInfo()
     {
-        string webRootPath = environment.WebRootPath;
+        string webRootPath = commonValues.WebRootPath;
         bool convertWebp = commonValues.ConvertWebP;
 
         string[] excludedFiles = [];

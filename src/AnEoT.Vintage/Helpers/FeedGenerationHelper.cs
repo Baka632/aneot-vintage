@@ -10,7 +10,6 @@ namespace AnEoT.Vintage.Helpers;
 /// 协助生成订阅源的类。
 /// </summary>
 public partial class FeedGenerationHelper(
-    IWebHostEnvironment environment,
     CommonValuesHelper commonValues,
     CategoryAndTagHelper categoryAndTagHelper,
     IConfiguration configuration)
@@ -32,7 +31,7 @@ public partial class FeedGenerationHelper(
             addCssStyle = true;
         }
 
-        string webRootPath = environment.WebRootPath;
+        string webRootPath = commonValues.WebRootPath;
 
         Uri baseUri = commonValues.BaseUri;
 

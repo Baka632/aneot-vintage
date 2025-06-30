@@ -7,7 +7,7 @@ namespace AnEoT.Vintage.Helpers;
 /// <summary>
 /// 生成磁贴信息的类。
 /// </summary>
-public class TileGenerationHelper(IWebHostEnvironment environment, CommonValuesHelper commonValues)
+public class TileGenerationHelper(CommonValuesHelper commonValues)
 {
     private static readonly CompositeFormat tileTemplate = CompositeFormat.Parse("""
         <tile>
@@ -39,7 +39,7 @@ public class TileGenerationHelper(IWebHostEnvironment environment, CommonValuesH
     /// <returns>生成磁贴 XML 文件的文件夹路径。</returns>
     public string GenerateTileXml()
     {
-        string webRootPath = environment.WebRootPath;
+        string webRootPath = commonValues.WebRootPath;
 
         // 获取 posts 文件夹的信息
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
