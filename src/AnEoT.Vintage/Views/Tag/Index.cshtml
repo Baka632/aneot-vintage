@@ -11,7 +11,7 @@
         @foreach (var item in Model.TagToArticleRelativePathMapping)
         {
             <li>
-                <a href="/tag/@item.Key/">
+                <a asp-controller="tag" asp-action="@item.Key">
                     @item.Key
                 </a>
                 <br/>
