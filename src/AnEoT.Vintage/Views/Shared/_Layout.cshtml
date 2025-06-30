@@ -5,7 +5,7 @@
 @inject IWebHostEnvironment env
 @inject IConfiguration config
 @inject VolumeInfoHelper volumeInfoHelper
-@inject BaseUriHelper baseUriHelper
+@inject CommonValuesHelper commonValues
 
 @{
     if (ViewData["Title"] is not string title)
@@ -80,7 +80,7 @@
     keywords = string.Join(',', keywordList.Distinct());
 
     IHttpRequestFeature? httpRequestFeature = Context.Features.Get<IHttpRequestFeature>();
-    Uri pageUriObj = new Uri(baseUriHelper.BaseUri, httpRequestFeature?.RawTarget);
+    Uri pageUriObj = new Uri(commonValues.BaseUri, httpRequestFeature?.RawTarget);
     pageUri = pageUriObj.ToString();
 
     if (hasRawMarkdown)
@@ -108,7 +108,7 @@
 
     @if (!string.IsNullOrWhiteSpace(imageUri))
     {
-        @if (Program.ConvertWebP)
+        @if (commonValues.ConvertWebP)
         {
             <meta property="og:image" content="@imageUri.Replace(".webp", ".jpg")" />
         }

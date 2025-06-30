@@ -1,5 +1,5 @@
-using System.Globalization;
 using System.Text;
+using System.Globalization;
 using AnEoT.Vintage.Models;
 
 namespace AnEoT.Vintage.Helpers;
@@ -7,7 +7,7 @@ namespace AnEoT.Vintage.Helpers;
 /// <summary>
 /// 生成磁贴信息的类。
 /// </summary>
-public class TileHelper(IWebHostEnvironment environment, BaseUriHelper baseUriHelper)
+public class TileGenerationHelper(IWebHostEnvironment environment, CommonValuesHelper commonValues)
 {
     private static readonly CompositeFormat tileTemplate = CompositeFormat.Parse("""
         <tile>
@@ -82,7 +82,7 @@ public class TileHelper(IWebHostEnvironment environment, BaseUriHelper baseUriHe
 
             string volumeTypeIndicator = fileName == firstItem ? "最新一期" : "先前期刊";
             string title = articleInfo.Title;
-            string coverImage = new Uri(baseUriHelper.BaseUri, $"images/tile/{Path.ChangeExtension(fileName, ".jpg")}").ToString();
+            string coverImage = new Uri(commonValues.BaseUri, $"images/tile/{Path.ChangeExtension(fileName, ".jpg")}").ToString();
 
             string xml = string.Format(CultureInfo.InvariantCulture, tileTemplate, coverImage, volumeTypeIndicator, title);
 
@@ -95,9 +95,9 @@ public class TileHelper(IWebHostEnvironment environment, BaseUriHelper baseUriHe
 }
 
 /// <summary>
-/// 为 <see cref="TileHelper"/> 提供扩展方法的类。
+/// 为 <see cref="TileGenerationHelper"/> 提供扩展方法的类。
 /// </summary>
-public static partial class TileHelperExtensions
+public static partial class TileGenerationHelperExtensions
 {
     private const string LoggerName = "AnEoT.Vintage.TileGenerator";
 
@@ -111,7 +111,7 @@ public static partial class TileHelperExtensions
         ILoggerFactory loggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
         ILogger logger = loggerFactory.CreateLogger(LoggerName);
 
-        TileHelper helper = host.Services.GetRequiredService<TileHelper>();
+        TileGenerationHelper helper = host.Services.GetRequiredService<TileGenerationHelper>();
         string generateFolderPath = helper.GenerateTileXml();
 
         logger.LogTileXmlGenerated(generateFolderPath);
