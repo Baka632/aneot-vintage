@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Http.Features;
 @using AnEoT.Vintage.Helpers;
 
+@inject PageTitleHelper pageTitleHelper
 @inject IWebHostEnvironment env
 @model Westwind.AspNetCore.Markdown.MarkdownModel
 
@@ -49,7 +50,7 @@
                 if (i != uriParts.Length - 1)
                 {
                     string target = string.Join('/', uriParts[..(i + 1)]);
-                    string displayTitle = @PageTitleHelper.GetPageTitle(env.WebRootPath, target);
+                    string displayTitle = @pageTitleHelper.GetPageTitle(target);
                     <a href="/@target">@displayTitle</a>
                 }
                 else

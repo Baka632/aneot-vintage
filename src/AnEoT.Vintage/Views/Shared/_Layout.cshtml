@@ -6,6 +6,7 @@
 @inject IConfiguration config
 @inject VolumeInfoHelper volumeInfoHelper
 @inject CommonValuesHelper commonValues
+@inject HomePageHelper homePageHelper
 
 @{
     if (ViewData["Title"] is not string title)
@@ -154,7 +155,7 @@
     <meta name="application-name" content="回归线简易版" />
     <meta name="msapplication-tooltip" content="在线阅读《回归线》期刊" />
     <meta name="msapplication-starturl" content="/" />
-    <meta name="msapplication-navbutton-color" content="@HomePageHelper.GetHomePageInfo(env.WebRootPath).HeroAlt" />
+    <meta name="msapplication-navbutton-color" content="@homePageHelper.GetHomePageInfo().HeroAlt" />
     <meta name="msapplication-task" content="name=打开期刊列表;action-uri=/posts/;icon-uri=./favicon_multisize.ico" />
     <meta name="msapplication-task" content="name=阅读最新一期;action-uri=/posts/@volumeInfoHelper.GetLatestVolumeInfo().VolumeFolderName/;icon-uri=/favicon_multisize.ico" />
     <meta name="msapplication-task" content="name=订阅回归线 Feed 流;action-uri=/subscription.html;icon-uri=./favicon_multisize.ico" />

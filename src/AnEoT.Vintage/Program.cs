@@ -66,7 +66,9 @@ public class Program
         builder.Services.AddSingleton<VolumeDirectoryOrderComparer>()
             .AddSingleton<ArticleFileOrderComparer>()
             .AddSingleton<VolumeInfoHelper>()
-            .AddSingleton<CommonValuesHelper>();
+            .AddSingleton<CommonValuesHelper>()
+            .AddSingleton<HomePageHelper>()
+            .AddSingleton<PageTitleHelper>();
 
         builder.Services.AddTransient<TileGenerationHelper>()
             .AddTransient<FeedGenerationHelper>();
@@ -74,10 +76,12 @@ public class Program
 
         if (generateStaticWebSite)
         {
+            builder.Services.AddTransient<StaticWebSiteHelper>();
             // 添加静态网站生成服务
             builder.Services.AddSingleton<IStaticResourcesInfoProvider>(provider =>
             {
-                return StaticWebSiteHelper.GetStaticResourcesInfo(builder.Environment.WebRootPath, convertWebP);
+                StaticWebSiteHelper helper = provider.GetRequiredService<StaticWebSiteHelper>();
+                return helper.GetStaticResourcesInfo();
             });
 
             if (convertWebP)

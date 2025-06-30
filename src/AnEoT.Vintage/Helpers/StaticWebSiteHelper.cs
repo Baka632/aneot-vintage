@@ -5,17 +5,20 @@ using AspNetStatic.Optimizer;
 namespace AnEoT.Vintage.Helpers;
 
 /// <summary>
-/// 为静态网页生成提供帮助方法
+/// 为静态网站生成提供帮助方法。
 /// </summary>
-public static class StaticWebSiteHelper
+public class StaticWebSiteHelper(IWebHostEnvironment environment, CommonValuesHelper commonValues)
 {
     /// <summary>
-    /// 获取用于描述网站内容的<see cref="StaticResourcesInfoProvider"/>
+    /// 获取用于描述网站内容的 <see cref="StaticResourcesInfoProvider"/>。
     /// </summary>
-    /// <returns>描述网站内容的<see cref="StaticResourcesInfoProvider"/></returns>
-    public static StaticResourcesInfoProvider GetStaticResourcesInfo(string webRootPath, bool convertWebp)
+    /// <returns>描述网站内容的 <see cref="StaticResourcesInfoProvider"/>。</returns>
+    public StaticResourcesInfoProvider GetStaticResourcesInfo()
     {
-        string[] excludedFiles = ["Homepage.md"];
+        string webRootPath = environment.WebRootPath;
+        bool convertWebp = commonValues.ConvertWebP;
+
+        string[] excludedFiles = [];
         string[] excludedFolders= [];
 
         List<ResourceInfoBase> pages = new(2500)
@@ -23,7 +26,7 @@ public static class StaticWebSiteHelper
             new PageResource("/"),
             new PageResource("/settings"),
             new PageResource("/installpwa"),
-            new CssResource("AnEoT.Vintage.styles.css"),
+            new CssResource("/AnEoT.Vintage.styles.css"),
         };
 
         DirectoryInfo wwwRootDirectory = new(webRootPath);
@@ -32,6 +35,7 @@ public static class StaticWebSiteHelper
         List<ResourceInfoBase> wwwRootPages = GetPageInfoFromDirectory(wwwRootDirectory, "/", excludedFolders, excludedFiles, convertWebp);
         pages.AddRange(wwwRootPages);
         #endregion
+
         #region 第二步：生成分类页与标签页的网页内容信息
         pages.Add(new PageResource("/category")
         {
