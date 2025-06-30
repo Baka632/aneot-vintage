@@ -20,9 +20,6 @@ namespace AnEoT.Vintage;
 public class Program
 {
     private static readonly string[] defaultFileNames = ["README.md", "index.html", "index.htm"];
-#pragma warning disable CS8618
-    internal static Uri CurrentBaseUri;
-#pragma warning restore CS8618
     internal static bool ConvertWebP;
 
     /// <summary>
@@ -62,7 +59,7 @@ public class Program
                 baseUri = rssBaseUriInConfig;
             }
         }
-        CurrentBaseUri = new Uri(baseUri, UriKind.Absolute);
+        //CurrentBaseUri = new Uri(baseUri, UriKind.Absolute);
 
         #region 静态页面
         // 设置静态页面的导出位置
@@ -106,6 +103,9 @@ public class Program
         builder.Services.AddSingleton<VolumeDirectoryOrderComparer>();
         builder.Services.AddSingleton<ArticleFileOrderComparer>();
         builder.Services.AddSingleton<VolumeInfoHelper>();
+        builder.Services.AddSingleton<BaseUriHelper>();
+
+        builder.Services.AddTransient<TileHelper>();
 
         if (generateStaticWebSite)
         {
@@ -227,9 +227,7 @@ public class Program
 
         FeedGenerationHelper.GenerateFeed(baseUri, app.Environment.WebRootPath, generateDigest: true, addCssStyle: feedAddCssStyle, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml");
 
-        TileHelper.GenerateTileXml(baseUri, app.Environment.WebRootPath);
-
-        app.GenerateLatestVolumeInfoJson();
+        app.GenerateTileXml().GenerateLatestVolumeInfoJson();
 
         if (generateStaticWebSite)
         {

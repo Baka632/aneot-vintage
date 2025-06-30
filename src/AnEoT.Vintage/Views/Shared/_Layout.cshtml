@@ -5,6 +5,7 @@
 @inject IWebHostEnvironment env
 @inject IConfiguration config
 @inject VolumeInfoHelper volumeInfoHelper
+@inject BaseUriHelper baseUriHelper
 
 @{
     if (ViewData["Title"] is not string title)
@@ -79,7 +80,7 @@
     keywords = string.Join(',', keywordList.Distinct());
 
     IHttpRequestFeature? httpRequestFeature = Context.Features.Get<IHttpRequestFeature>();
-    Uri pageUriObj = new Uri(Program.CurrentBaseUri, httpRequestFeature?.RawTarget);
+    Uri pageUriObj = new Uri(baseUriHelper.BaseUri, httpRequestFeature?.RawTarget);
     pageUri = pageUriObj.ToString();
 
     if (hasRawMarkdown)
