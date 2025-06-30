@@ -7,7 +7,10 @@ namespace AnEoT.Vintage.Helpers;
 /// <summary>
 /// 为静态网站生成提供帮助方法。
 /// </summary>
-public class StaticWebSiteHelper(IWebHostEnvironment environment, CommonValuesHelper commonValues)
+public class StaticWebSiteHelper(
+    IWebHostEnvironment environment,
+    CommonValuesHelper commonValues,
+    CategoryAndTagHelper categoryAndTagHelper)
 {
     /// <summary>
     /// 获取用于描述网站内容的 <see cref="StaticResourcesInfoProvider"/>。
@@ -46,7 +49,7 @@ public class StaticWebSiteHelper(IWebHostEnvironment environment, CommonValuesHe
             OutFile = Path.Combine("tag", "index.html")
         });
 
-        foreach (string category in CategoryAndTagHelper.GetAllCategories(webRootPath))
+        foreach (string category in categoryAndTagHelper.GetAllCategories())
         {
             pages.Add(new PageResource($"/category/{WebUtility.UrlEncode(category)}")
             {
@@ -54,7 +57,7 @@ public class StaticWebSiteHelper(IWebHostEnvironment environment, CommonValuesHe
             });
         }
 
-        foreach (string tag in CategoryAndTagHelper.GetAllTags(webRootPath))
+        foreach (string tag in categoryAndTagHelper.GetAllTags())
         {
             pages.Add(new PageResource($"/tag/{WebUtility.UrlEncode(tag)}")
             {

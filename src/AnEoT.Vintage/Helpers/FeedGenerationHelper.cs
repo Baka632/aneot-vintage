@@ -12,6 +12,7 @@ namespace AnEoT.Vintage.Helpers;
 public partial class FeedGenerationHelper(
     IWebHostEnvironment environment,
     CommonValuesHelper commonValues,
+    CategoryAndTagHelper categoryAndTagHelper,
     IConfiguration configuration)
 {
     private const string LxgwFontUri = "https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css";
@@ -64,7 +65,7 @@ public partial class FeedGenerationHelper(
             ImageUrl = new Uri(baseUri, "favicon.ico"),
         };
 
-        IEnumerable<string> categories = CategoryAndTagHelper.GetAllCategories(webRootPath);
+        IEnumerable<string> categories = categoryAndTagHelper.GetAllCategories();
         foreach (string item in categories)
         {
             feed.Categories.Add(new SyndicationCategory(item));

@@ -23,11 +23,17 @@ public class CommonValuesHelper
     public bool ConvertWebP { get; }
 
     /// <summary>
+    /// “wwwroot”文件夹路径。
+    /// </summary>
+    public string WebRootPath { get; set; }
+
+    /// <summary>
     /// 构造 <see cref="CommonValuesHelper"/> 的新实例。
     /// </summary>
     /// <param name="configuration">提供配置信息的 <see cref="IConfiguration"/>。</param>
+    /// <param name="environment">提供环境信息的 <see cref="IWebHostEnvironment"/>。</param>
     /// <exception cref="InvalidOperationException">无法获取到基 Uri。</exception>
-    public CommonValuesHelper(IConfiguration configuration)
+    public CommonValuesHelper(IConfiguration configuration, IWebHostEnvironment environment)
     {
         string[]? hostUrls = configuration["urls"]?.Split(';');
         string? rssBaseUriInConfig = configuration["BaseUri"];
@@ -44,6 +50,10 @@ public class CommonValuesHelper
         }
 
         BaseUri = new Uri(BaseUriString, UriKind.Absolute);
+
+
+        WebRootPath = environment.WebRootPath;
+
 
         if (!bool.TryParse(configuration["ConvertWebP"], out bool convertWebP))
         {

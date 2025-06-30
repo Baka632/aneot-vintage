@@ -68,11 +68,11 @@ public class Program
             .AddSingleton<VolumeInfoHelper>()
             .AddSingleton<CommonValuesHelper>()
             .AddSingleton<HomePageHelper>()
+            .AddSingleton<CategoryAndTagHelper>()
             .AddSingleton<PageTitleHelper>();
 
         builder.Services.AddTransient<TileGenerationHelper>()
             .AddTransient<FeedGenerationHelper>();
-        
 
         if (generateStaticWebSite)
         {
