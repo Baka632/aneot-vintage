@@ -9,9 +9,8 @@ using YamlDotNet.Serialization;
 
 namespace AnEoT.Vintage.Tool;
 
-[Obsolete("现在不再使用此类。")]
 /// <summary>
-/// 移除主项目指定组件的类
+/// 移除主项目指定组件的类。
 /// </summary>
 internal static class ComponentRemoval
 {
@@ -25,10 +24,10 @@ internal static class ComponentRemoval
         .Build();
 
     /// <summary>
-    /// 移除指定组件，并移除其他文件对其的引用
+    /// 移除指定组件，并移除其他文件对其的引用。
     /// </summary>
-    /// <param name="componentName">指定组件的名称</param>
-    /// <param name="webRootPath">"wwwroot"文件夹的路径</param>
+    /// <param name="componentName">指定组件的名称。</param>
+    /// <param name="webRootPath">"wwwroot"文件夹的路径。</param>
     public static void Remove(string componentName, string webRootPath)
     {
         Console.WriteLine($"当前步骤：移除 {componentName}");
@@ -63,12 +62,12 @@ internal static class ComponentRemoval
     }
 
     /// <summary>
-    /// 遍历指定的文件夹（包括子文件夹），然后删除文件夹中的 Markdown 文件对指定组件的引用
+    /// 遍历指定的文件夹（包括子文件夹），然后删除文件夹中的 Markdown 文件对指定组件的引用。
     /// </summary>
-    /// <param name="directory">目标目录</param>
+    /// <param name="directory">目标目录。</param>
     private static void RemoveRecursively(string componentName, DirectoryInfo directory)
     {
-        //目标：当前文件夹中的文件
+        // 目标：当前文件夹中的文件
         foreach (FileInfo file in directory.EnumerateFiles("*.md"))
         {
             RemoveComponentReference(componentName, file);
@@ -76,21 +75,21 @@ internal static class ComponentRemoval
 
         foreach (DirectoryInfo subDirectory in directory.EnumerateDirectories())
         {
-            //目标：子文件夹中的文件
+            // 目标：子文件夹中的文件
             foreach (FileInfo file in subDirectory.EnumerateFiles("*.md"))
             {
                 RemoveComponentReference(componentName, file);
             }
 
-            //递归：对子文件夹的子文件夹进行操作
+            // 递归：对子文件夹的子文件夹进行操作
             RemoveRecursively(componentName, subDirectory);
         }
     }
 
     /// <summary>
-    /// 移除 Markdown 文件中对指定组件的引用
+    /// 移除 Markdown 文件中对指定组件的引用。
     /// </summary>
-    /// <param name="file">目标文件信息</param>
+    /// <param name="file">目标文件信息。</param>
     private static void RemoveComponentReference(string componentName, FileInfo file)
     {
         string markdown = File.ReadAllText(file.FullName);

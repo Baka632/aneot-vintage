@@ -15,16 +15,16 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 namespace AnEoT.Vintage;
 
 /// <summary>
-/// 程序启动的入口类
+/// 程序启动的入口类。
 /// </summary>
 public class Program
 {
     private static readonly string[] defaultFileNames = ["README.md", "index.html", "index.htm"];
 
     /// <summary>
-    /// 入口点方法
+    /// 入口点方法。
     /// </summary>
-    /// <param name="args">启动时传递的参数</param>
+    /// <param name="args">启动时传递的参数。</param>
     public static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);

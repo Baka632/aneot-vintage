@@ -44,8 +44,9 @@ internal sealed class Program
         removeUnnecessaryComponentCommand.SetHandler(wwwrootPath =>
         {
             Console.WriteLine("*** 现在不再使用此命令 ***");
-            //Console.WriteLine($"工作目录：{wwwrootPath}");
+            // Console.WriteLine($"工作目录：{wwwrootPath}");
             // Console.WriteLine("======");
+
             // 现在网页上已经没有 forceflash 组件了
             // ComponentRemoval.Remove("forceflash", wwwrootPath);
             
@@ -68,7 +69,7 @@ internal sealed class Program
         }, staticWebSiteOutputPathOption);*/
 
         rootCommand.AddCommand(removeUnnecessaryComponentCommand);
-        //rootCommand.AddCommand(fixGitHubPagesCommand);
+        // rootCommand.AddCommand(fixGitHubPagesCommand);
 
         return rootCommand.InvokeAsync(args).Result;
     }

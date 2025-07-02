@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using AngleSharp;
 using AngleSharp.Css;
 using AngleSharp.Css.Dom;
@@ -16,7 +16,7 @@ using AnEoT.Vintage.Models.VueComponentAbstractions;
 namespace AnEoT.Vintage.Helpers.Custom.Renderer;
 
 /// <summary>
-/// 自定义的<see cref="HtmlBlock"/>渲染器
+/// 自定义的 <see cref="HtmlBlock"/> 渲染器。
 /// </summary>
 public class CustomHtmlBlockRenderer : HtmlBlockRenderer
 {
@@ -25,7 +25,7 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
     private readonly bool noEod;
 
     /// <summary>
-    /// 使用指定的参数构造<seealso cref="CustomHtmlBlockRenderer"/>的新实例
+    /// 使用指定的参数构造 <seealso cref="CustomHtmlBlockRenderer"/> 的新实例。
     /// </summary>
     public CustomHtmlBlockRenderer(bool convertWebP, bool noAd, bool noEod)
     {

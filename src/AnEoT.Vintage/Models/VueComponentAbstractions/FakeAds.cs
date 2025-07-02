@@ -1,10 +1,10 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
 
 namespace AnEoT.Vintage.Models.VueComponentAbstractions;
 
 /// <summary>
-/// 「泰拉广告」元素
+/// 「泰拉广告」元素。
 /// </summary>
 public static class FakeAds
 {
@@ -14,7 +14,7 @@ public static class FakeAds
     public const string TagName = "FAKEADS";
 
     /// <summary>
-    /// 元素 HTML 模板
+    /// 元素 HTML 模板。
     /// </summary>
     public const string Template = """
                 <div class="ads-container no-print{0}">
@@ -34,7 +34,7 @@ public static class FakeAds
     /// </summary>
     /// <param name="fakeAdInfo">表示「泰拉广告」信息的 <see cref="FakeAdInfo"/>。</param>
     /// <param name="optionalClassName">可选的类名，以空格分割。</param>
-    /// <returns>构造好的 <see cref="FakeAds"/> 的 HTML</returns>
+    /// <returns>构造好的 <see cref="FakeAds"/> 的 HTML。</returns>
     public static string GetHtml(FakeAdInfo fakeAdInfo, string optionalClassName = "")
     {
         return string.Format(CultureInfo.InvariantCulture, TemplateFormat,
