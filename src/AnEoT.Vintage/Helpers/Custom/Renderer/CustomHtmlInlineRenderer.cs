@@ -1,4 +1,4 @@
-﻿using AngleSharp.Dom;
+using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using Markdig.Renderers;
@@ -9,14 +9,14 @@ using AnEoT.Vintage.Models.VueComponentAbstractions;
 namespace AnEoT.Vintage.Helpers.Custom.Renderer;
 
 /// <summary>
-/// 自定义的 <see cref="HtmlInline"/> 渲染器
+/// 自定义的 <see cref="HtmlInline"/> 渲染器。
 /// </summary>
 public class CustomHtmlInlineRenderer : HtmlInlineRenderer
 {
     private readonly bool noEod;
 
     /// <summary>
-    /// 使用指定的参数构造 <seealso cref="CustomHtmlInlineRenderer"/> 的新实例
+    /// 使用指定的参数构造 <seealso cref="CustomHtmlInlineRenderer"/> 的新实例。
     /// </summary>
     public CustomHtmlInlineRenderer(bool noEod)
     {
