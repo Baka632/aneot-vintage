@@ -3,6 +3,7 @@ using System.Xml;
 using System.Text;
 using AnEoT.Vintage.Helpers.Custom;
 using AnEoT.Vintage.Models;
+using System.Globalization;
 
 namespace AnEoT.Vintage.Helpers;
 
@@ -15,6 +16,7 @@ public partial class FeedGenerationHelper(
     IConfiguration configuration)
 {
     private const string LxgwFontUri = "https://unpkg.com/lxgw-wenkai-screen-webfont@1.6.0/style.css";
+    private readonly string[] CssLinks = ["css/site.css", "css/index.css", "css/rss-style.css", LxgwFontUri];
 
     /// <summary>
     /// 生成订阅源。
@@ -32,8 +34,18 @@ public partial class FeedGenerationHelper(
         }
 
         string webRootPath = commonValues.WebRootPath;
-
         Uri baseUri = commonValues.BaseUri;
+
+        string? cssLinksString = null;
+        if (addCssStyle)
+        {
+            StringBuilder sb = new(500);
+            foreach (string link in CssLinks)
+            {
+                sb.AppendLine(CultureInfo.InvariantCulture, $"""<link href="{new Uri(baseUri, link)}" rel ="stylesheet" type="text/css" />""");
+            }
+            cssLinksString = sb.ToString();
+        }
 
         #region 第一步：生成订阅源信息
         string title = includeAllArticles switch
@@ -129,11 +141,7 @@ public partial class FeedGenerationHelper(
                         {
                             htmlContentString = $"""
                         <head>
-                            <link href="{new Uri(baseUri, "css/site.css")}" rel ="stylesheet" type="text/css" />
-                            <link href="{new Uri(baseUri, "css/index.css")} rel="stylesheet" type="text/css" />
-                            <link href="{new Uri(baseUri, "css/palette.css")}" rel="stylesheet" type="text/css" />
-                            <link href="{new Uri(baseUri, "css/rss-style.css")}" rel="stylesheet" type="text/css" />
-                            <link href="{LxgwFontUri}" rel="stylesheet" type="text/css" />
+                            {cssLinksString}
                         </head>
                         <body>
                             {bodyContent}
@@ -156,11 +164,7 @@ public partial class FeedGenerationHelper(
                     {
                         html = $"""
                       <head>
-                          <link href="{new Uri(baseUri, "css/site.css")}" rel ="stylesheet" type="text/css" />
-                          <link href="{new Uri(baseUri, "css/index.css")} rel="stylesheet" type="text/css" />
-                          <link href="{new Uri(baseUri, "css/palette.css")}" rel="stylesheet" type="text/css" />
-                          <link href="{new Uri(baseUri, "css/rss-style.css")}" rel="stylesheet" type="text/css" />
-                          <link href="{LxgwFontUri}" rel="stylesheet" type="text/css" />
+                          {cssLinksString}
                       </head>
                       <body>
                           {html}
