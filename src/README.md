@@ -23,3 +23,16 @@
 静态服务器项目，负责提供自定义的静态文件服务器（基于 Kestrel）。
 
 类型为 ASP.NET Core Web 应用程序。
+<!--
+## AnEoT.Vintage.ReverseProxy
+
+反向代理服务器项目，负责为后端服务器提供反向代理服务（基于 Yarp）。
+
+类型为 ASP.NET Core Web 应用程序。
+
+## AnEoT.Vintage.WebHook
+
+Web API 项目，负责根据 GitHub WebHook 在服务器进行某些操作。
+
+类型为 ASP.NET Core Web 应用程序。
+-->
