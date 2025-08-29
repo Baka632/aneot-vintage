@@ -4,6 +4,7 @@
 
 @inject PageTitleHelper pageTitleHelper
 @inject CategoryAndTagHelper categoryAndTagHelper
+@inject VolumeInfoHelper volumeInfoHelper;
 @model Westwind.AspNetCore.Markdown.MarkdownModel
 
 @{
@@ -19,7 +20,7 @@
     }
     else
     {
-        articleInfo = new();
+        articleInfo = default;
     }
 
     int wordCount = MarkdownHelper.GetWordCount(Model.RawMarkdown);
@@ -122,4 +123,39 @@
 
 <div class="content-margin para-indent">
     @Model.RenderedMarkdown
+
+    @if (articleInfo != default
+        && uriParts.Length > 2
+        && uriParts[0].Equals("posts", StringComparison.OrdinalIgnoreCase)
+        && volumeInfoHelper.TryGetTargetVolumeInfo(uriParts[1], out VolumeInfo? volumeInfo))
+    {
+        IReadOnlyDictionary<Uri, ArticleInfo> articlesDictionary = volumeInfo.Value.Articles;
+        List<ArticleInfo> articles = articlesDictionary.Values.Order().ToList();
+        int currentArticleIndex = articles.IndexOf(articleInfo);
+
+        @if (currentArticleIndex != -1)
+        {
+            <div style="margin-top: 10px; overflow: auto;">
+                @if (currentArticleIndex != 0)
+                {
+                    ArticleInfo formerArticle = articles[currentArticleIndex - 1];
+                    <div class="text-left-float">
+                        上一篇文章
+                        <br />
+                        <a href="@articlesDictionary.First(pair => pair.Value == formerArticle).Key">@formerArticle.Title</a>
+                    </div>
+                }
+
+                @if (currentArticleIndex != articles.Count - 1)
+                {
+                    ArticleInfo nextArticle = articles[currentArticleIndex + 1];
+                    <div class="text-right-float">
+                        下一篇文章
+                        <br />
+                        <a href="@articlesDictionary.First(pair => pair.Value == nextArticle).Key">@nextArticle.Title</a>
+                    </div>
+                }
+            </div>
+        }
+    }
 </div>

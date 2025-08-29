@@ -5,7 +5,7 @@ namespace AnEoT.Vintage.Common.Models;
 /// <summary>
 /// 表示文章信息的结构。
 /// </summary>
-public struct ArticleInfo : IEquatable<ArticleInfo>
+public struct ArticleInfo : IEquatable<ArticleInfo>, IComparable<ArticleInfo>
 {
     /// <summary>
     /// 构造一个已按默认值初始化的 <see cref="ArticleInfo"/> 的新实例。
@@ -81,6 +81,31 @@ public struct ArticleInfo : IEquatable<ArticleInfo>
     /// 页面描述。
     /// </summary>
     public string Description { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 比较两个 <see cref="ArticleInfo"/> 实例，以确定排序顺序。
+    /// </summary>
+    /// <param name="other">另一个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <returns>指示比较结果的 <see langword="int"/>。有关其含义，请查阅 <see cref="IComparable{T}.CompareTo(T)"/> 的文档。</returns>
+    public readonly int CompareTo(ArticleInfo other)
+    {
+        if (this.Order > 0 && other.Order > 0)
+        {
+            return Comparer<int>.Default.Compare(this.Order, other.Order);
+        }
+        else if (this.Order > 0 && other.Order < 0)
+        {
+            return -1;
+        }
+        else if (this.Order < 0 && other.Order > 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return Comparer<int>.Default.Compare(this.Order, other.Order);
+        }
+    }
 
     /// <inheritdoc/>
     public readonly override bool Equals(object? obj)
@@ -158,5 +183,49 @@ public struct ArticleInfo : IEquatable<ArticleInfo>
     public static bool operator !=(ArticleInfo left, ArticleInfo right)
     {
         return !(left == right);
+    }
+
+    /// <summary>
+    /// 确定左边的 <see cref="ArticleInfo"/> 实例的顺序是否在右边的 <see cref="ArticleInfo"/> 前面。
+    /// </summary>
+    /// <param name="left">第一个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <param name="right">第二个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <returns>指示左侧实例顺序是否在右侧实例前面的值。</returns>
+    public static bool operator <(ArticleInfo left, ArticleInfo right)
+    {
+        return left.CompareTo(right) < 0;
+    }
+
+    /// <summary>
+    /// 确定左边的 <see cref="ArticleInfo"/> 实例的顺序是否在右边的 <see cref="ArticleInfo"/> 前面，抑或排序顺序相等。
+    /// </summary>
+    /// <param name="left">第一个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <param name="right">第二个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <returns>指示左侧实例顺序是否在右侧实例前面，或者两个实例排序相等的值。</returns>
+    public static bool operator <=(ArticleInfo left, ArticleInfo right)
+    {
+        return left.CompareTo(right) <= 0;
+    }
+
+    /// <summary>
+    /// 确定左边的 <see cref="ArticleInfo"/> 实例的顺序是否在右边的 <see cref="ArticleInfo"/> 后面。
+    /// </summary>
+    /// <param name="left">第一个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <param name="right">第二个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <returns>指示左侧实例顺序是否在右侧实例后面的值。</returns>
+    public static bool operator >(ArticleInfo left, ArticleInfo right)
+    {
+        return left.CompareTo(right) > 0;
+    }
+
+    /// <summary>
+    /// 确定左边的 <see cref="ArticleInfo"/> 实例的顺序是否在右边的 <see cref="ArticleInfo"/> 后面，抑或排序顺序相等。
+    /// </summary>
+    /// <param name="left">第一个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <param name="right">第二个 <see cref="ArticleInfo"/> 实例。</param>
+    /// <returns>指示左侧实例顺序是否在右侧实例后面，或者两个实例排序相等的值。</returns>
+    public static bool operator >=(ArticleInfo left, ArticleInfo right)
+    {
+        return left.CompareTo(right) >= 0;
     }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using AnEoT.Vintage.Models;
 
@@ -33,6 +34,40 @@ public class VolumeInfoHelper(IWebHostEnvironment environment, VolumeDirectoryOr
         DirectoryInfo targetFolder = volumeFolderInfos.Single(info => info.Name.Equals(volumeFolderName, StringComparison.OrdinalIgnoreCase));
 
         return GetTargetVolumeInfoCore(targetFolder);
+    }
+
+    /// <summary>
+    /// 尝试获取指定一期期刊的信息。
+    /// </summary>
+    /// <param name="volumeFolderName">形如“2025-06”的期刊文件夹名称。</param>
+    /// <param name="info">若获取成功，则为指定期刊的信息；若失败则为 <see langword="null"/>。</param>
+    /// <returns>指示操作是否成功的值。</returns>
+    public bool TryGetTargetVolumeInfo(string volumeFolderName, [NotNullWhen(true)] out VolumeInfo? info)
+    {
+        info = null;
+
+        if (string.IsNullOrWhiteSpace(volumeFolderName))
+        {
+            return false;
+        }
+
+        List<DirectoryInfo> volumeFolderInfos = GetAllVolumeFolders();
+        DirectoryInfo? targetFolder = volumeFolderInfos.SingleOrDefault(info => info.Name.Equals(volumeFolderName, StringComparison.OrdinalIgnoreCase));
+
+        if (targetFolder is null || !targetFolder.Exists)
+        {
+            return false;
+        }
+
+        try
+        {
+            info = GetTargetVolumeInfoCore(targetFolder);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     private List<DirectoryInfo> GetAllVolumeFolders()
