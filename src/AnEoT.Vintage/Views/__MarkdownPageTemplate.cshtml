@@ -4,6 +4,7 @@
 
 @inject PageTitleHelper pageTitleHelper
 @inject CategoryAndTagHelper categoryAndTagHelper
+@inject VolumeInfoHelper volumeInfoHelper;
 @model Westwind.AspNetCore.Markdown.MarkdownModel
 
 @{
@@ -19,7 +20,7 @@
     }
     else
     {
-        articleInfo = new();
+        articleInfo = default;
     }
 
     int wordCount = MarkdownHelper.GetWordCount(Model.RawMarkdown);
@@ -122,4 +123,96 @@
 
 <div class="content-margin para-indent">
     @Model.RenderedMarkdown
+
+    @if (articleInfo != default
+        && uriParts.Length >= 2
+        && uriParts[0].Equals("posts", StringComparison.OrdinalIgnoreCase)
+        && volumeInfoHelper.TryGetTargetVolumeInfo(uriParts[1], out VolumeInfo? volumeInfo))
+    {
+        IReadOnlyDictionary<Uri, ArticleInfo> articlesDictionary = volumeInfo.Value.Articles;
+        List<ArticleInfo> articles = articlesDictionary.Values.Order().ToList();
+        int currentArticleIndex = articles.IndexOf(articleInfo);
+
+        @if (currentArticleIndex != -1 || uriParts.Length == 2)
+        {
+            <div style="margin-top: 20px; overflow: auto; zoom: 1;">
+                @{
+                    {
+                        string formerText = string.Empty;
+                        string formerUri = string.Empty;
+                        string formerTitle = string.Empty;
+                        bool showFormer = false;
+
+                        if (currentArticleIndex == -1
+                        && volumeInfoHelper.TryGetFormerVolumeInfo(volumeInfo.Value, out VolumeInfo? formerVolume))
+                        {
+                            formerUri = $"/posts/{formerVolume.Value.VolumeFolderName}/";
+                            formerText = "上一期期刊";
+                            formerTitle = formerVolume.Value.VolumeName;
+                            showFormer = true;
+                        }
+                        else if (currentArticleIndex > 0)
+                        {
+                            ArticleInfo formerArticle = articles[currentArticleIndex - 1];
+                            formerUri = articlesDictionary.First(pair => pair.Value == formerArticle).Key.ToString();
+                            formerText = "上一篇文章";
+                            formerTitle = formerArticle.Title;
+                            showFormer = true;
+                        }
+                        else if (currentArticleIndex == 0)
+                        {
+                            formerUri = $"/posts/{volumeInfo.Value.VolumeFolderName}/";
+                            formerText = "上一篇文章";
+                            formerTitle = "本期目录";
+                            showFormer = true;
+                        }
+
+                        if (showFormer)
+                        {
+                            <div class="text-left-float">
+                                @formerText
+                                <br />
+                                <a href="@formerUri">@formerTitle</a>
+                            </div>
+                        }
+                    }
+                }
+
+                @{
+                    {
+                        string nextText = string.Empty;
+                        string nextUri = string.Empty;
+                        string nextTitle = string.Empty;
+                        bool showNext = false;
+
+                        if (currentArticleIndex == articles.Count - 1
+                        && volumeInfoHelper.TryGetNextVolumeInfo(volumeInfo.Value, out VolumeInfo? nextVolume))
+                        {
+                            nextUri = $"/posts/{nextVolume.Value.VolumeFolderName}/";
+                            nextText = "下一期期刊";
+                            nextTitle = nextVolume.Value.VolumeName;
+                            showNext = true;
+                        }
+                        else if (currentArticleIndex >= -1 && currentArticleIndex + 1 < articles.Count)
+                        {
+                            ArticleInfo nextArticle = articles[currentArticleIndex + 1];
+                            nextUri = articlesDictionary.First(pair => pair.Value == nextArticle).Key.ToString();
+                            nextText = "下一篇文章";
+                            nextTitle = nextArticle.Title;
+                            showNext = true;
+                        }
+
+                        if (showNext)
+                        {
+                            <div class="text-right-float">
+                                @nextText
+                                <br />
+                                <a href="@nextUri">@nextTitle</a>
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        }
+    }
 </div>

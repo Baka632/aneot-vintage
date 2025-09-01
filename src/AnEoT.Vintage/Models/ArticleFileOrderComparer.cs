@@ -28,21 +28,6 @@ public sealed class ArticleFileOrderComparer : Comparer<FileInfo>
         ArticleInfo articleInfoX = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdownX);
         ArticleInfo articleInfoY = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdownY);
 
-        if (articleInfoX.Order > 0 && articleInfoY.Order > 0)
-        {
-            return Comparer<int>.Default.Compare(articleInfoX.Order, articleInfoY.Order);
-        }
-        else if (articleInfoX.Order > 0 && articleInfoY.Order < 0)
-        {
-            return -1;
-        }
-        else if (articleInfoX.Order < 0 && articleInfoY.Order > 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return Comparer<int>.Default.Compare(-articleInfoX.Order, -articleInfoY.Order);
-        }
+        return articleInfoX.CompareTo(articleInfoY);
     }
 }

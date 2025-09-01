@@ -8,6 +8,7 @@ using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using AngleSharp.Dom;
 using Markdig.Syntax.Inlines;
+using UnDotNet.HtmlToText;
 
 namespace AnEoT.Vintage.Common.Helpers;
 
@@ -87,8 +88,9 @@ public static class MarkdownHelper
     /// 获取 Markdown 的文章引言。
     /// </summary>
     /// <param name="markdown">Markdown 文件内容。</param>
+    /// <param name="convertHtmlToText">确定是否将 HTML 转化为纯文本。</param>
     /// <returns>文章引言，若不存在，则返回空字符串。</returns>
-    public static string GetArticleQuote(string markdown)
+    public static string GetArticleQuote(string markdown, bool convertHtmlToText = false)
     {
         if (markdown.Contains("<!-- more -->") != true)
         {
@@ -117,6 +119,14 @@ public static class MarkdownHelper
                     break;
                 }
             }
+        }
+
+        if (convertHtmlToText)
+        {
+            HtmlToTextConverter htmlToTextConverter = new();
+            HtmlToTextOptions htmlToTextOptions = new() { PreserveNewlines = true };
+
+            quote = htmlToTextConverter.Convert(quote, htmlToTextOptions);
         }
 
         return quote;

@@ -53,7 +53,7 @@
         {
             if (hasRawMarkdown)
             {
-                string quoteMd = MarkdownHelper.GetArticleQuote(rawMarkdown);
+                string quoteMd = MarkdownHelper.GetArticleQuote(rawMarkdown, true);
                 description = MarkdownHelper.ToPlainText(quoteMd).Trim();
             }
         }

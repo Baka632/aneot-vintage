@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using AnEoT.Vintage.Models;
 
@@ -33,6 +34,94 @@ public class VolumeInfoHelper(IWebHostEnvironment environment, VolumeDirectoryOr
         DirectoryInfo targetFolder = volumeFolderInfos.Single(info => info.Name.Equals(volumeFolderName, StringComparison.OrdinalIgnoreCase));
 
         return GetTargetVolumeInfoCore(targetFolder);
+    }
+
+    /// <summary>
+    /// 尝试获取指定一期期刊的信息。
+    /// </summary>
+    /// <param name="volumeFolderName">形如“2025-06”的期刊文件夹名称。</param>
+    /// <param name="info">若获取成功，则为指定期刊的信息；若失败则为 <see langword="null"/>。</param>
+    /// <returns>指示操作是否成功的值。</returns>
+    public bool TryGetTargetVolumeInfo(string volumeFolderName, [NotNullWhen(true)] out VolumeInfo? info)
+    {
+        info = null;
+
+        if (string.IsNullOrWhiteSpace(volumeFolderName))
+        {
+            return false;
+        }
+
+        List<DirectoryInfo> volumeFolderInfos = GetAllVolumeFolders();
+        DirectoryInfo? targetFolder = volumeFolderInfos.SingleOrDefault(info => info.Name.Equals(volumeFolderName, StringComparison.OrdinalIgnoreCase));
+
+        if (targetFolder is null || !targetFolder.Exists)
+        {
+            return false;
+        }
+
+        try
+        {
+            info = GetTargetVolumeInfoCore(targetFolder);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// 尝试获取当前期刊的上一期期刊。
+    /// </summary>
+    /// <param name="currentInfo">当前期刊的期刊信息。</param>
+    /// <param name="formerInfo">此期刊的上一期期刊，若获取失败则返回 <see langword="null"/>。</param>
+    /// <returns>指示操作是否成功的值。</returns>
+    public bool TryGetFormerVolumeInfo(VolumeInfo currentInfo, [NotNullWhen(true)] out VolumeInfo? formerInfo)
+    {
+        formerInfo = GetFormerOrNextVolumeInfoCore(currentInfo, true);
+        return formerInfo != null;
+    }
+
+    /// <summary>
+    /// 尝试获取当前期刊的下一期期刊。
+    /// </summary>
+    /// <param name="currentInfo">当前期刊的期刊信息。</param>
+    /// <param name="nextInfo">此期刊的下一期期刊，若获取失败则返回 <see langword="null"/>。</param>
+    /// <returns>指示操作是否成功的值。</returns>
+    public bool TryGetNextVolumeInfo(VolumeInfo currentInfo, [NotNullWhen(true)] out VolumeInfo? nextInfo)
+    {
+        nextInfo = GetFormerOrNextVolumeInfoCore(currentInfo, false);
+        return nextInfo != null;
+    }
+
+    private VolumeInfo? GetFormerOrNextVolumeInfoCore(VolumeInfo currentInfo, bool isFormer)
+    {
+        List<DirectoryInfo> volumeFolderInfos = GetAllVolumeFolders();
+        volumeFolderInfos.Sort(volumeDirectoryOrderComparer);
+
+        DirectoryInfo? currentInfoDir = volumeFolderInfos.FirstOrDefault(dir => dir.Name == currentInfo.VolumeFolderName);
+        if (currentInfoDir is null)
+        {
+            return null;
+        }
+
+        int currentInfoDirIndex = volumeFolderInfos.FindIndex(info => info.FullName == currentInfoDir.FullName);
+        int targetInfoDirIndex = isFormer ? currentInfoDirIndex - 1 : currentInfoDirIndex + 1;
+
+        if (targetInfoDirIndex < 0 || targetInfoDirIndex > volumeFolderInfos.Count - 1)
+        {
+            return null;
+        }
+
+        DirectoryInfo targetDirectory = volumeFolderInfos[targetInfoDirIndex];
+        try
+        {
+            return GetTargetVolumeInfoCore(targetDirectory);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private List<DirectoryInfo> GetAllVolumeFolders()
