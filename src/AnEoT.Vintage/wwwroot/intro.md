@@ -49,6 +49,3 @@ order: -1
 
 [^1]: [TCA cycle](https://baike.baidu.com/item/三羧酸循环/437762)
 
-## 关于泰讯
-
-[泰讯](https://terrach.net/)

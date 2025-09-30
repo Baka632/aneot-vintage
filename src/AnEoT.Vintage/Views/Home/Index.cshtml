@@ -1,4 +1,4 @@
-﻿@using AnEoT.Vintage.ViewModels.Home
+@using AnEoT.Vintage.ViewModels.Home
 @model IndexViewModel
 
 @{
@@ -6,6 +6,13 @@
 }
 
 <div>
+    <div style="margin:0 auto; text-align: center; border: solid; padding: 5px;">
+        <!-- 用了远古的 marquee 元素！这样才是简易版！（） -->
+        <marquee behavior="alternate" scrollamount="8">《回归线》× 雾雨咖啡店联动现已开启！</marquee>
+        <br />
+        <a href="/bulletin/crossover_kirisame.html">查看详情</a>
+    </div>
+
     <h1>@ViewData["Title"]</h1>
     <ul>
         @foreach (var item in Model.HomePageInfo.Projects)

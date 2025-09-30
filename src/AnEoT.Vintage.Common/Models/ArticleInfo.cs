@@ -83,6 +83,11 @@ public struct ArticleInfo : IEquatable<ArticleInfo>, IComparable<ArticleInfo>
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
+    /// 指示在首页固定文章的顺序。
+    /// </summary>
+    public int Sticky { get; set; }
+
+    /// <summary>
     /// 比较两个 <see cref="ArticleInfo"/> 实例，以确定排序顺序。
     /// </summary>
     /// <param name="other">另一个 <see cref="ArticleInfo"/> 实例。</param>
@@ -140,7 +145,8 @@ public struct ArticleInfo : IEquatable<ArticleInfo>, IComparable<ArticleInfo>
                isDirEqual &&
                Star == other.Star &&
                Index == other.Index &&
-               Description == other.Description;
+               Description == other.Description &&
+               Sticky == other.Sticky;
     }
 
     /// <inheritdoc/>
@@ -160,6 +166,7 @@ public struct ArticleInfo : IEquatable<ArticleInfo>, IComparable<ArticleInfo>
         hash.Add(Star);
         hash.Add(Index);
         hash.Add(Description);
+        hash.Add(Sticky);
         return hash.ToHashCode();
     }
 
