@@ -1,16 +1,16 @@
-using Markdig;
-using System.Text.Unicode;
 using System.Text.Encodings.Web;
-using AspNetStatic;
-using AspNetStatic.Optimizer;
-using AnEoT.Vintage.Models;
+using System.Text.Unicode;
 using AnEoT.Vintage.Helpers;
 using AnEoT.Vintage.Helpers.Custom;
-using Westwind.AspNetCore.Markdown;
-using Microsoft.Extensions.WebEncoders;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.Mvc.Routing;
+using AnEoT.Vintage.Models;
+using AspNetStatic;
+using AspNetStatic.Optimizer;
+using Markdig;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.Extensions.WebEncoders;
+using Westwind.AspNetCore.Markdown;
 
 namespace AnEoT.Vintage;
 
@@ -187,6 +187,8 @@ public class Program
 
         FakeAdHelper.PrepareData(app.Environment.WebRootPath);
 
+        LogKirisameCroosover(app);
+
         app.GenerateAllFeed()
             .GenerateTileXml()
             .GenerateLatestVolumeInfoJson();
@@ -204,5 +206,15 @@ public class Program
 
         app.Run();
         #endregion
+    }
+
+    private static void LogKirisameCroosover(WebApplication host)
+    {
+        ILoggerFactory loggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
+        ILogger logger = loggerFactory.CreateLogger("AnEoT.Vintage.KirisameCroosover");
+
+#pragma warning disable CA1848
+        logger.Log(LogLevel.Information, "雾雨咖啡店联动，好欸！");
+#pragma warning restore CA1848
     }
 }
