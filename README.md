@@ -8,7 +8,7 @@
 
 - 克隆本仓库
 
-- 确保 .NET 8 SDK 安装在您的电脑上
+- 确保 .NET 10 SDK 安装在您的电脑上
 
 - 在 `src/AnEoT.Vintage` 文件夹中运行 `dotnet run` 命令
 

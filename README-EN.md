@@ -8,7 +8,7 @@ A fanmade literary journal based on mobile game *Arknights*, redesigned for vint
 
 - Clone the repository locally
 
-- Make sure .NET 8 SDK is available on your computer
+- Make sure .NET 10 SDK is available on your computer
 
 - Run `dotnet run` command in `src/AnEoT.Vintage` folder
 
