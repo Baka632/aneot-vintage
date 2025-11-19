@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/解决方案项/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="src/README.md" />
+  </Folder>
+  <Project Path="src/AnEoT.Vintage.Common/AnEoT.Vintage.Common.csproj" />
+  <Project Path="src/AnEoT.Vintage.ReverseProxy/AnEoT.Vintage.ReverseProxy.csproj" />
+  <Project Path="src/AnEoT.Vintage.StaticServer/AnEoT.Vintage.StaticServer.csproj" />
+  <Project Path="src/AnEoT.Vintage/AnEoT.Vintage.csproj" />
+</Solution>

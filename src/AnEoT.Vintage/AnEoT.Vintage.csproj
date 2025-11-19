@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -9,12 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.SassCompiler" Version="1.91.0" />
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.94.1" />
     <PackageReference Include="AspNetStatic" Version="0.26.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="9.0.8" />
-    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.24.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="10.0.0" />
+    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.30.0" />
   </ItemGroup>
 
   <ItemGroup>

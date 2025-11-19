@@ -12,12 +12,6 @@
 
 类型为 .NET 类库。
 
-## AnEoT.Vintage.Tool
-
-工具项目，负责对主项目进行各种操作，如文件预处理。
-
-类型为控制台应用程序。
-
 ## AnEoT.Vintage.StaticServer
 
 静态服务器项目，负责提供自定义的静态文件服务器（基于 Kestrel）。
