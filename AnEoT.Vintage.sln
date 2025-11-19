@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.6.33723.286
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnEoT.Vintage", "src\AnEoT.Vintage\AnEoT.Vintage.csproj", "{C4227F0A-075A-42E9-8887-93A56B352C37}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnEoT.Vintage.Tool", "src\AnEoT.Vintage.Tool\AnEoT.Vintage.Tool.csproj", "{AD222810-4733-4380-92CE-BF64D0D9D3A5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnEoT.Vintage.Common", "src\AnEoT.Vintage.Common\AnEoT.Vintage.Common.csproj", "{AD2E61F7-8248-43BB-B004-A5B2DA3C6BF5}"
 EndProject
@@ -31,10 +29,6 @@ Global
 		{C4227F0A-075A-42E9-8887-93A56B352C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4227F0A-075A-42E9-8887-93A56B352C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4227F0A-075A-42E9-8887-93A56B352C37}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD222810-4733-4380-92CE-BF64D0D9D3A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD222810-4733-4380-92CE-BF64D0D9D3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD222810-4733-4380-92CE-BF64D0D9D3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD222810-4733-4380-92CE-BF64D0D9D3A5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD2E61F7-8248-43BB-B004-A5B2DA3C6BF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AD2E61F7-8248-43BB-B004-A5B2DA3C6BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD2E61F7-8248-43BB-B004-A5B2DA3C6BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU

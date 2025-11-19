@@ -6,8 +6,6 @@ using AnEoT.Vintage.Models;
 using AspNetStatic;
 using AspNetStatic.Optimizer;
 using Markdig;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.WebEncoders;
 using Westwind.AspNetCore.Markdown;
@@ -115,14 +113,6 @@ public class Program
 
         builder.Services.AddControllersWithViews()
             .AddApplicationPart(typeof(MarkdownPageProcessorMiddleware).Assembly);
-
-        // 注入 IUrlHelper 服务
-        builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>()
-            .AddScoped(provider =>
-            {
-                return provider.GetRequiredService<IUrlHelperFactory>()
-                    .GetUrlHelper(provider.GetRequiredService<IActionContextAccessor>().ActionContext!);
-            });
 
         builder.Services.Configure<WebEncoderOptions>(options =>
         {
