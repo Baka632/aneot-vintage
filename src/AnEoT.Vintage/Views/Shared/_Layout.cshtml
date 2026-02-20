@@ -73,8 +73,7 @@
     }
     else
     {
-        articleInfo = default;
-        articleInfo.Article = false;
+        articleInfo = new() { Article = false };
     }
 
     keywords = string.Join(',', keywordList.Distinct());

@@ -148,7 +148,7 @@ public static class MarkdownHelper
             if (item is YamlFrontMatterBlock or HtmlBlock)
             {
                 IEnumerable<char> padding = Enumerable.Repeat('\a', item.Span.Length);
-                string paddingString = new(padding.ToArray());
+                string paddingString = new([.. padding]);
 
                 stringBuilder.Remove(item.Span.Start, item.Span.Length);
                 stringBuilder.Insert(item.Span.Start, paddingString);
