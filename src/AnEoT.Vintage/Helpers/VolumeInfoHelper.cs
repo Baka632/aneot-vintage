@@ -12,14 +12,15 @@ public class VolumeInfoHelper(IWebHostEnvironment environment, VolumeDirectoryOr
     /// <summary>
     /// 获取最新一期期刊的信息。
     /// </summary>
-    public VolumeInfo GetLatestVolumeInfo()
+    /// <param name="fillArticleQuote">指示是否为每篇文章的信息填充文章摘要的值。</param>
+    public VolumeInfo GetLatestVolumeInfo(bool fillArticleQuote = false)
     {
         List<DirectoryInfo> volumeFolderInfos = GetAllVolumeFolders();
         volumeFolderInfos.Sort(volumeDirectoryOrderComparer);
         volumeFolderInfos.Reverse();
         DirectoryInfo latestVolumeFolderInfo = volumeFolderInfos.First();
 
-        return GetTargetVolumeInfoCore(latestVolumeFolderInfo);
+        return GetTargetVolumeInfoCore(latestVolumeFolderInfo, fillArticleQuote);
     }
 
     /// <summary>
@@ -132,7 +133,7 @@ public class VolumeInfoHelper(IWebHostEnvironment environment, VolumeDirectoryOr
         return volumeFolderInfos;
     }
 
-    private static VolumeInfo GetTargetVolumeInfoCore(DirectoryInfo volumeFolderInfo)
+    private static VolumeInfo GetTargetVolumeInfoCore(DirectoryInfo volumeFolderInfo, bool fillArticleQuote = false)
     {
         ArgumentNullException.ThrowIfNull(volumeFolderInfo);
 
@@ -159,6 +160,17 @@ public class VolumeInfoHelper(IWebHostEnvironment environment, VolumeDirectoryOr
         {
             string markdown = File.ReadAllText(file.FullName);
             ArticleInfo articleInfo = MarkdownHelper.GetFromFrontMatter<ArticleInfo>(markdown);
+
+            if (fillArticleQuote)
+            {
+                string quoteMd = MarkdownHelper.GetArticleQuote(markdown, true);
+                string quote = MarkdownHelper.ToPlainText(quoteMd).Trim();
+
+                if (!string.IsNullOrWhiteSpace(quote))
+                {
+                    articleInfo = articleInfo with { ArticleQuote = quote };
+                }
+            }
 
             Uri uri = new($"/posts/{volumeDirectoryName}/{Path.ChangeExtension(file.Name, ".html")}", UriKind.Relative);
 
@@ -191,7 +203,7 @@ public static partial class VolumeInfoHelperExtensions
 
         string jsonSavePath = Path.Combine(environment.WebRootPath, "latest-volume.json");
         using FileStream jsonSaveStream = File.Create(jsonSavePath);
-        VolumeInfo latestVolumeInfo = helper.GetLatestVolumeInfo();
+        VolumeInfo latestVolumeInfo = helper.GetLatestVolumeInfo(true);
 
         JsonSerializer.Serialize(jsonSaveStream, latestVolumeInfo);
         logger.LogJsonGenerated(jsonSavePath);

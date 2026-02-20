@@ -287,7 +287,8 @@ public static partial class FeedGenerationHelperExtensions
         helper.GenerateFeed(generateDigest: true, rss20FileName: "rss_digest.xml", atomFileName: "atom_digest.xml")
             .AddToList(feedPaths);
 
-        logger.LogFeedGenerated(string.Join("\n\t", feedPaths));
+        string path = string.Join("\n\t", feedPaths);
+        logger.LogFeedGenerated(path);
 
         return host;
     }
