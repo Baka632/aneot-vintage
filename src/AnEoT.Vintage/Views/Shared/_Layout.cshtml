@@ -31,7 +31,7 @@
     #else
     if (!bool.TryParse(config["ForceDebugManifest"], out bool forceDebugManifest))
     {
-    forceDebugManifest = false;
+        forceDebugManifest = false;
     }
     manifestFilePath = forceDebugManifest ? "/manifest-debug.json" : "/manifest.json";
     #endif
