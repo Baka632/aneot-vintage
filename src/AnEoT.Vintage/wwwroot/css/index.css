@@ -7,6 +7,9 @@
 :root th {
   border: none !important;
 }
+:root {
+  text-autospace: normal;
+}
 
 .theme-hope-content p {
   text-indent: 2em;
