@@ -21,7 +21,6 @@ public static class MarkdownHelper
             .UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Default)
             .UseAdvancedExtensions()
             .UseListExtras()
-            .UseEmojiAndSmiley(true)
             .UseYamlFrontMatter()
             .Build();
 
