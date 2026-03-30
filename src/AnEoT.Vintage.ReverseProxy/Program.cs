@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("aneot-vintage-reverse-proxy-config.json", false);
@@ -13,12 +12,9 @@ if (!builder.Environment.IsDevelopment())
     });
     builder.WebHost.ConfigureKestrel(kestrelOptions =>
     {
-        kestrelOptions.ListenAnyIP(80);
-
-        kestrelOptions.ListenAnyIP(443, listenOptions =>
+        kestrelOptions.ConfigureHttpsDefaults(httpsOptions =>
         {
-            listenOptions.UseLettuceEncrypt(kestrelOptions.ApplicationServices);
-            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+            httpsOptions.UseLettuceEncrypt(kestrelOptions.ApplicationServices);
         });
     });
 }
