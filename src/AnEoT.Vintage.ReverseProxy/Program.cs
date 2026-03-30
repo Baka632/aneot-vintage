@@ -11,8 +11,10 @@ if (!builder.Environment.IsDevelopment())
     {
         options.MaxAge = TimeSpan.FromDays(365 * 2);
     });
-    builder.WebHost.UseKestrel(kestrelOptions =>
+    builder.WebHost.ConfigureKestrel(kestrelOptions =>
     {
+        kestrelOptions.ListenAnyIP(80);
+
         kestrelOptions.ListenAnyIP(443, listenOptions =>
         {
             listenOptions.UseLettuceEncrypt(kestrelOptions.ApplicationServices);
