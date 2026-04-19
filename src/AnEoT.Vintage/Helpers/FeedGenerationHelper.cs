@@ -82,12 +82,12 @@ public partial class FeedGenerationHelper(
             feed.Categories.Add(new SyndicationCategory(item));
         }
 
-        // 获取 posts 文件夹的信息
+        // 获取 posts 文件夹的信息。
         DirectoryInfo postsDirectoryInfo = new(Path.Combine(webRootPath, "posts"));
 
         List<SyndicationItem> items = [];
 
-        // 反向读取文件夹，以获取到最新的期刊
+        // 反向读取文件夹，以获取到最新的期刊。
         List<DirectoryInfo> volDirInfos = [.. postsDirectoryInfo.EnumerateDirectories()];
         volDirInfos.Sort(new VolumeDirectoryOrderComparer());
         volDirInfos.Reverse();
@@ -117,7 +117,7 @@ public partial class FeedGenerationHelper(
                 Uri articleLink = new(baseUri, $"posts/{volDirInfo.Name}/{article.Name.Replace(".md", ".html")}");
 
                 TextSyndicationContent content;
-                CustomMarkdownParser parser = new(false, false, commonValues.ConvertWebP, new Uri(baseUri, $"posts/{volDirInfo.Name}").ToString(), true, true);
+                CustomMarkdownParser parser = new(false, false, commonValues.ConvertWebP, webRootPath, new Uri(baseUri, $"posts/{volDirInfo.Name}").ToString(), true, true);
 
                 if (generateDigest)
                 {

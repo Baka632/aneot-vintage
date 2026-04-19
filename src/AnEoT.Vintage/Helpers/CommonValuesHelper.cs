@@ -62,8 +62,8 @@ public class CommonValuesHelper
         ConvertWebP = convertWebP;
 
 #if DEBUG
-        // 在调试模式及未启用静态网页生成的情况下，禁用 WebP 转换
-        // 因为这种情况下，一般是正在进行调试，因此不应该启用这个功能，否则图像显示会出现问题
+        // 在调试模式及未启用静态网页生成的情况下，禁用 WebP 转换。
+        // 因为这种情况下，一般是正在进行调试，因此不应该启用这个功能，否则图像显示会出现问题。
         if (!Environment.GetCommandLineArgs().HasExitWhenDoneArg())
         {
             ConvertWebP = false;

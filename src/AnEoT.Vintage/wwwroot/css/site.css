@@ -36,3 +36,12 @@ a:visited {
 a:active {
     color: #0077cc;
 }
+
+.cover-container {
+    display: flex;
+    justify-content: center;
+}
+
+.cover-container img {
+    max-width: 60%;
+}

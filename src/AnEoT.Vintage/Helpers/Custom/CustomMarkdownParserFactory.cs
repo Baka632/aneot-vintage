@@ -9,14 +9,16 @@ public class CustomMarkdownParserFactory : IMarkdownParserFactory
 {
     private readonly bool convertWebP;
     private readonly string? baseUri;
+    private readonly string webRootPath;
 
     /// <summary>
     /// 使用指定的参数构造 <seealso cref="CustomMarkdownParserFactory"/> 的新实例。
     /// </summary>
-    public CustomMarkdownParserFactory(bool convertWebP, string? baseUri = null)
+    public CustomMarkdownParserFactory(bool convertWebP, string webRootPath, string? baseUri = null)
     {
         this.convertWebP = convertWebP;
         this.baseUri = baseUri;
+        this.webRootPath = webRootPath;
     }
 
     /// <inheritdoc/>
@@ -30,7 +32,7 @@ public class CustomMarkdownParserFactory : IMarkdownParserFactory
             return CurrentParser;
         }
 
-        CurrentParser = new CustomMarkdownParser(usePragmaLines, forceLoad, convertWebP, baseUri);
+        CurrentParser = new CustomMarkdownParser(usePragmaLines, forceLoad, convertWebP, webRootPath, baseUri);
         return CurrentParser;
     }
 }

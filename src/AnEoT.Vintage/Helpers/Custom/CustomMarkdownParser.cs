@@ -13,16 +13,18 @@ public class CustomMarkdownParser : MarkdownParserMarkdig
     private readonly string? baseUri;
     private readonly bool noAd;
     private readonly bool noEod;
+    private readonly string webRootPath;
 
     /// <summary>
     /// 使用指定的参数构造 <seealso cref="CustomMarkdownParser"/> 的新实例。
     /// </summary>
-    public CustomMarkdownParser(bool usePragmaLines, bool forceLoad, bool convertWebP, string? baseUri = null, bool noAd = false, bool noEod = false) : base(usePragmaLines, forceLoad)
+    public CustomMarkdownParser(bool usePragmaLines, bool forceLoad, bool convertWebP, string webRootPath, string? baseUri = null, bool noAd = false, bool noEod = false) : base(usePragmaLines, forceLoad)
     {
         this.convertWebP = convertWebP;
         this.baseUri = baseUri;
         this.noAd = noAd;
         this.noEod = noEod;
+        this.webRootPath = webRootPath;
     }
 
     /// <inheritdoc/>
@@ -36,7 +38,7 @@ public class CustomMarkdownParser : MarkdownParserMarkdig
         string html;
         using (StringWriter stringWriter = new())
         {
-            IMarkdownRenderer renderer = new CustomHtmlRenderer(stringWriter, convertWebP, baseUri, noAd, noEod);
+            IMarkdownRenderer renderer = new CustomHtmlRenderer(stringWriter, convertWebP, webRootPath, baseUri, noAd, noEod);
             Markdig.Markdown.Convert(markdown, renderer, Pipeline);
             html = stringWriter.ToString();
         }
