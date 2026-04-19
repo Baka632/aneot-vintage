@@ -12,6 +12,8 @@ using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
 using AnEoT.Vintage.Models.VueComponentAbstractions;
+using VolumeInfo = AnEoT.Vintage.Models.VueComponentAbstractions.VolumeInfo;
+using AnEoT.Vintage.Models;
 
 namespace AnEoT.Vintage.Helpers.Custom.Renderer;
 
@@ -23,15 +25,17 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
     private readonly bool convertWebP;
     private readonly bool noAd;
     private readonly bool noEod;
+    private readonly string webRootPath;
 
     /// <summary>
     /// 使用指定的参数构造 <seealso cref="CustomHtmlBlockRenderer"/> 的新实例。
     /// </summary>
-    public CustomHtmlBlockRenderer(bool convertWebP, bool noAd, bool noEod)
+    public CustomHtmlBlockRenderer(bool convertWebP, bool noAd, bool noEod, string webRootPath)
     {
         this.convertWebP = convertWebP;
         this.noAd = noAd;
         this.noEod = noEod;
+        this.webRootPath = webRootPath;
     }
 
     /// <inheritdoc/>
@@ -60,18 +64,35 @@ public class CustomHtmlBlockRenderer : HtmlBlockRenderer
                 ? string.Join(' ', currentElement.ClassList)
                 : string.Empty;
 
-            if (!noAd && currentElement.TagName == FakeAds.TagName)
+            string tagName = currentElement.TagName;
+
+            if (!noAd && tagName == FakeAds.TagName)
             {
-                Models.FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
+                FakeAdInfo ad = FakeAdHelper.RollFakeAd(convertWebP);
                 string fakeAdHtml = FakeAds.GetHtml(ad, classNames);
 
                 obj.Lines = new StringLineGroup(fakeAdHtml);
             }
-            else if (!noEod && currentElement.TagName == Eod.TagName)
+            else if (!noEod && tagName == Eod.TagName)
             {
                 string eodHtml = Eod.GetHtml(classNames);
 
                 obj.Lines = new StringLineGroup(eodHtml);
+            }
+            else if (tagName == VolumeInfo.TagName)
+            {
+                string? typeString = currentElement.GetAttribute("type") ?? throw new InvalidOperationException("HTML 元素 VolumeInfo 的属性“type”是必须的。");
+                VolumeInfoType type = typeString switch
+                {
+                    "latest-title" => VolumeInfoType.LatestTitle,
+                    "latest-cover" => VolumeInfoType.LatestCover,
+                    "latest-link" => VolumeInfoType.LatestLink,
+                    "volumes" => VolumeInfoType.Volumes,
+                    _ => throw new InvalidOperationException("无法识别 HTML 元素 VolumeInfo 的类型。")
+                };
+
+                string volumeInfoHtml = VolumeInfo.GetHtml(type, webRootPath, convertWebP);
+                obj.Lines = new StringLineGroup(volumeInfoHtml);
             }
         }
 

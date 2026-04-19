@@ -107,7 +107,7 @@ public class Program
                     .UseYamlFrontMatter();
             };
 
-            config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP);
+            config.MarkdownParserFactory = new CustomMarkdownParserFactory(convertWebP, builder.Environment.WebRootPath);
         });
 
         builder.Services.AddControllersWithViews()
