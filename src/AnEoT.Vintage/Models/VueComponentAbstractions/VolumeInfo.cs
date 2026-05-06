@@ -61,31 +61,16 @@ public static class VolumeInfo
         builder.AppendLine("<table>");
         builder.AppendLine("<tbody>");
 
-        int index = 0;
-        int count = 0;
-        IEnumerable<IGrouping<int, DirectoryInfo>> groups = directories.GroupBy(info =>
-        {
-            if (count != 0 && count % 3 == 0)
-            {
-                count = 1;
-                index++;
-            }
-            else
-            {
-                count++;
-            }
+        IEnumerable<DirectoryInfo[]> groups = directories.Chunk(3);
 
-            return index;
-        });
-
-        foreach (IGrouping<int, DirectoryInfo> group in groups)
+        foreach (DirectoryInfo[] infos in groups)
         {
-            WriteTableContent(builder, group, (sb, volDir) =>
+            WriteTableContent(builder, infos, (sb, volDir) =>
             {
                 sb.AppendLine(CultureInfo.InvariantCulture, $"""<img src="/posts/{volDir.Name}/res/cover.{imageExtensions}" />""");
             });
 
-            WriteTableContent(builder, group, (sb, volDir) =>
+            WriteTableContent(builder, infos, (sb, volDir) =>
             {
                 string rawTitle = GetVolumeTitle(volDir);
                 string title = $"{ volDir.Name}: {rawTitle.Replace("-", "<br/>")}";
@@ -100,10 +85,10 @@ public static class VolumeInfo
         return builder.ToString();
     }
 
-    private static void WriteTableContent(StringBuilder builder, IGrouping<int, DirectoryInfo> group, Action<StringBuilder, DirectoryInfo> writeAction, string? tdStyle = null)
+    private static void WriteTableContent(StringBuilder builder, DirectoryInfo[] infos, Action<StringBuilder, DirectoryInfo> writeAction, string? tdStyle = null)
     {
         builder.AppendLine("<tr>");
-        foreach (DirectoryInfo volumeDir in group)
+        foreach (DirectoryInfo volumeDir in infos)
         {
             if (string.IsNullOrWhiteSpace(tdStyle))
             {
