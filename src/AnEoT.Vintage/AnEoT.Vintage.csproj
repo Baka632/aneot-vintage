@@ -9,12 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.SassCompiler" Version="1.97.1" />
-    <PackageReference Include="AspNetStatic" Version="0.27.7" />
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.100.0" />
+    <PackageReference Include="AspNetStatic" Version="0.27.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="10.0.5" />
-    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.31.0" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="10.0.8" />
+    <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.40.0" />
   </ItemGroup>
 
   <ItemGroup>
